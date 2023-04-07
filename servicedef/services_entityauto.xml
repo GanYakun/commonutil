@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>Banfftech common services implemented by entity-auto</description>
+    <vendor></vendor>
+    <version>1.0</version>
+
+    <service name="banfftech.createParty" default-entity-name="Party" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a Party</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateParty" default-entity-name="Party" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a Party</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteParty" default-entity-name="Party" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a Party</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="banfftech.createPartyGroup" default-entity-name="PartyGroup" engine="entity-auto" invoke="create"
+             auth="true">
+        <description>Create a PartyGroup</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyGroup" default-entity-name="PartyGroup" engine="entity-auto" invoke="update"
+             auth="true">
+        <description>Update a PartyGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deletePartyGroup" default-entity-name="PartyGroup" engine="entity-auto" invoke="delete"
+             auth="true">
+        <description>Delete a PartyGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="banfftech.createPerson" default-entity-name="Person" engine="entity-auto" invoke="create"
+             auth="true">
+        <description>Create a Person</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePerson" default-entity-name="Person" engine="entity-auto" invoke="update"
+             auth="true">
+        <description>Update a Person</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deletePerson" default-entity-name="Person" engine="entity-auto" invoke="delete"
+             auth="true">
+        <description>Delete a Person</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="banfftech.createPartyRole" default-entity-name="PartyRole" engine="entity-auto" invoke="create"
+             auth="true">
+        <description>Create a PartyRole</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyRole" default-entity-name="PartyRole" engine="entity-auto" invoke="update"
+             auth="true">
+        <description>Update a PartyRole</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deletePartyRole" default-entity-name="PartyRole" engine="entity-auto" invoke="delete"
+             auth="true">
+        <description>Delete a PartyGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="banfftech.createContactMech" default-entity-name="ContactMech" engine="entity-auto" invoke="create"
+             auth="true">
+        <description>Create a createContactMech</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createPartyContactMechPurpose" default-entity-name="PartyContactMechPurpose"
+             engine="entity-auto" invoke="create" auth="true">
+        <description>Create a PartyContactMechPurpose</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createPostalAddress" default-entity-name="PostalAddress" engine="entity-auto"
+             invoke="create" auth="true">
+        <description>Create a PostalAddress</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePostalAddress" default-entity-name="PostalAddress" engine="entity-auto"
+             invoke="update" auth="true">
+        <description>Update a PostalAddress</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deletePostalAddress" default-entity-name="PostalAddress" engine="entity-auto"
+             invoke="delete" auth="true">
+        <description>Delete a PostalAddress</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="banfftech.createPartyContactMech" default-entity-name="PartyContactMech" engine="entity-auto"
+             invoke="create" auth="true">
+        <description>Create a PartyContactMech</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createProduct" default-entity-name="Product" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a Product </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateProduct" default-entity-name="Product" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a Product</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a ProductCategoryMember </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a ProductCategoryMember</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a ProductCategoryMember</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+</services>
