@@ -7,6 +7,12 @@
     <version>1.0</version>
 
 
+    <service name="updateI18nProperties" engine="java"
+             location="com.banfftech.common.tools.Tools" invoke="updateI18nProperties">
+        <description>更新i18n</description>
+        <attribute name="initialize" type="Boolean" mode="IN" optional="true"/>
+    </service>
+
     <service name="banfftech.createPostalAddressAndContactMech" default-entity-name="PostalAddress" engine="java"
              location="com.banfftech.common.services.CommonServices"
              invoke="createPostalAddressAndContactMech" auth="false">
