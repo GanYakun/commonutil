@@ -24,7 +24,8 @@ public class LoginServices {
     public static Map<String, Object> checkIsLogin(DispatchContext dctx, Map<String, Object> context) {
         Map<String, Object> result = ServiceUtil.returnSuccess();
         result.put("login",true);
-        GenericValue userLogin = (GenericValue)context.get("userLogin");
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+        Debug.log(">>>>>>>>>> " + userLogin);
         if(userLogin==null){ result.put("login",false);}
         return result;
     }
