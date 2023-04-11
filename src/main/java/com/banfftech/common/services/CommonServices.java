@@ -25,4 +25,31 @@ public class CommonServices {
 
         return resultMap;
     }
+
+    public static Map<String, Object> createPartyUserLogin(DispatchContext dctx, Map<String, Object> context)
+            throws GeneralServiceException, GenericEntityException, OfbizODataException {
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        Delegator delegator = dctx.getDelegator();
+        String userLoginId = (String) context.get("userLoginId");
+
+        GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), false);
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createParty", userLogin);
+        context.put("enabled", "Y");
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createUserLogin", userLogin);
+
+        return resultMap;
+    }
+
+    public static Map<String, Object> updatePartyUserLogin(DispatchContext dctx, Map<String, Object> context)
+            throws GenericEntityException, GeneralServiceException, OfbizODataException {
+        Delegator delegator = dctx.getDelegator();
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        String userLoginId = (String) context.get("userLoginId");
+
+        GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), false);
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty", userLogin);
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateUserLogin", userLogin);
+
+        return resultMap;
+    }
 }

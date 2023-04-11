@@ -12,11 +12,25 @@
         <description>更新i18n</description>
         <attribute name="initialize" type="Boolean" mode="IN" optional="true"/>
     </service>
-
+<!--P-->
+    <!--PostalAddressAndContactMech-->
     <service name="banfftech.createPostalAddressAndContactMech" default-entity-name="PostalAddress" engine="java"
              location="com.banfftech.common.services.CommonServices"
              invoke="createPostalAddressAndContactMech" auth="false">
         <description>Create a createPostalAddressAndContactMech </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <!--PartyUserLogin-->
+    <service name="banfftech.createPartyUserLogin" engine="java" default-entity-name="PartyUserLogin" location="com.banfftech.common.services.CommonServices"
+             invoke="createPartyUserLogin" auth="true">
+        <description>create a Party And UserLogin</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyUserLogin" engine="java" default-entity-name="PartyUserLogin" location="com.banfftech.common.services.CommonServices"
+             invoke="updatePartyUserLogin" auth="true">
+        <description>update a Party And UserLogin</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>

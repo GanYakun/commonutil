@@ -5,7 +5,8 @@
     <description>Banfftech common services implemented by entity-auto</description>
     <vendor></vendor>
     <version>1.0</version>
-
+<!--P-->
+    <!--Party-->
     <service name="banfftech.createParty" default-entity-name="Party" engine="entity-auto" invoke="create" auth="true">
         <description>Create a Party</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
@@ -20,7 +21,7 @@
         <description>Delete a Party</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
-
+    <!--PartyGroup-->
     <service name="banfftech.createPartyGroup" default-entity-name="PartyGroup" engine="entity-auto" invoke="create"
              auth="true">
         <description>Create a PartyGroup</description>
@@ -38,7 +39,7 @@
         <description>Delete a PartyGroup</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
-
+    <!--Person-->
     <service name="banfftech.createPerson" default-entity-name="Person" engine="entity-auto" invoke="create"
              auth="true">
         <description>Create a Person</description>
@@ -56,7 +57,7 @@
         <description>Delete a Person</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
-
+    <!--PartyRole-->
     <service name="banfftech.createPartyRole" default-entity-name="PartyRole" engine="entity-auto" invoke="create"
              auth="true">
         <description>Create a PartyRole</description>
@@ -74,21 +75,21 @@
         <description>Delete a PartyGroup</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
-
+    <!--ContactMech-->
     <service name="banfftech.createContactMech" default-entity-name="ContactMech" engine="entity-auto" invoke="create"
              auth="true">
         <description>Create a createContactMech</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-
+    <!--PartyContactMechPurpose-->
     <service name="banfftech.createPartyContactMechPurpose" default-entity-name="PartyContactMechPurpose"
              engine="entity-auto" invoke="create" auth="true">
         <description>Create a PartyContactMechPurpose</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-
+    <!--PostalAddress-->
     <service name="banfftech.createPostalAddress" default-entity-name="PostalAddress" engine="entity-auto"
              invoke="create" auth="true">
         <description>Create a PostalAddress</description>
@@ -113,7 +114,7 @@
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-
+    <!--Product-->
     <service name="banfftech.createProduct" default-entity-name="Product" engine="entity-auto" invoke="create" auth="true">
         <description>Create a Product </description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
@@ -124,7 +125,11 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-
+    <service name="banfftech.deleteProduct" default-entity-name="Product" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a Product</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--ProductCategoryMember-->
     <service name="banfftech.createProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="create" auth="true">
         <description>Create a ProductCategoryMember </description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
@@ -137,6 +142,37 @@
     </service>
     <service name="banfftech.deleteProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="delete" auth="true">
         <description>Delete a ProductCategoryMember</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+<!--U-->
+    <!--UserLogin-->
+    <service name="banfftech.createUserLogin" default-entity-name="UserLogin" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a UserLogin</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateUserLogin" default-entity-name="UserLogin" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a UserLogin</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteUserLogin" default-entity-name="UserLogin" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a UserLogin</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--UserLoginSecurityGroup-->
+    <service name="banfftech.createUserLoginSecurityGroup" default-entity-name="UserLoginSecurityGroup" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a UserLoginSecurityGroup </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateUserLoginSecurityGroup" default-entity-name="UserLoginSecurityGroup" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a UserLoginSecurityGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteUserLoginSecurityGroup" default-entity-name="UserLoginSecurityGroup" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a UserLoginSecurityGroup</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 </services>

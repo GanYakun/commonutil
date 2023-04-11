@@ -7,9 +7,6 @@
 	<version></version>
 
 	<extend-entity entity-name="PostalAddress">
-<!--		<field name="contactNumber" type="short-varchar">-->
-<!--			<description>联系电话</description>-->
-<!--		</field>-->
 		<field name="phoneNumber" type="short-varchar">
 			<description>手机号码</description>
 		</field>
