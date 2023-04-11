@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+	<title>Entities for openui5</title>
+	<description>None</description>
+	<copyright></copyright>
+	<version></version>
+
+	<extend-entity entity-name="PostalAddress">
+<!--		<field name="contactNumber" type="short-varchar">-->
+<!--			<description>联系电话</description>-->
+<!--		</field>-->
+		<field name="phoneNumber" type="short-varchar">
+			<description>手机号码</description>
+		</field>
+		<field name="telephoneNumber" type="short-varchar">
+			<description>电话号码</description>
+		</field>
+		<field name="fax" type="short-varchar">
+			<description>传真</description>
+		</field>
+		<field name="email" type="long-varchar">
+			<description>邮箱</description>
+		</field>
+		<field name="contact" type="long-varchar">
+			<description>联系人</description>
+		</field>
+	</extend-entity>
+
+</entitymodel>
