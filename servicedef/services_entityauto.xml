@@ -144,6 +144,52 @@
         <description>Delete a ProductCategoryMember</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+<!--S-->
+    <!--SecurityGroup-->
+    <service name="banfftech.createSecurityGroup" default-entity-name="SecurityGroup" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a SecurityGroup </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateSecurityGroup" default-entity-name="SecurityGroup" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a SecurityGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteSecurityGroup" default-entity-name="SecurityGroup" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a SecurityGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--SecurityPermission-->
+    <service name="banfftech.createSecurityPermission" default-entity-name="SecurityPermission" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a SecurityPermission</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateSecurityPermission" default-entity-name="SecurityPermission" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a SecurityPermission</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteSecurityPermission" default-entity-name="SecurityPermission" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a SecurityPermission</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--SecurityGroupPermission-->
+    <service name="banfftech.createSecurityGroupPermission" default-entity-name="SecurityGroupPermission" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a SecurityGroupPermission </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateSecurityGroupPermission" default-entity-name="SecurityGroupPermission" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a SecurityGroupPermission</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteSecurityGroupPermission" default-entity-name="SecurityGroupPermission" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a SecurityGroupPermission</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
 <!--U-->
     <!--UserLogin-->
     <service name="banfftech.createUserLogin" default-entity-name="UserLogin" engine="entity-auto" invoke="create" auth="true">
