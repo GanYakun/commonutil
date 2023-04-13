@@ -5,6 +5,7 @@ import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilValidate;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
+import org.apache.ofbiz.entity.GenericPK;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.*;
@@ -120,5 +121,35 @@ public class CommonUtils {
         } catch (GenericServiceException e) {
             throw new OfbizODataException(e.getMessage());
         }
+    }
+
+    public static GenericValue getObjectAttributeGv(GenericValue genericValue, String attrName) throws GenericEntityException {
+        Delegator delegator = genericValue.getDelegator();
+        String attrEntityName = genericValue.getEntityName() + "Attribute";
+        GenericPK genericPK = genericValue.getPrimaryKey();
+        Map<String, Object> fieldCondition = new HashMap<>();
+        fieldCondition.putAll(genericPK);
+        fieldCondition.put("attrName", attrName);
+        return delegator.findOne(attrEntityName, fieldCondition, false);
+    }
+    public static String getObjectAttribute(GenericValue genericValue, String attrName) {
+        GenericValue attrGv;
+        try {
+            attrGv = getObjectAttributeGv(genericValue, attrName);
+            return attrGv.getString("attrValue");
+        } catch (org.apache.ofbiz.entity.GenericEntityException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static Boolean getObjectAttributeAsBoolean(GenericValue genericValue, String attrName) {
+        GenericValue attrGv;
+        try {
+            attrGv = getObjectAttributeGv(genericValue, attrName);
+            return attrGv.getBoolean("attrValue");
+        } catch (org.apache.ofbiz.entity.GenericEntityException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
