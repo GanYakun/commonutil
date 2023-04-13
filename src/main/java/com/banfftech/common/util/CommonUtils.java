@@ -123,21 +123,31 @@ public class CommonUtils {
         }
     }
 
-    public static String getObjectAttribute(GenericValue genericValue, String attrName) {
+    public static GenericValue getObjectAttributeGv(GenericValue genericValue, String attrName) throws GenericEntityException {
         Delegator delegator = genericValue.getDelegator();
         String attrEntityName = genericValue.getEntityName() + "Attribute";
         GenericPK genericPK = genericValue.getPrimaryKey();
         Map<String, Object> fieldCondition = new HashMap<>();
         fieldCondition.putAll(genericPK);
         fieldCondition.put("attrName", attrName);
+        return delegator.findOne(attrEntityName, fieldCondition, false);
+    }
+    public static String getObjectAttribute(GenericValue genericValue, String attrName) {
+        GenericValue attrGv;
         try {
-            GenericValue attribute = delegator.findOne(attrEntityName, fieldCondition, false);
-            if (attribute == null) {
-                return null;
-            } else {
-                return attribute.getString("attrValue");
-            }
-        } catch (GenericEntityException e) {
+            attrGv = getObjectAttributeGv(genericValue, attrName);
+            return attrGv.getString("attrValue");
+        } catch (org.apache.ofbiz.entity.GenericEntityException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static Boolean getObjectAttributeAsBoolean(GenericValue genericValue, String attrName) {
+        GenericValue attrGv;
+        try {
+            attrGv = getObjectAttributeGv(genericValue, attrName);
+            return attrGv.getBoolean("attrValue");
+        } catch (org.apache.ofbiz.entity.GenericEntityException e) {
             e.printStackTrace();
         }
         return null;
