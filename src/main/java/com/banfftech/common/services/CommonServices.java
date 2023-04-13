@@ -42,14 +42,9 @@ public class CommonServices {
 
     public static Map<String, Object> updatePartyUserLogin(DispatchContext dctx, Map<String, Object> context)
             throws GenericEntityException, GeneralServiceException, OfbizODataException {
-        Delegator delegator = dctx.getDelegator();
-        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
-        String userLoginId = (String) context.get("userLoginId");
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty", (String) context.get("userLoginId"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateUserLogin", (String )context.get("userLoginId"));
 
-        GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), false);
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty", userLogin);
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateUserLogin", userLogin);
-
-        return resultMap;
+        return ServiceUtil.returnSuccess();
     }
 }

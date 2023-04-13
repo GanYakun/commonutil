@@ -91,6 +91,19 @@ public class CommonUtils {
         }
     }
 
+
+    public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, String userLoginId)
+            throws GeneralServiceException, OfbizODataException {
+        Delegator delegator = dctx.getDispatcher().getDelegator();
+        try {
+            GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), true);
+            setServiceFieldsAndRun(dctx, context, serviceName, userLogin);
+        } catch (org.apache.ofbiz.entity.GenericEntityException e) {
+            e.printStackTrace();
+            throw new OfbizODataException(e.getMessage());
+        }
+    }
+
     public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, GenericValue userLogin)
             throws GeneralServiceException, OfbizODataException {
         LocalDispatcher dispatcher = dctx.getDispatcher();
