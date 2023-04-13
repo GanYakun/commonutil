@@ -119,7 +119,7 @@ public class CommonUtils {
         try {
             dispatcher.runSync(serviceName, UtilMisc.toMap(validFieldsForService));
         } catch (GenericServiceException e) {
-            throw new RuntimeException(e);
+            throw new OfbizODataException(e.getMessage());
         }
     }
 
