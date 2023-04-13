@@ -15,8 +15,8 @@ import java.util.Map;
 public class CommonServices {
     public static Map<String, Object> createPostalAddressAndContactMech(DispatchContext dctx, Map<String, Object> context)
             throws GeneralServiceException, GenericEntityException, OfbizODataException {
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createContactMech", (String) context.get("userLoginId"));
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPostalAddress", (String) context.get("userLoginId"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createContactMech", (GenericValue) context.get("userLogin"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPostalAddress", (GenericValue) context.get("userLogin"));
 
         return ServiceUtil.returnSuccess();
     }
