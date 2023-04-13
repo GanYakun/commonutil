@@ -5,6 +5,7 @@ import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilValidate;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
+import org.apache.ofbiz.entity.GenericPK;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.*;
@@ -120,5 +121,25 @@ public class CommonUtils {
         } catch (GenericServiceException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getObjectAttribute(GenericValue genericValue, String attrName) {
+        Delegator delegator = genericValue.getDelegator();
+        String attrEntityName = genericValue.getEntityName() + "Attribute";
+        GenericPK genericPK = genericValue.getPrimaryKey();
+        Map<String, Object> fieldCondition = new HashMap<>();
+        fieldCondition.putAll(genericPK);
+        fieldCondition.put("attrName", attrName);
+        try {
+            GenericValue attribute = delegator.findOne(attrEntityName, fieldCondition, false);
+            if (attribute == null) {
+                return null;
+            } else {
+                return attribute.getString("attrValue");
+            }
+        } catch (GenericEntityException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
