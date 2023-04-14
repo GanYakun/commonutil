@@ -8,30 +8,36 @@ import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.service.DispatchContext;
 import org.apache.ofbiz.service.GeneralServiceException;
+import org.apache.ofbiz.service.GenericServiceException;
 import org.apache.ofbiz.service.ServiceUtil;
 
 import java.util.Map;
 
 public class CommonServices {
-    public static Map<String, Object> createPostalAddressAndContactMech(DispatchContext dctx, Map<String, Object> context)
-            throws GeneralServiceException, GenericEntityException, OfbizODataException {
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createContactMech", (GenericValue) context.get("userLogin"));
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPostalAddress", (GenericValue) context.get("userLogin"));
+    public static Map<String, Object> createPostalAddressAndContactMech(DispatchContext dctx, Map<String, Object> context) throws OfbizODataException {
+
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createContactMech",
+                    (GenericValue) context.get("userLogin"));
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPostalAddress",
+                    (GenericValue) context.get("userLogin"));
+
 
         return ServiceUtil.returnSuccess();
     }
 
-    public static Map<String, Object> createPartyUserLogin(DispatchContext dctx, Map<String, Object> context)
-            throws GeneralServiceException, GenericEntityException, OfbizODataException {
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createParty", (String) context.get("userLoginId"));
-        context.put("enabled", "Y");
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createUserLogin", (String) context.get("userLoginId"));
+    public static Map<String, Object> createPartyUserLogin(DispatchContext dctx, Map<String, Object> context) throws OfbizODataException {
+
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createParty",
+                        (String) context.get("userLoginId"));
+            context.put("enabled", "Y");
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createUserLogin",
+                    (String) context.get("userLoginId"));
 
         return ServiceUtil.returnSuccess();
     }
 
     public static Map<String, Object> updatePartyUserLogin(DispatchContext dctx, Map<String, Object> context)
-            throws GeneralServiceException, OfbizODataException {
+            throws OfbizODataException {
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty", (String) context.get("userLoginId"));
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateUserLogin", (String) context.get("userLoginId"));
 

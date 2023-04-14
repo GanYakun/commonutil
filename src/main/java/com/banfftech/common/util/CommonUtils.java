@@ -94,7 +94,7 @@ public class CommonUtils {
 
 
     public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, String userLoginId)
-            throws GeneralServiceException, OfbizODataException {
+            throws  OfbizODataException {
         Delegator delegator = dctx.getDispatcher().getDelegator();
         try {
             GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), true);
@@ -106,19 +106,13 @@ public class CommonUtils {
     }
 
     public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, GenericValue userLogin)
-            throws GeneralServiceException, OfbizODataException {
+            throws OfbizODataException {
         LocalDispatcher dispatcher = dctx.getDispatcher();
-        if(UtilValidate.isEmpty(userLogin)){
-            userLogin = (GenericValue) context.get("userLogin");
-            if (UtilValidate.isEmpty(userLogin)) {
-                throw new OfbizODataException("缺少必要的用户验证参数：userLogin");
-            }
-        }
-        Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, serviceName,
-                context, userLogin, null, null);
-        try {
+        try{
+            Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, serviceName,
+                    context, userLogin, null, null);
             dispatcher.runSync(serviceName, UtilMisc.toMap(validFieldsForService));
-        } catch (GenericServiceException e) {
+        } catch (GenericServiceException | GeneralServiceException e) {
             throw new OfbizODataException(e.getMessage());
         }
     }
