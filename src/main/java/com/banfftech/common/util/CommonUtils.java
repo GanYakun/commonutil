@@ -96,27 +96,20 @@ public class CommonUtils {
 
 
     public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, String userLoginId)
-            throws  OfbizODataException {
+            throws GeneralServiceException, GenericServiceException, GenericEntityException {
         Delegator delegator = dctx.getDispatcher().getDelegator();
-        try {
-            GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), true);
-            setServiceFieldsAndRun(dctx, context, serviceName, userLogin);
-        } catch (org.apache.ofbiz.entity.GenericEntityException e) {
-            e.printStackTrace();
-            throw new OfbizODataException(e.getMessage());
-        }
+
+        GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), true);
+        setServiceFieldsAndRun(dctx, context, serviceName, userLogin);
     }
 
     public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, GenericValue userLogin)
-            throws OfbizODataException {
+            throws GeneralServiceException, GenericServiceException {
         LocalDispatcher dispatcher = dctx.getDispatcher();
-        try{
-            Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, serviceName,
-                    context, userLogin, null, null);
-            dispatcher.runSync(serviceName, UtilMisc.toMap(validFieldsForService));
-        } catch (GenericServiceException | GeneralServiceException e) {
-            throw new OfbizODataException(e.getMessage());
-        }
+
+        Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, serviceName,
+                context, userLogin, null, null);
+        dispatcher.runSync(serviceName, UtilMisc.toMap(validFieldsForService));
     }
 
     public static GenericValue getObjectAttributeGv(GenericValue genericValue, String attrName) throws GenericEntityException {
