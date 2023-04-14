@@ -49,9 +49,10 @@ public class CommonUtils {
      * @throws OfbizODataException
      * @throws GenericEntityException
      */
-    public static void checkProductCategory(Delegator delegator, String productId, String checkCategoryId)
+    public static Boolean checkProductCategory(Delegator delegator, String productId, String checkCategoryId)
             throws OfbizODataException, GenericEntityException {
 
+        Boolean checkCategory = true;
         String primaryParentCategoryId = null;
         List<GenericValue> productCategoryMembers = delegator.findByAnd("ProductCategoryMember", UtilMisc.toMap("productId", productId), null, false);
         GenericValue productCategoryMember = EntityUtil.getFirst(productCategoryMembers);
@@ -59,16 +60,17 @@ public class CommonUtils {
             String productCategoryId = productCategoryMember.getString("productCategoryId");
             GenericValue primaryProductCategory = delegator.findOne("ProductCategory", UtilMisc.toMap("productCategoryId", productCategoryId), false);
             if (UtilValidate.isEmpty(primaryProductCategory)) {
-                throw new OfbizODataException("不在维修站服务范围");
+                checkCategory = false;
             } else {
                 primaryParentCategoryId = primaryProductCategory.getString("primaryParentCategoryId");
                 if (!UtilValidate.areEqual(primaryParentCategoryId, checkCategoryId)) {
-                    throw new OfbizODataException("不在维修站服务范围");
+                    checkCategory = false;
                 }
             }
         } else {
-            throw new OfbizODataException("不在保修服务范围！");
+            checkCategory = false;
         }
+        return checkCategory;
     }
 
     /**
