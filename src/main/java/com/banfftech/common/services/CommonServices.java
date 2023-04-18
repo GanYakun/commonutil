@@ -46,8 +46,10 @@ public class CommonServices {
     public static Map<String, Object> updatePartyUserLogin(DispatchContext dctx, Map<String, Object> context)
             throws GenericServiceException {
         try {
-            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty", (String) context.get("userLoginId"));
-            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateUserLogin", (String) context.get("userLoginId"));
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty",
+                    (String) context.get("userLoginId"));
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateUserLogin",
+                    (String) context.get("userLoginId"));
         } catch (GeneralServiceException | GenericEntityException | GenericServiceException e) {
             throw new GenericServiceException(e.getMessage());
         }
