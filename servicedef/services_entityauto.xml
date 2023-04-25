@@ -5,6 +5,22 @@
     <description>Banfftech common services implemented by entity-auto</description>
     <vendor></vendor>
     <version>1.0</version>
+<!--N-->
+    <!--NoteData-->
+    <service name="banfftech.createNoteData" default-entity-name="NoteData" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a NoteData</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateNoteData" default-entity-name="NoteData" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a NoteData</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteNoteData" default-entity-name="NoteData" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a NoteData</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
 <!--P-->
     <!--Party-->
     <service name="banfftech.createParty" default-entity-name="Party" engine="entity-auto" invoke="create" auth="true">
@@ -221,4 +237,36 @@
         <description>Delete a UserLoginSecurityGroup</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+<!--W-->
+    <!--WorkEffort-->
+    <service name="banfftech.createWorkEffort" default-entity-name="WorkEffort" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a WorkEffort</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateWorkEffort" default-entity-name="WorkEffort" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a WorkEffort</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteWorkEffort" default-entity-name="WorkEffort" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a WorkEffort</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--WorkEffortNote-->
+    <service name="banfftech.createWorkEffortNote" default-entity-name="WorkEffortNote" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a WorkEffortNote</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateWorkEffortNote" default-entity-name="WorkEffortNote" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a WorkEffortNote</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteWorkEffortNote" default-entity-name="WorkEffortNote" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a WorkEffortNote</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
 </services>

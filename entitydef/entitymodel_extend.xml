@@ -24,4 +24,10 @@
 		</field>
 	</extend-entity>
 
+	<extend-entity entity-name="PartyIdentification">
+		<relation type="one" fk-name="PARTY_ID_PERSON" rel-entity-name="Person">
+			<key-map field-name="partyId"/>
+		</relation>
+	</extend-entity>
+
 </entitymodel>
