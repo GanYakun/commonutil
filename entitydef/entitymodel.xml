@@ -28,4 +28,30 @@ under the License.
     <copyright></copyright>
     <version></version>
 
+
+    <entity entity-name="ChatMessage" package-name="com.banfftech.mdt" title="Chat info">
+        <field name="messageId" type="id"><description>主键</description></field>
+        <field name="sequence" type="numeric"><description>主键</description></field>
+        <field name="messageTypeId" type="id"><description>消息类型</description></field>
+        <field name="messageInfo" type="very-long"><description>消息内容</description></field>
+        <field name="fromPartyId" type="id"><description>消息发出人</description></field>
+        <field name="workEffortId" type="id"><description>关联会话</description></field>
+        <prim-key field="messageId"/>
+        <relation type="one" fk-name="CHAT_PARTY" rel-entity-name="Party">
+            <key-map field-name="fromPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="CHAT_TYPE" rel-entity-name="ChatMessageType">
+            <key-map field-name="messageTypeId"/>
+        </relation>
+        <relation type="one" fk-name="CHAT_WORK_EFFORT" rel-entity-name="WorkEffort">
+            <key-map field-name="workEffortId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="ChatMessageType" package-name="com.banfftech.mdt" title="Chat Type">
+        <field name="messageTypeId" type="id"><description>消息类型标识</description></field>
+        <field name="description" type="value"><description>类型描述</description></field>
+        <prim-key field="messageTypeId"/>
+    </entity>
+
 </entitymodel>
