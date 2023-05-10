@@ -4,6 +4,7 @@ import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mysql.fabric.FabricCommunicationException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.ofbiz.base.util.HttpClientException;
@@ -14,8 +15,10 @@ import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.condition.EntityCondition;
+import org.apache.ofbiz.entity.condition.EntityExpr;
 import org.apache.ofbiz.entity.condition.EntityOperator;
 import org.apache.ofbiz.entity.util.EntityQuery;
+import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.GenericServiceException;
 import org.apache.ofbiz.service.LocalDispatcher;
 
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +36,20 @@ import java.util.Map;
  * @date 2023/5/9
  */
 public class ChatEvent {
+    /**
+     * 用户头像
+     */
+    private static final String CUSTOMER_AVATAR = "https://img2.baidu.com/it/u=2370366942,2724449755&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=797";
+    /**
+     * 专家头像
+     */
+    private static final String EXPERT_AVATAR = "https://bpic.51yuansu.com/pic3/cover/03/74/75/5bf7e4c23f34d_610.jpg";
+    /**
+     * 消息状态: 0/用户已读 1/用户未读 2/专家未读
+     */
+    private static final String C_READ = "0";
+    private static final String C_NO_READ = "1";
+    private static final String E_NO_READ = "2";
 
     /**
      * 发送消息
@@ -47,9 +65,19 @@ public class ChatEvent {
             String msgData = "image".equals(msgType) ? saveImageChat(request, dispatcher, userLogin, multiPartMap) :
                     (String) multiPartMap.get("msgData");
             //创建一条消息
+            Long msgSequence = delegator.getNextSeqIdLong("ChatMessageSequence");
             dispatcher.runSync("banfftech.createChatMessage", UtilMisc.toMap("messageId", delegator.getNextSeqId("ChatMessage"),
-                    "sequence", delegator.getNextSeqIdLong("ChatMessageSequence"), "messageTypeId", msgType, "messageInfo", msgData,
+                    "sequence", msgSequence, "messageTypeId", msgType, "messageInfo", msgData,
                     "fromPartyId", userLogin.getString("partyId"), "workEffortId", workEffortId, "userLogin", userLogin));
+            GenericValue role = EntityQuery.use(delegator).from("PartyRole").where("partyId", userLogin.getString("partyId")).queryFirst();
+            changeMsgStatus(delegator, workEffortId, "PATIENT".equals(role.getString("roleTypeId")) ? E_NO_READ : C_NO_READ);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=utf-8");
+            JSONObject result = new JSONObject();
+            result.put("msgSequence", msgSequence);
+            try (PrintWriter out = response.getWriter()) {
+                out.append(result.toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(500);
@@ -57,6 +85,71 @@ public class ChatEvent {
         }
         return "success";
     }
+
+    /**
+     * 将会话状态改为用户已读
+     */
+    public static String readMsg(HttpServletRequest request, HttpServletResponse response) throws GenericEntityException {
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        String workEffortId = request.getParameter("workEffortId");
+        try {
+            changeMsgStatus(delegator, workEffortId, C_READ);
+            request.setAttribute("result", "success");
+        } catch (GenericEntityException e) {
+            e.printStackTrace();
+            return "error";
+        }
+        return "success";
+    }
+
+    /**
+     * 获取会话列表
+     */
+    public static String getChatList(HttpServletRequest request, HttpServletResponse response) {
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        LocalDispatcher dispatcher = (LocalDispatcher) request.getAttribute("dispatcher");
+        GenericValue userLogin = (GenericValue) request.getAttribute("userLogin");
+        try {
+            JSONArray chatJsonList = new JSONArray();
+            //获取科室
+            String partyId = userLogin.getString("partyId");
+            GenericValue relationShip = EntityQuery.use(delegator).from("PartyRelationship")
+                    .where("partyIdTo", partyId, "roleTypeIdFrom", "DEPARTMENT", "roleTypeIdTo", "DOCTOR").filterByDate().queryFirst();
+            //当前科室的所有住院列表
+            List<GenericValue> assList = EntityQuery.use(delegator).from("WorkEffortPartyAssignmentWorkEffToDep")
+                    .where("partyId", relationShip.getString("partyIdFrom")).select("workEffortId").queryList();
+//            List<GenericValue> assList = EntityQuery.use(delegator).from("WorkEffortPartyAssignment")
+//                    .where("roleTypeId", "DEPARTMENT", "partyId", relationShip.getString("partyIdFrom")).filterByDate().select("workEffortId").queryList();
+            List<String> workEffortIdList = EntityUtil.getFieldListFromEntityList(assList, "workEffortId", true);
+            EntityCondition condition = EntityCondition.makeCondition("roleTypeId", "PATIENT");
+            condition = Util.appendCondition(condition, EntityCondition.makeCondition("workEffortId", EntityOperator.IN, workEffortIdList));
+            List<GenericValue> workEffortPartyAssignments = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where(condition).queryList();
+            for (GenericValue ass : workEffortPartyAssignments) {
+                String workEffortId = ass.getString("workEffortId");
+                GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("workEffortId", workEffortId)
+                        .orderBy("-sequence").queryFirst();
+                if (UtilValidate.isNotEmpty(lastChat)) {
+                    JSONObject mainJson = new JSONObject();
+                    GenericValue party = ass.getRelatedOne("Party", false);
+                    mainJson.put("title", party.getString("partyName"));
+                    mainJson.put("workEffortId", workEffortId);
+                    mainJson.put("dateTime", lastChat.getTimestamp("createdStamp").toString());
+                    chatJsonList.add(mainJson);
+                }
+            }
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=utf-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.append(chatJsonList.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(500);
+            return "error";
+        }
+        return "success";
+    }
+
 
     /**
      * 获取消息列表
@@ -81,18 +174,11 @@ public class ChatEvent {
             //消息列表
             JSONArray msgArr = new JSONArray();
             for (GenericValue chat : chatList) {
-                JSONObject msgJson = new JSONObject();
-                msgJson.put("_id", String.valueOf(chat.getLong("sequence")));
-                msgJson.put("type", chat.getString("messageTypeId"));
-                msgJson.put("content", chat.getString("messageInfo"));
-                msgJson.put("createdAt", chat.getTimestamp("createdStamp").getTime());
-                msgJson.put("position", userLogin.getString("partyId").equals(chat.getString("fromPartyId")) ? "right" : "left");
-                msgJson.put("hasTime", true);
-                msgArr.add(msgJson);
+                msgArr.add(parseMsg(chat, userLogin.getString("partyId"), delegator));
             }
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            try(PrintWriter out = response.getWriter()) {
+            try (PrintWriter out = response.getWriter()) {
                 out.append(msgArr.toString());
             }
             return "success";
@@ -103,6 +189,99 @@ public class ChatEvent {
         }
     }
 
+    /**
+     * 获取消息历史
+     */
+    public static String getHistoryMsg(HttpServletRequest request, HttpServletResponse response) {
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        GenericValue userLogin = (GenericValue) request.getAttribute("userLogin");
+        //workEffortId
+        String workEffortId = request.getParameter("workEffortId");
+        //序号
+        String sequence = request.getParameter("sequence");
+        int top = Integer.parseInt(request.getParameter("top"));
+        try {
+            EntityCondition queryCond = EntityCondition.makeCondition("workEffortId", workEffortId);
+            if (UtilValidate.isNotEmpty(sequence)) {
+                //只查询小于这个序号的消息
+                queryCond = Util.appendCondition(queryCond, EntityCondition.makeCondition("sequence", EntityOperator.LESS_THAN, Long.parseLong(sequence)));
+            }
+            List<GenericValue> chatList = EntityQuery.use(delegator).from("ChatMessage").where(queryCond).orderBy("-sequence").maxRows(top).queryList();
+            Collections.reverse(chatList);
+            JSONObject msgJson = new JSONObject();
+            if (UtilValidate.isEmpty(chatList)) {
+                msgJson.put("list", new JSONArray());
+                msgJson.put("noMore", true);
+                return "success";
+            } else {
+                //消息列表
+                boolean noMore = noMoreChat(delegator, chatList, top);
+                JSONArray msgArr = new JSONArray();
+                for (GenericValue chat : chatList) {
+                    msgArr.add(parseMsg(chat, userLogin.getString("partyId"), delegator));
+                }
+                msgJson.put("list", msgArr);
+                msgJson.put("noMore", noMore);
+            }
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=utf-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.append(msgJson.toString());
+            }
+            return "success";
+        } catch (GenericEntityException | IOException e) {
+            e.printStackTrace();
+            request.setAttribute("sendResult", "error");
+            return "error";
+        }
+    }
+
+    /**
+     * 是否有更多历史消息
+     */
+    private static boolean noMoreChat(Delegator delegator, List<GenericValue> chatList, Integer top) throws GenericEntityException {
+        if (chatList.size() < top) {
+            return true;
+        }
+        GenericValue minChat = chatList.get(0);
+        EntityCondition condition = EntityCondition.makeCondition("workEffortId", minChat.getString("workEffortId"));
+        condition = Util.appendCondition(condition, EntityCondition.makeCondition("sequence", EntityOperator.LESS_THAN, minChat.getLong("sequence")));
+        long count = EntityQuery.use(delegator).from("ChatMessage").where(condition).queryCount();
+        return count <= 0;
+    }
+
+    /**
+     * 获取一个消息的json
+     */
+    private static JSONObject parseMsg(GenericValue msg, String partyId, Delegator delegator) throws GenericEntityException {
+        JSONObject msgJson = new JSONObject();
+        GenericValue role = EntityQuery.use(delegator).from("PartyRole").where("partyId", partyId).queryFirst();
+        String roleTypeId = role.getString("roleTypeId");
+
+        msgJson.put("_id", String.valueOf(msg.getLong("sequence")));
+        String msgType = msg.getString("messageTypeId");
+        msgJson.put("type", msgType);
+        JSONObject contentJson = new JSONObject();
+        if ("text".equals(msgType)) {
+            contentJson.put("text", msg.getString("messageInfo"));
+        }
+        if ("image".equals(msgType)) {
+            contentJson.put("picUrl", msg.getString("messageInfo"));
+        }
+        JSONObject userJson = new JSONObject();
+        boolean isMe = partyId.equals(msg.getString("fromPartyId"));
+        if ("PATIENT".equals(roleTypeId) && !isMe) {
+            userJson.put("avatar", EXPERT_AVATAR);
+        } else if ("DOCTOR".equals(roleTypeId) && !isMe){
+            userJson.put("avatar", CUSTOMER_AVATAR);
+        }
+        msgJson.put("user", userJson);
+        msgJson.put("content", contentJson);
+        msgJson.put("createdAt", msg.getTimestamp("createdStamp").getTime());
+        msgJson.put("position", isMe ? "right" : "left");
+        msgJson.put("hasTime", true);
+        return msgJson;
+    }
 
     /**
      * 保存图片 返回图片的odata访问地址
@@ -115,6 +294,11 @@ public class ChatEvent {
         ByteBuffer fileBuff = (ByteBuffer) multiPartMap.get("msgData");
         dispatcher.runSync("createImageDataResource", UtilMisc.toMap("userLogin", userLogin, "dataResourceId", dataResourceId, "imageData", fileBuff.array()));
         return request.getRequestURL().toString().replace("sendMsg", "odatasvc/mdtManage/ImageDataResources('" + dataResourceId + "')/$value");
+    }
+
+    private static void changeMsgStatus(Delegator delegator, String workEffortId, String status) throws GenericEntityException {
+        delegator.createOrStore(delegator.makeValue("WorkEffortAttribute", UtilMisc.toMap("workEffortId", workEffortId,
+                "attrName", "msg_status", "attrValue", status)));
     }
 
 
