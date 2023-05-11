@@ -319,7 +319,11 @@ public class ChatEvent {
         // create ImageDataResource
         ByteBuffer fileBuff = (ByteBuffer) multiPartMap.get("msgData");
         dispatcher.runSync("createImageDataResource", UtilMisc.toMap("userLogin", userLogin, "dataResourceId", dataResourceId, "imageData", fileBuff.array()));
-        return request.getRequestURL().toString().replace("sendMsg", "odatasvc/mdtManage/ImageDataResources('" + dataResourceId + "')/$value");
+        String currentUrl = request.getRequestURL().toString();
+        if (!currentUrl.startsWith("https")) {
+            currentUrl = currentUrl.replace("http", "https");
+        }
+        return currentUrl.replace("sendMsg", "odatasvc/mdtManage/ImageDataResources('" + dataResourceId + "')/$value");
     }
 
     private static void changeMsgStatus(Delegator delegator, String workEffortId, String status) throws GenericEntityException {
