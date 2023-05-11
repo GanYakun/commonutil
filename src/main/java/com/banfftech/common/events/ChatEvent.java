@@ -1,14 +1,8 @@
 package com.banfftech.common.events;
 
-import com.banfftech.common.util.CommonUtils;
-import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.Util;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.mysql.fabric.FabricCommunicationException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.ofbiz.base.util.HttpClientException;
 import org.apache.ofbiz.base.util.UtilHttp;
 import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilValidate;
@@ -16,7 +10,6 @@ import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.condition.EntityCondition;
-import org.apache.ofbiz.entity.condition.EntityExpr;
 import org.apache.ofbiz.entity.condition.EntityOperator;
 import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityUtil;
@@ -60,16 +53,17 @@ public class ChatEvent {
         LocalDispatcher dispatcher = (LocalDispatcher) request.getAttribute("dispatcher");
         GenericValue userLogin = (GenericValue) request.getAttribute("userLogin");
         try {
+            GenericValue systemUser = Util.getSystemUser(delegator);
             Map<String, Object> multiPartMap = UtilHttp.getMultiPartParameterMap(request);
             String workEffortId = (String) multiPartMap.get("workEffortId");
             String msgType = (String) multiPartMap.get("msgType");
-            String msgData = "image".equals(msgType) ? saveImageChat(request, dispatcher, userLogin, multiPartMap) :
+            String msgData = "image".equals(msgType) ? saveImageChat(request, dispatcher, systemUser, multiPartMap) :
                     (String) multiPartMap.get("msgData");
             //创建一条消息
             Long msgSequence = delegator.getNextSeqIdLong("ChatMessageSequence");
             dispatcher.runSync("banfftech.createChatMessage", UtilMisc.toMap("messageId", delegator.getNextSeqId("ChatMessage"),
                     "sequence", msgSequence, "messageTypeId", msgType, "messageInfo", msgData,
-                    "fromPartyId", userLogin.getString("partyId"), "workEffortId", workEffortId, "userLogin", userLogin));
+                    "fromPartyId", userLogin.getString("partyId"), "workEffortId", workEffortId, "userLogin", systemUser));
             GenericValue role = EntityQuery.use(delegator).from("PartyRole").where("partyId", userLogin.getString("partyId")).queryFirst();
             changeMsgStatus(delegator, workEffortId, "PATIENT".equals(role.getString("roleTypeId")) ? E_NO_READ : C_NO_READ);
             response.setCharacterEncoding("UTF-8");
