@@ -5,6 +5,37 @@
     <description>Banfftech common services implemented by entity-auto</description>
     <vendor></vendor>
     <version>1.0</version>
+<!--C-->
+    <!--CommunicationEvent-->
+    <service name="banfftech.createCommunicationEvent" default-entity-name="CommunicationEvent" engine="entity-auto" invoke="create">
+        <description>Create a CommunicationEvent</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateCommunicationEvent" default-entity-name="CommunicationEvent" engine="entity-auto" invoke="update">
+        <description>Update a CommunicationEvent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteCommunicationEvent" default-entity-name="CommunicationEvent" engine="entity-auto" invoke="delete">
+        <description>Delete a CommunicationEvent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--CommunicationEventWorkEff-->
+    <service name="banfftech.createCommunicationEventWorkEff" default-entity-name="CommunicationEventWorkEff" engine="entity-auto" invoke="create">
+        <description>Create a CommunicationEventWorkEff</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateCommunicationEventWorkEff" default-entity-name="CommunicationEventWorkEff" engine="entity-auto" invoke="update">
+        <description>Update a CommunicationEventWorkEff</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteCommunicationEventWorkEff" default-entity-name="CommunicationEventWorkEff" engine="entity-auto" invoke="delete">
+        <description>Delete a CommunicationEventWorkEff</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
 <!--N-->
     <!--NoteData-->
     <service name="banfftech.createNoteData" default-entity-name="NoteData" engine="entity-auto" invoke="create" auth="true">
@@ -266,6 +297,21 @@
     </service>
     <service name="banfftech.deleteWorkEffortNote" default-entity-name="WorkEffortNote" engine="entity-auto" invoke="delete" auth="true">
         <description>Delete a WorkEffortNote</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--WorkEffortPartyAssignment-->
+    <service name="banfftech.createWorkEffortPartyAssignment" default-entity-name="WorkEffortPartyAssignment" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a WorkEffortPartyAssignment</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateWorkEffortPartyAssignment" default-entity-name="WorkEffortPartyAssignment" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a WorkEffortPartyAssignment</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteWorkEffortPartyAssignment" default-entity-name="WorkEffortPartyAssignment" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a WorkEffortPartyAssignment</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 

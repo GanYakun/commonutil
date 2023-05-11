@@ -23,34 +23,4 @@
 			<description>联系人</description>
 		</field>
 	</extend-entity>
-
-	<extend-entity entity-name="PartyIdentification">
-		<relation type="one-nofk" rel-entity-name="Person">
-			<key-map field-name="partyId"/>
-		</relation>
-	</extend-entity>
-
-	<extend-entity entity-name="WorkEffortPartyAssignment">
-		<relation type="one-nofk" rel-entity-name="Person">
-			<key-map field-name="partyId"/>
-		</relation>
-		<relation type="one-nofk" rel-entity-name="PartyGroup">
-			<key-map field-name="partyId"/>
-		</relation>
-	</extend-entity>
-
-	<extend-entity entity-name="PartyRelationship">
-		<relation type="one-nofk" title="From" rel-entity-name="PartyUserLogin">
-			<key-map field-name="partyIdFrom" rel-field-name="partyId"/>
-		</relation>
-		<relation type="one-nofk" title="To" rel-entity-name="PartyUserLogin">
-			<key-map field-name="partyIdTo" rel-field-name="partyId"/>
-		</relation>
-	</extend-entity>
-
-	<extend-entity entity-name="Content">
-		<relation type="one-nofk" rel-entity-name="ImageDataResource">
-			<key-map field-name="dataResourceId"/>
-		</relation>
-	</extend-entity>
 </entitymodel>
