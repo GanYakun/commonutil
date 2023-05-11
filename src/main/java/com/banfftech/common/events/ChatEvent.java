@@ -1,5 +1,6 @@
 package com.banfftech.common.events;
 
+import com.banfftech.common.util.CommonUtils;
 import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.Util;
 import com.google.gson.JsonArray;
@@ -91,7 +92,7 @@ public class ChatEvent {
      */
     public static String readMsg(HttpServletRequest request, HttpServletResponse response) throws GenericEntityException {
         Delegator delegator = (Delegator) request.getAttribute("delegator");
-        String workEffortId = request.getParameter("workEffortId");
+        String workEffortId = (String) request.getAttribute("workEffortId");
         try {
             changeMsgStatus(delegator, workEffortId, C_READ);
             request.setAttribute("result", "success");
@@ -110,37 +111,70 @@ public class ChatEvent {
         LocalDispatcher dispatcher = (LocalDispatcher) request.getAttribute("dispatcher");
         GenericValue userLogin = (GenericValue) request.getAttribute("userLogin");
         try {
+            JSONObject mainJson = new JSONObject();
             JSONArray chatJsonList = new JSONArray();
-            //获取科室
             String partyId = userLogin.getString("partyId");
-            GenericValue relationShip = EntityQuery.use(delegator).from("PartyRelationship")
-                    .where("partyIdTo", partyId, "roleTypeIdFrom", "DEPARTMENT", "roleTypeIdTo", "DOCTOR").filterByDate().queryFirst();
-            //当前科室的所有住院列表
-            List<GenericValue> assList = EntityQuery.use(delegator).from("WorkEffortPartyAssignmentWorkEffToDep")
-                    .where("partyId", relationShip.getString("partyIdFrom")).select("workEffortId").queryList();
-//            List<GenericValue> assList = EntityQuery.use(delegator).from("WorkEffortPartyAssignment")
-//                    .where("roleTypeId", "DEPARTMENT", "partyId", relationShip.getString("partyIdFrom")).filterByDate().select("workEffortId").queryList();
-            List<String> workEffortIdList = EntityUtil.getFieldListFromEntityList(assList, "workEffortId", true);
-            EntityCondition condition = EntityCondition.makeCondition("roleTypeId", "PATIENT");
-            condition = Util.appendCondition(condition, EntityCondition.makeCondition("workEffortId", EntityOperator.IN, workEffortIdList));
-            List<GenericValue> workEffortPartyAssignments = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where(condition).queryList();
-            for (GenericValue ass : workEffortPartyAssignments) {
-                String workEffortId = ass.getString("workEffortId");
+            GenericValue role = EntityQuery.use(delegator).from("PartyRole").where("partyId", partyId).queryFirst();
+            if ("PATIENT".equals(role.getString("roleTypeId"))) {
+                //患者
+                String workEffortId = request.getParameter("workEffortId");
+                JSONObject chatJson = new JSONObject();
+                GenericValue party = userLogin.getRelatedOne("Party", false);
+                chatJson.put("title", party.getString("partyName"));
+                chatJson.put("workEffortId", workEffortId);
                 GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("workEffortId", workEffortId)
                         .orderBy("-sequence").queryFirst();
-                if (UtilValidate.isNotEmpty(lastChat)) {
-                    JSONObject mainJson = new JSONObject();
-                    GenericValue party = ass.getRelatedOne("Party", false);
-                    mainJson.put("title", party.getString("partyName"));
-                    mainJson.put("workEffortId", workEffortId);
-                    mainJson.put("dateTime", lastChat.getTimestamp("createdStamp").toString());
-                    chatJsonList.add(mainJson);
+                String dataTime = UtilValidate.isNotEmpty(lastChat) ? lastChat.getTimestamp("createdStamp").toString() : null;
+                chatJson.put("dateTime", dataTime);
+                GenericValue statusAttr = delegator.findOne("WorkEffortAttribute", UtilMisc.toMap("workEffortId", workEffortId, "attrName", "msgStatus"), false);
+                int noRead = 0;
+                String msgStatus = null;
+                if (UtilValidate.isNotEmpty(statusAttr)) {
+                    msgStatus = statusAttr.getString("attrValue");
+                    noRead = msgStatus.equals(C_NO_READ) ? 1 : 0;
                 }
+                chatJson.elementOpt("msgStatus", msgStatus);
+                chatJsonList.add(chatJson);
+                mainJson.put("list", chatJsonList);
+                mainJson.put("noRead", noRead);
+            } else {
+                //获取科室
+                GenericValue relationShip = EntityQuery.use(delegator).from("PartyRelationship")
+                        .where("partyIdTo", partyId, "roleTypeIdFrom", "DEPARTMENT", "roleTypeIdTo", "DOCTOR").filterByDate().queryFirst();
+                //当前科室的所有住院列表
+                List<GenericValue> assList = EntityQuery.use(delegator).from("WorkEffortPartyAssignmentWorkEffToDep")
+                        .where("partyId", relationShip.getString("partyIdFrom"), "currentStatusId", "BEING_HOSPITALIZED").select("workEffortId").queryList();
+                List<String> workEffortIdList = EntityUtil.getFieldListFromEntityList(assList, "workEffortId", true);
+                EntityCondition condition = EntityCondition.makeCondition("roleTypeId", "PATIENT");
+                condition = Util.appendCondition(condition, EntityCondition.makeCondition("workEffortId", EntityOperator.IN, workEffortIdList));
+                List<GenericValue> workEffortPartyAssignments = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where(condition).queryList();
+                int noRead = 0;
+                for (GenericValue ass : workEffortPartyAssignments) {
+                    String workEffortId = ass.getString("workEffortId");
+                    GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("workEffortId", workEffortId)
+                            .orderBy("-sequence").queryFirst();
+                    if (UtilValidate.isNotEmpty(lastChat)) {
+                        JSONObject chatJson = new JSONObject();
+                        GenericValue party = ass.getRelatedOne("Party", false);
+                        chatJson.put("title", party.getString("partyName"));
+                        chatJson.put("workEffortId", workEffortId);
+                        chatJson.put("dateTime", lastChat.getTimestamp("createdStamp").toString());
+                        GenericValue statusAttr = delegator.findOne("WorkEffortAttribute", UtilMisc.toMap("workEffortId", workEffortId, "attrName", "msgStatus"), false);
+                        String msgStatus = statusAttr.getString("attrValue");
+                        chatJson.put("msgStatus", msgStatus);
+                        if (msgStatus.equals(E_NO_READ)) {
+                            noRead++;
+                        }
+                        chatJsonList.add(chatJson);
+                    }
+                }
+                mainJson.put("list", chatJsonList);
+                mainJson.put("noRead", noRead);
             }
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
             try (PrintWriter out = response.getWriter()) {
-                out.append(chatJsonList.toString());
+                out.append(mainJson.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,14 +201,13 @@ public class ChatEvent {
                 //只查询大于这个序号的消息
                 queryCond = Util.appendCondition(queryCond, EntityCondition.makeCondition("sequence", EntityOperator.GREATER_THAN, Long.parseLong(sequence)));
             }
-            List<GenericValue> chatList = EntityQuery.use(delegator).from("ChatMessage").where(queryCond).orderBy("sequence").queryList();
-            if (UtilValidate.isEmpty(chatList)) {
-                return "success";
-            }
             //消息列表
+            List<GenericValue> chatList = EntityQuery.use(delegator).from("ChatMessage").where(queryCond).orderBy("sequence").queryList();
             JSONArray msgArr = new JSONArray();
-            for (GenericValue chat : chatList) {
-                msgArr.add(parseMsg(chat, userLogin.getString("partyId"), delegator));
+            if (UtilValidate.isNotEmpty(chatList)) {
+                for (GenericValue chat : chatList) {
+                    msgArr.add(parseMsg(chat, userLogin.getString("partyId"), delegator));
+                }
             }
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
@@ -212,7 +245,6 @@ public class ChatEvent {
             if (UtilValidate.isEmpty(chatList)) {
                 msgJson.put("list", new JSONArray());
                 msgJson.put("noMore", true);
-                return "success";
             } else {
                 //消息列表
                 boolean noMore = noMoreChat(delegator, chatList, top);
@@ -272,7 +304,7 @@ public class ChatEvent {
         boolean isMe = partyId.equals(msg.getString("fromPartyId"));
         if ("PATIENT".equals(roleTypeId) && !isMe) {
             userJson.put("avatar", EXPERT_AVATAR);
-        } else if ("DOCTOR".equals(roleTypeId) && !isMe){
+        } else if ("DOCTOR".equals(roleTypeId) && !isMe) {
             userJson.put("avatar", CUSTOMER_AVATAR);
         }
         msgJson.put("user", userJson);
@@ -298,7 +330,7 @@ public class ChatEvent {
 
     private static void changeMsgStatus(Delegator delegator, String workEffortId, String status) throws GenericEntityException {
         delegator.createOrStore(delegator.makeValue("WorkEffortAttribute", UtilMisc.toMap("workEffortId", workEffortId,
-                "attrName", "msg_status", "attrValue", status)));
+                "attrName", "msgStatus", "attrValue", status)));
     }
 
 
