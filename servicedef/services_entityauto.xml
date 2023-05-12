@@ -325,9 +325,23 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-
-    <service name="banfftech.createChatMessage" engine="entity-auto" default-entity-name="ChatMessage" auth="true" invoke="create">
+    <service name="banfftech.createChat" engine="entity-auto" default-entity-name="Chat" auth="true" invoke="create">
         <description>Create a Chat</description>
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateChat" engine="entity-auto" default-entity-name="Chat" auth="true" invoke="update">
+        <description>update a Chat</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.createChatParty" engine="entity-auto" default-entity-name="ChatParty" auth="true" invoke="create">
+        <description>Create a ChatParty</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.createChatMessage" engine="entity-auto" default-entity-name="ChatMessage" auth="true" invoke="create">
+        <description>Create a ChatMessage</description>
         <auto-attributes include="pk" mode="IN" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>

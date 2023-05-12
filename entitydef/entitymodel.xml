@@ -29,22 +29,48 @@ under the License.
     <version></version>
 
 
+    <entity entity-name="Chat" package-name="com.banfftech.mdt" title="Chat">
+        <field name="chatId" type="id"><description>主键</description></field>
+        <field name="workEffortId" type="id"><description>关联会话</description></field>
+        <field name="msgStatus" type="id"><description>当前会话状态</description></field>
+        <prim-key field="chatId"/>
+        <relation type="one" fk-name="CHAT_TO_WORK_EFFORT" rel-entity-name="WorkEffort">
+            <key-map field-name="workEffortId"/>
+        </relation>
+        <relation type="many" fk-name="CHAT_CHAT_PARTY" rel-entity-name="ChatParty">
+            <key-map field-name="chatId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="ChatParty" package-name="com.banfftech.mdt" title="Chat Assoc Party">
+        <field name="chatId" type="id"><description>会话主键</description></field>
+        <field name="partyId" type="id"><description>party主键</description></field>
+        <prim-key field="chatId"/>
+        <prim-key field="partyId"/>
+        <relation type="one" fk-name="ASSOC_TO_CHAT" rel-entity-name="Chat">
+            <key-map field-name="chatId"/>
+        </relation>
+        <relation type="one" fk-name="ASSOC_TO_PARTY" rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+    </entity>
+
     <entity entity-name="ChatMessage" package-name="com.banfftech.mdt" title="Chat info">
-        <field name="messageId" type="id"><description>主键</description></field>
-        <field name="sequence" type="numeric"><description>主键</description></field>
+        <field name="chatId" type="id"><description>主键</description></field>
+        <field name="sequence" type="numeric"><description>序号主键</description></field>
         <field name="messageTypeId" type="id"><description>消息类型</description></field>
         <field name="messageInfo" type="very-long"><description>消息内容</description></field>
         <field name="fromPartyId" type="id"><description>消息发出人</description></field>
-        <field name="workEffortId" type="id"><description>关联会话</description></field>
-        <prim-key field="messageId"/>
+        <prim-key field="chatId"/>
+        <prim-key field="sequence"/>
+        <relation type="one" fk-name="MSG_TO_CHAT" rel-entity-name="Chat">
+            <key-map field-name="chatId"/>
+        </relation>
         <relation type="one" fk-name="CHAT_PARTY" rel-entity-name="Party">
             <key-map field-name="fromPartyId" rel-field-name="partyId"/>
         </relation>
         <relation type="one" fk-name="CHAT_TYPE" rel-entity-name="ChatMessageType">
             <key-map field-name="messageTypeId"/>
-        </relation>
-        <relation type="one" fk-name="CHAT_WORK_EFFORT" rel-entity-name="WorkEffort">
-            <key-map field-name="workEffortId"/>
         </relation>
     </entity>
 

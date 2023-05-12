@@ -55,17 +55,19 @@ public class ChatEvent {
         try {
             GenericValue systemUser = Util.getSystemUser(delegator);
             Map<String, Object> multiPartMap = UtilHttp.getMultiPartParameterMap(request);
-            String workEffortId = (String) multiPartMap.get("workEffortId");
+            String chatId = (String) multiPartMap.get("chatId");
             String msgType = (String) multiPartMap.get("msgType");
             String msgData = "image".equals(msgType) ? saveImageChat(request, dispatcher, systemUser, multiPartMap) :
                     (String) multiPartMap.get("msgData");
             //创建一条消息
             Long msgSequence = delegator.getNextSeqIdLong("ChatMessageSequence");
-            dispatcher.runSync("banfftech.createChatMessage", UtilMisc.toMap("messageId", delegator.getNextSeqId("ChatMessage"),
+            dispatcher.runSync("banfftech.createChatMessage", UtilMisc.toMap("chatId", chatId,
                     "sequence", msgSequence, "messageTypeId", msgType, "messageInfo", msgData,
-                    "fromPartyId", userLogin.getString("partyId"), "workEffortId", workEffortId, "userLogin", systemUser));
+                    "fromPartyId", userLogin.getString("partyId"), "userLogin", systemUser));
+            //修改会话状态
             GenericValue role = EntityQuery.use(delegator).from("PartyRole").where("partyId", userLogin.getString("partyId")).queryFirst();
-            changeMsgStatus(delegator, workEffortId, "PATIENT".equals(role.getString("roleTypeId")) ? E_NO_READ : C_NO_READ);
+            String msgStatus = "PATIENT".equals(role.getString("roleTypeId")) ? E_NO_READ : C_NO_READ;
+            dispatcher.runSync("banfftech.updateChat", UtilMisc.toMap("chatId", chatId, "msgStatus", msgStatus, "userLogin", systemUser));
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
             JSONObject result = new JSONObject();
@@ -84,13 +86,15 @@ public class ChatEvent {
     /**
      * 将会话状态改为用户已读
      */
-    public static String readMsg(HttpServletRequest request, HttpServletResponse response) throws GenericEntityException {
+    public static String readMsg(HttpServletRequest request, HttpServletResponse response) {
+        LocalDispatcher dispatcher = (LocalDispatcher) request.getAttribute("dispatcher");
         Delegator delegator = (Delegator) request.getAttribute("delegator");
-        String workEffortId = (String) request.getAttribute("workEffortId");
+        String chatId = (String) request.getAttribute("chatId");
         try {
-            changeMsgStatus(delegator, workEffortId, C_READ);
+            GenericValue systemUser = Util.getSystemUser(delegator);
+            dispatcher.runSync("banfftech.updateChat", UtilMisc.toMap("chatId", chatId, "msgStatus", C_READ, "userLogin", systemUser));
             request.setAttribute("result", "success");
-        } catch (GenericEntityException e) {
+        } catch (GenericEntityException | GenericServiceException e) {
             e.printStackTrace();
             return "error";
         }
@@ -112,22 +116,22 @@ public class ChatEvent {
             if ("PATIENT".equals(role.getString("roleTypeId"))) {
                 //患者
                 String workEffortId = request.getParameter("workEffortId");
+                GenericValue currentChat = getChat(delegator, dispatcher, workEffortId);
                 JSONObject chatJson = new JSONObject();
                 GenericValue party = userLogin.getRelatedOne("Party", false);
                 chatJson.put("title", party.getString("partyName"));
-                chatJson.put("workEffortId", workEffortId);
-                GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("workEffortId", workEffortId)
+                chatJson.put("chatId", currentChat.getString("chatId"));
+                GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("chatId", currentChat.getString("chatId"))
                         .orderBy("-sequence").queryFirst();
                 String dataTime = UtilValidate.isNotEmpty(lastChat) ? lastChat.getTimestamp("createdStamp").toString() : null;
                 chatJson.put("dateTime", dataTime);
-                GenericValue statusAttr = delegator.findOne("WorkEffortAttribute", UtilMisc.toMap("workEffortId", workEffortId, "attrName", "msgStatus"), false);
+                String msgStatus = currentChat.getString("msgStatus");
                 int noRead = 0;
-                String msgStatus = null;
-                if (UtilValidate.isNotEmpty(statusAttr)) {
-                    msgStatus = statusAttr.getString("attrValue");
+                if (UtilValidate.isNotEmpty(msgStatus)) {
+                    chatJson.elementOpt("msgStatus", currentChat.getString("msgStatus"));
                     noRead = msgStatus.equals(C_NO_READ) ? 1 : 0;
                 }
-                chatJson.elementOpt("msgStatus", msgStatus);
+                chatJson.elementOpt("msgStatus", currentChat.getString("msgStatus"));
                 chatJsonList.add(chatJson);
                 mainJson.put("list", chatJsonList);
                 mainJson.put("noRead", noRead);
@@ -145,19 +149,22 @@ public class ChatEvent {
                 int noRead = 0;
                 for (GenericValue ass : workEffortPartyAssignments) {
                     String workEffortId = ass.getString("workEffortId");
-                    GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("workEffortId", workEffortId)
+                    GenericValue currentChat = getChat(delegator, dispatcher, workEffortId);
+                    GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("chatId", currentChat.getString("chatId"))
                             .orderBy("-sequence").queryFirst();
-                    if (UtilValidate.isNotEmpty(lastChat)) {
+                    if (UtilValidate.isNotEmpty(currentChat)) {
                         JSONObject chatJson = new JSONObject();
                         GenericValue party = ass.getRelatedOne("Party", false);
                         chatJson.put("title", party.getString("partyName"));
+                        chatJson.put("chatId", currentChat.getString("chatId"));
                         chatJson.put("workEffortId", workEffortId);
                         chatJson.put("dateTime", lastChat.getTimestamp("createdStamp").toString());
-                        GenericValue statusAttr = delegator.findOne("WorkEffortAttribute", UtilMisc.toMap("workEffortId", workEffortId, "attrName", "msgStatus"), false);
-                        String msgStatus = statusAttr.getString("attrValue");
-                        chatJson.put("msgStatus", msgStatus);
-                        if (msgStatus.equals(E_NO_READ)) {
-                            noRead++;
+                        String msgStatus = currentChat.getString("msgStatus");
+                        if (UtilValidate.isNotEmpty(msgStatus)) {
+                            chatJson.elementOpt("msgStatus", currentChat.getString("msgStatus"));
+                            if (msgStatus.equals(E_NO_READ)) {
+                                noRead++;
+                            }
                         }
                         chatJsonList.add(chatJson);
                     }
@@ -185,12 +192,12 @@ public class ChatEvent {
     public static String getMsg(HttpServletRequest request, HttpServletResponse response) {
         Delegator delegator = (Delegator) request.getAttribute("delegator");
         GenericValue userLogin = (GenericValue) request.getAttribute("userLogin");
-        //workEffortId
-        String workEffortId = request.getParameter("workEffortId");
+        //chatId
+        String chatId = request.getParameter("chatId");
         //序号
         String sequence = request.getParameter("sequence");
         try {
-            EntityCondition queryCond = EntityCondition.makeCondition("workEffortId", workEffortId);
+            EntityCondition queryCond = EntityCondition.makeCondition("chatId", chatId);
             if (UtilValidate.isNotEmpty(sequence)) {
                 //只查询大于这个序号的消息
                 queryCond = Util.appendCondition(queryCond, EntityCondition.makeCondition("sequence", EntityOperator.GREATER_THAN, Long.parseLong(sequence)));
@@ -222,13 +229,13 @@ public class ChatEvent {
     public static String getHistoryMsg(HttpServletRequest request, HttpServletResponse response) {
         Delegator delegator = (Delegator) request.getAttribute("delegator");
         GenericValue userLogin = (GenericValue) request.getAttribute("userLogin");
-        //workEffortId
-        String workEffortId = request.getParameter("workEffortId");
+        //chatId
+        String chatId = request.getParameter("chatId");
         //序号
         String sequence = request.getParameter("sequence");
         int top = Integer.parseInt(request.getParameter("top"));
         try {
-            EntityCondition queryCond = EntityCondition.makeCondition("workEffortId", workEffortId);
+            EntityCondition queryCond = EntityCondition.makeCondition("chatId", chatId);
             if (UtilValidate.isNotEmpty(sequence)) {
                 //只查询小于这个序号的消息
                 queryCond = Util.appendCondition(queryCond, EntityCondition.makeCondition("sequence", EntityOperator.LESS_THAN, Long.parseLong(sequence)));
@@ -270,10 +277,33 @@ public class ChatEvent {
             return true;
         }
         GenericValue minChat = chatList.get(0);
-        EntityCondition condition = EntityCondition.makeCondition("workEffortId", minChat.getString("workEffortId"));
+        EntityCondition condition = EntityCondition.makeCondition("chatId", minChat.getString("chatId"));
         condition = Util.appendCondition(condition, EntityCondition.makeCondition("sequence", EntityOperator.LESS_THAN, minChat.getLong("sequence")));
         long count = EntityQuery.use(delegator).from("ChatMessage").where(condition).queryCount();
         return count <= 0;
+    }
+
+    /**
+     * 获取一个会话 如果没有就创建一个新的会话
+     */
+    private static GenericValue getChat(Delegator delegator, LocalDispatcher dispatcher, String workEffortId) throws GenericEntityException, GenericServiceException {
+        GenericValue chat = EntityQuery.use(delegator).from("Chat").where("workEffortId", workEffortId).queryFirst();
+        if (UtilValidate.isNotEmpty(chat)) {
+            return chat;
+        }
+        //创建会话
+        String chatId = delegator.getNextSeqId("Chat");
+        GenericValue systemUser = Util.getSystemUser(delegator);
+        dispatcher.runSync("banfftech.createChat", UtilMisc.toMap("workEffortId", workEffortId, "chatId", chatId, "userLogin", systemUser));
+
+        //查询要关联这个会话的人 关联会话
+        GenericValue doctorTeam = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where("roleTypeId", "DEPARTMENT", "workEffortId", workEffortId).queryFirst();
+        GenericValue patient = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where("roleTypeId", "patient", "workEffortId", workEffortId).queryFirst();
+        Map<String, Object> serviceParam = UtilMisc.toMap("chatId", chatId, "userLogin", systemUser, "partyId", doctorTeam.getString("partyId"));
+        dispatcher.runSync("banfftech.createChatParty", serviceParam);
+        serviceParam.put("partyId", patient.getString("partyId"));
+        dispatcher.runSync("banfftech.createChatParty", serviceParam);
+        return delegator.findOne("Chat", UtilMisc.toMap("chatId", chatId), false);
     }
 
     /**
@@ -324,11 +354,6 @@ public class ChatEvent {
             currentUrl = currentUrl.replace("http", "https");
         }
         return currentUrl.replace("sendMsg", "odatasvc/mdtManage/ImageDataResources('" + dataResourceId + "')/$value");
-    }
-
-    private static void changeMsgStatus(Delegator delegator, String workEffortId, String status) throws GenericEntityException {
-        delegator.createOrStore(delegator.makeValue("WorkEffortAttribute", UtilMisc.toMap("workEffortId", workEffortId,
-                "attrName", "msgStatus", "attrValue", status)));
     }
 
 
