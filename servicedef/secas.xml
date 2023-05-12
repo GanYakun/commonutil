@@ -4,7 +4,6 @@
              xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/service-eca.xsd">
 
     <!-- 记录货运状态变更时间 -->
-
     <eca service="banfftech.createPostalAddress" event="invoke">
         <action service="banfftech.createContactMech" mode="sync"/>
     </eca>

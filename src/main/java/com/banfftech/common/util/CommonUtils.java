@@ -81,17 +81,19 @@ public class CommonUtils {
      * @param findEntityName  待查询对象名称
      * @param checkValue      待检查输入值
      */
-    public static void checkInputRepeat(Delegator delegator, String inputStringName, String findEntityName, String checkValue)
+    public static Boolean checkInputRepeat(Delegator delegator, String inputStringName, String findEntityName, Map<String, Object> findCondition, String checkValue)
             throws OfbizODataException, GenericEntityException {
-        List<GenericValue> findEntities = delegator.findAll(findEntityName, false);
+        Boolean isRepeat = false;
+        List<GenericValue> findEntities = delegator.findByAnd(findEntityName, findCondition, null, true);
         if (UtilValidate.isNotEmpty(findEntities)) {
             for (GenericValue findEntity : findEntities) {
                 String findString = findEntity.getString(inputStringName);
                 if (UtilValidate.areEqual(findString, checkValue)) {
-                    throw new OfbizODataException("输入重复！");
+                    isRepeat = true;
                 }
             }
         }
+        return isRepeat;
     }
 
 
