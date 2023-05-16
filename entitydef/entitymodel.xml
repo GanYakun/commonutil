@@ -45,6 +45,7 @@ under the License.
     <entity entity-name="ChatParty" package-name="com.banfftech.mdt" title="Chat Assoc Party">
         <field name="chatId" type="id"><description>会话主键</description></field>
         <field name="partyId" type="id"><description>party主键</description></field>
+        <field name="roleTypeId" type="id"><description>party角色类型</description></field>
         <prim-key field="chatId"/>
         <prim-key field="partyId"/>
         <relation type="one" fk-name="ASSOC_TO_CHAT" rel-entity-name="Chat">
@@ -52,6 +53,9 @@ under the License.
         </relation>
         <relation type="one" fk-name="ASSOC_TO_PARTY" rel-entity-name="Party">
             <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ASSOC_TO_PARTY_ROLE" rel-entity-name="RoleType">
+            <key-map field-name="roleTypeId"/>
         </relation>
     </entity>
 

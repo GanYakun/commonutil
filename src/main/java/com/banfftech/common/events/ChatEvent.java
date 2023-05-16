@@ -298,10 +298,11 @@ public class ChatEvent {
 
         //查询要关联这个会话的人 关联会话
         GenericValue doctorTeam = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where("roleTypeId", "DEPARTMENT", "workEffortId", workEffortId).queryFirst();
-        GenericValue patient = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where("roleTypeId", "patient", "workEffortId", workEffortId).queryFirst();
-        Map<String, Object> serviceParam = UtilMisc.toMap("chatId", chatId, "userLogin", systemUser, "partyId", doctorTeam.getString("partyId"));
+        GenericValue patient = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where("roleTypeId", "PATIENT", "workEffortId", workEffortId).queryFirst();
+        Map<String, Object> serviceParam = UtilMisc.toMap("chatId", chatId, "userLogin", systemUser, "partyId", doctorTeam.getString("partyId"), "roleTypeId", "DEPARTMENT");
         dispatcher.runSync("banfftech.createChatParty", serviceParam);
         serviceParam.put("partyId", patient.getString("partyId"));
+        serviceParam.put("roleTypeId", "DEPARTMENT");
         dispatcher.runSync("banfftech.createChatParty", serviceParam);
         return delegator.findOne("Chat", UtilMisc.toMap("chatId", chatId), false);
     }
