@@ -31,9 +31,10 @@ public class UploadEvent {
             List<String> relations =  Arrays.asList(request.getParameter("relation").split("/"));
             Map<String, Object> keyMap = Util.odataIdToMap(delegator, relations.get(0), request.getParameter("key"));
             //中间表的ContentType 可以为空
-            String contentTypeId = request.getParameter("relContentTypeId");
+            String relContentTypeIdName = request.getParameter("relContentTypeIdName");
+            String relContentTypeIdValue = request.getParameter("relContentTypeIdValue");
             dispatcher.runSync("banfftech.uploadFile", UtilMisc.toMap("multiFrom", multiPartMap, "key", keyMap,
-                    "relContentType", contentTypeId, "relation", relations, "userLogin", userLogin));
+                    "relContentTypeIdName", relContentTypeIdName, "relContentTypeIdValue", relContentTypeIdValue, "relation", relations, "userLogin", userLogin));
         } catch (GenericServiceException e) {
             e.printStackTrace();
             response.setStatus(500);

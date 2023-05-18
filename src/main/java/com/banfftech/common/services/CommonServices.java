@@ -86,10 +86,11 @@ public class CommonServices {
         String entityName = relation.get(0);
         String mediaEntityName = relation.get(relation.size() - 1);
 
-        String relContentType = (String) context.get("relContentType");
+        String relContentTypeIdName = (String) context.get("relContentTypeIdName");
+        String relContentTypeIdValue = (String) context.get("relContentTypeIdValue");
         Map<String, Object> queryMap = null;
-        if (UtilValidate.isNotEmpty(relContentType)) {
-            queryMap = UtilMisc.toMap(Util.firstLowerCase(entityName + "ContentTypeId"), relContentType);
+        if (UtilValidate.isNotEmpty(relContentTypeIdName)) {
+            queryMap = UtilMisc.toMap(relContentTypeIdName, relContentTypeIdValue);
         }
         try {
             GenericValue media = findMedia(delegator, primaryKey, queryMap, relation);
@@ -128,7 +129,9 @@ public class CommonServices {
             primaryKey.put("userLogin", userLogin);
             primaryKey.put("contentId", createResult.get("contentId"));
             primaryKey.put("fromDate", UtilDateTime.nowTimestamp());
-            primaryKey.put(Util.firstLowerCase(entityName + "ContentTypeId"), relContentType);
+            if (UtilValidate.isNotEmpty(relContentTypeIdName)) {
+                primaryKey.put(relContentTypeIdName, relContentTypeIdValue);
+            }
             Map<String, Object> serviceParam = ServiceUtil.setServiceFields(dispatcher, relContentService, primaryKey, userLogin, null, locale);
             dispatcher.runSync(relContentService, serviceParam);
         } catch (GeneralException e) {
