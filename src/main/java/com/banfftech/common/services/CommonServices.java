@@ -87,8 +87,12 @@ public class CommonServices {
         String mediaEntityName = relation.get(relation.size() - 1);
 
         String relContentType = (String) context.get("relContentType");
+        Map<String, Object> queryMap = null;
+        if (UtilValidate.isNotEmpty(relContentType)) {
+            queryMap = UtilMisc.toMap(Util.firstLowerCase(entityName + "ContentTypeId"), relContentType);
+        }
         try {
-            GenericValue media = findMedia(delegator, primaryKey, relation);
+            GenericValue media = findMedia(delegator, primaryKey, queryMap, relation);
             if (UtilValidate.isNotEmpty(media)) {
                 //存在文件 更新文件内容
                 String updateMedia = Util.getEntityActionService(null, media.getEntityName(), "update", delegator);
@@ -135,10 +139,17 @@ public class CommonServices {
     }
 
     //查询上传文件传递的关系链 看存不存在图片
-    private static GenericValue findMedia(Delegator delegator, Map<String, Object> primaryKey, List<String> relation) throws GenericEntityException {
+    private static GenericValue findMedia(Delegator delegator, Map<String, Object> primaryKey, Map<String, Object> byAnd, List<String> relation) throws GenericEntityException {
         GenericValue genericValue = delegator.findOne(relation.get(0), primaryKey, true);
         for (int i = 1; i < relation.size(); i++) {
-            genericValue = EntityUtil.getFirst(genericValue.getRelated(relation.get(i), null, null, true));
+            String currRelation = relation.get(i);
+            List<GenericValue> related;
+            if (UtilValidate.isNotEmpty(byAnd) && currRelation.equals(genericValue.getEntityName() + "Content")) {
+                related = genericValue.getRelated(currRelation, byAnd, null, true);
+            } else {
+                related = genericValue.getRelated(currRelation, null, null, true);
+            }
+            genericValue = EntityUtil.getFirst(related);
             if (UtilValidate.isEmpty(genericValue)) {
                 return null;
             }
