@@ -36,6 +36,53 @@
         <description>Delete a CommunicationEventWorkEff</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+<!--D-->
+    <!--DataResource-->
+    <service name="banfftech.createDataResource" default-entity-name="DataResource" engine="entity-auto" invoke="create">
+        <description>Create a DataResource</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateDataResource" default-entity-name="DataResource" engine="entity-auto" invoke="update">
+        <description>Update a DataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteDataResource" default-entity-name="DataResource" engine="entity-auto" invoke="delete">
+        <description>Delete a DataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--DataResourceRole-->
+    <service name="banfftech.createDataResourceRole" default-entity-name="DataResourceRole" engine="entity-auto" invoke="create">
+        <description>Create a DataResourceRole</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateCommunicationEventWorkEff" default-entity-name="DataResourceRole" engine="entity-auto" invoke="update">
+        <description>Update a DataResourceRole</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteCommunicationEventWorkEff" default-entity-name="DataResourceRole" engine="entity-auto" invoke="delete">
+        <description>Delete a DataResourceRole</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+<!--I-->
+    <!--ImageDataResource-->
+    <service name="banfftech.createImageDataResource" default-entity-name="ImageDataResource" engine="entity-auto" invoke="create">
+        <description>Create a ImageDataResource</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateImageDataResource" default-entity-name="ImageDataResource" engine="entity-auto" invoke="update">
+        <description>Update a ImageDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteImageDataResource" default-entity-name="ImageDataResource" engine="entity-auto" invoke="delete">
+        <description>Delete a ImageDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
 <!--N-->
     <!--NoteData-->
     <service name="banfftech.createNoteData" default-entity-name="NoteData" engine="entity-auto" invoke="create" auth="true">
