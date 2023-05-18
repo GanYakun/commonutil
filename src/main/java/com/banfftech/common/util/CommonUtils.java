@@ -164,4 +164,14 @@ public class CommonUtils {
         }
         setObjectAttribute(genericValue, attrName, attrValue);
     }
+
+    public static String joinMultipleFields (List<String> linkFields){
+        StringBuilder resultField = new StringBuilder();
+        for (String linkField : linkFields){
+            if (UtilValidate.isNotEmpty(linkField)){
+                resultField.append(linkField);
+            }
+        }
+        return resultField.toString();
+    }
 }
