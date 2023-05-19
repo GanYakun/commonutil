@@ -143,18 +143,20 @@ public class CommonUtils {
         }
         return null;
     }
+
     public static void setObjectAttribute(GenericValue genericValue, String attrName, String attrValue) throws GenericEntityException {
         GenericValue attrGv = getObjectAttributeGv(genericValue, attrName);
         if (attrGv == null) {
             Delegator delegator = genericValue.getDelegator();
             String attrEntityName = genericValue.getEntityName() + "Attribute";
-            GenericPK genericPK = genericValue.getPrimaryKey();
-            Map<String, Object> fieldMap = new HashMap<>();
-            fieldMap.putAll(genericPK);
+            Map<String, Object> fieldMap = new HashMap<>(genericValue.getPrimaryKey());
             fieldMap.put("attrName", attrName);
             fieldMap.put("attrValue", attrValue);
             attrGv = delegator.makeValue(attrEntityName, fieldMap);
             attrGv.create();
+        } else {
+            attrGv.set("attrValue", attrValue);
+            attrGv.store();
         }
     }
     public static void setObjectAttributeBoolean(GenericValue genericValue, String attrName, boolean booleanValue) throws GenericEntityException {

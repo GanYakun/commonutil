@@ -133,6 +133,17 @@
         <description>Delete a PartyGroup</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+    <!--PartyContactMech-->
+    <service name="banfftech.createPartyContactMech" default-entity-name="PartyContactMech" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a PartyContactMech</description>
+        <auto-attributes include="pk" mode="INOUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyContactMech" default-entity-name="PartyContactMech" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a PartyContactMech</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
     <!--Person-->
     <service name="banfftech.createPerson" default-entity-name="Person" engine="entity-auto" invoke="create"
              auth="true">
@@ -284,6 +295,20 @@
         <description>Delete a SecurityGroupPermission</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+<!--T-->
+    <!--TelecomNumber-->
+    <service name="banfftech.createTelecomNumber" default-entity-name="TelecomNumber" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a Tel </description>
+        <auto-attributes include="pk" mode="INOUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateTelecomNumber" default-entity-name="TelecomNumber" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a Tel</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+
 <!--U-->
     <!--UserLogin-->
     <service name="banfftech.createUserLogin" default-entity-name="UserLogin" engine="entity-auto" invoke="create" auth="true">
