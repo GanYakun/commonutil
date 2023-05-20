@@ -10,8 +10,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.james.mime4j.message.BodyPart;
-import org.apache.james.mime4j.message.MultipartBuilder;
 import org.apache.ofbiz.base.util.UtilValidate;
 
 import java.util.Map;
