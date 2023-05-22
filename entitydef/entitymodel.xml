@@ -29,7 +29,7 @@ under the License.
     <version></version>
 
 
-    <entity entity-name="Chat" package-name="com.banfftech.mdt" title="Chat">
+    <entity entity-name="Chat" package-name="com.banfftech.common" title="Chat">
         <field name="chatId" type="id"><description>主键</description></field>
         <field name="workEffortId" type="id"><description>关联会话</description></field>
         <field name="msgStatus" type="id"><description>当前会话状态</description></field>
@@ -42,7 +42,7 @@ under the License.
         </relation>
     </entity>
 
-    <entity entity-name="ChatParty" package-name="com.banfftech.mdt" title="Chat Assoc Party">
+    <entity entity-name="ChatParty" package-name="com.banfftech.common" title="Chat Assoc Party">
         <field name="chatId" type="id"><description>会话主键</description></field>
         <field name="partyId" type="id"><description>party主键</description></field>
         <field name="roleTypeId" type="id"><description>party角色类型</description></field>
@@ -59,7 +59,7 @@ under the License.
         </relation>
     </entity>
 
-    <entity entity-name="ChatMessage" package-name="com.banfftech.mdt" title="Chat info">
+    <entity entity-name="ChatMessage" package-name="com.banfftech.common" title="Chat info">
         <field name="chatId" type="id"><description>主键</description></field>
         <field name="sequence" type="numeric"><description>序号主键</description></field>
         <field name="messageTypeId" type="id"><description>消息类型</description></field>
@@ -78,7 +78,7 @@ under the License.
         </relation>
     </entity>
 
-    <entity entity-name="ChatMessageType" package-name="com.banfftech.mdt" title="Chat Type">
+    <entity entity-name="ChatMessageType" package-name="com.banfftech.common" title="Chat Type">
         <field name="messageTypeId" type="id"><description>消息类型标识</description></field>
         <field name="description" type="value"><description>类型描述</description></field>
         <prim-key field="messageTypeId"/>
