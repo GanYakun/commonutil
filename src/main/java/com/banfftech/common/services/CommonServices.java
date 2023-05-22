@@ -7,6 +7,7 @@ import org.apache.ofbiz.base.util.*;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericValue;
+import org.apache.ofbiz.entity.condition.EntityCondition;
 import org.apache.ofbiz.entity.model.ModelEntity;
 import org.apache.ofbiz.entity.model.ModelField;
 import org.apache.ofbiz.entity.util.EntityUtil;
@@ -94,16 +95,6 @@ public class CommonServices {
         }
         try {
             GenericValue media = findMedia(delegator, primaryKey, queryMap, relation);
-            if (UtilValidate.isNotEmpty(media)) {
-                //存在文件 更新文件内容
-                String updateMedia = Util.getEntityActionService(null, media.getEntityName(), "update", delegator);
-                dispatcher.runSync(updateMedia, UtilMisc.toMap("userLogin", userLogin, "dataResourceId", media.getString("dataResourceId"), "imageData", fileBuff.array()));
-                //更新文件名称、类型
-                String updateResource = Util.getEntityActionService(null, "DataResource", "update", delegator);
-                dispatcher.runSync(updateResource, UtilMisc.toMap("userLogin", userLogin, "dataResourceId", media.getString("dataResourceId"),
-                        "dataResourceName", fileName, "mimeTypeId", fileType));
-                return ServiceUtil.returnSuccess();
-            }
             // 创建文件
             // 场景1: FacilityContent/Content/DataResource/ImageDataResource
             String imageResourceService = Util.getEntityActionService(null, mediaEntityName, "create", delegator);
@@ -114,6 +105,11 @@ public class CommonServices {
             String dataResourceId = (String) createResult.get("dataResourceId");
             // create ImageDataResource
             dispatcher.runSync(imageResourceService, UtilMisc.toMap("userLogin", userLogin, "dataResourceId", dataResourceId, getByteField(delegator, mediaEntityName), fileBuff.array()));
+            if (UtilValidate.isNotEmpty(media)) {
+                //已经存在的文件 更新content的dataResourceId
+                delegator.storeByCondition("Content", UtilMisc.toMap("dataResourceId", dataResourceId), EntityCondition.makeCondition("dataResourceId", media.getString("dataResourceId")));
+                return ServiceUtil.returnSuccess();
+            }
             //起源是Content 直接更新Content
             if (entityName.endsWith("Content")) {
                 String contentService = Util.getEntityActionService(null, "Content", "update", delegator);
