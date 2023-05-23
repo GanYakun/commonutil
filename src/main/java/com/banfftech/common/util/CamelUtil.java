@@ -5,6 +5,7 @@ import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -20,9 +21,11 @@ import java.util.Map;
  */
 public class CamelUtil {
 
-    public static JSONObject sendFormPost(String url, Map<String, Object> param) throws Exception {
+    public static JSONArray sendFormPost(String url, Map<String, Object> param) throws Exception {
         HttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
+        //timeout 10s
+        httpPost.setConfig(RequestConfig.custom().setConnectTimeout(10000).build());
 
         // 设置请求体
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -41,7 +44,12 @@ public class CamelUtil {
         String responseString = EntityUtils.toString(responseEntity);
         // 返回响应
         JSONObject jsonObject = JSONObject.fromObject(responseString);
-        return getCamelResult(jsonObject);
+        if(jsonObject.containsKey("dataInputs")) {
+            String dataInputs = jsonObject.getString("dataInputs");
+            return JSONArray.fromObject(dataInputs);
+        } else {
+            throw new Exception("request error : " + jsonObject);
+        }
     }
 
 //    public static JSONObject sendHttpPost(String url, JSONObject params) throws IOException {
@@ -66,20 +74,5 @@ public class CamelUtil {
 //        // 返回响应
 //        return jsonResponse;
 //    }
-
-    public static JSONObject getCamelResult(JSONObject result){
-        if (result.isEmpty() || !result.containsKey("dataInputs")) {
-            return null;
-        }
-        JSONObject jsonObject = JSONObject.fromObject(result);
-        String camelResult = jsonObject.getString("dataInputs");
-        if (camelResult.startsWith("[")) {
-            return JSONArray.fromObject(camelResult).getJSONObject(0);
-        } else {
-            return JSONObject.fromObject(camelResult);
-        }
-
-
-    }
 
 }
