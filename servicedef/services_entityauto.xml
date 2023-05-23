@@ -6,6 +6,51 @@
     <vendor></vendor>
     <version>1.0</version>
 <!--C-->
+    <!--Content-->
+    <service name="banfftech.createContent" default-entity-name="Content" engine="entity-auto" invoke="create">
+        <description>Create a Content</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateContent" default-entity-name="Content" engine="entity-auto" invoke="update">
+        <description>Update a Content</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteContent" default-entity-name="Content" engine="entity-auto" invoke="delete">
+        <description>Delete a Content</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--FacilityContent-->
+    <service name="banfftech.createFacilityContent" default-entity-name="FacilityContent" engine="entity-auto" invoke="create">
+        <description>Create a FacilityContent</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateFacilityContent" default-entity-name="FacilityContent" engine="entity-auto" invoke="update">
+        <description>Update a FacilityContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteFacilityContent" default-entity-name="FacilityContent" engine="entity-auto" invoke="delete">
+        <description>Delete a FacilityContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <!--ContentAssoc-->
+    <service name="banfftech.createContentAssoc" default-entity-name="ContentAssoc" engine="entity-auto" invoke="create">
+        <description>Create a ContentAssoc</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateContentAssoc" default-entity-name="ContentAssoc" engine="entity-auto" invoke="update">
+        <description>Update a ContentAssoc</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteContentAssoc" default-entity-name="ContentAssoc" engine="entity-auto" invoke="delete">
+        <description>Delete a ContentAssoc</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
     <!--CommunicationEvent-->
     <service name="banfftech.createCommunicationEvent" default-entity-name="CommunicationEvent" engine="entity-auto" invoke="create">
         <description>Create a CommunicationEvent</description>
