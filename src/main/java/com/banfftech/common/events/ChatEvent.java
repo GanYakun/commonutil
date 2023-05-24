@@ -152,7 +152,7 @@ public class ChatEvent {
                     GenericValue currentChat = getChat(delegator, dispatcher, workEffortId);
                     GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("chatId", currentChat.getString("chatId"))
                             .orderBy("-sequence").queryFirst();
-                    if (UtilValidate.isNotEmpty(currentChat)) {
+                    if (UtilValidate.isNotEmpty(lastChat)) {
                         JSONObject chatJson = new JSONObject();
                         GenericValue party = ass.getRelatedOne("Party", false);
                         chatJson.put("title", party.getString("partyName"));
