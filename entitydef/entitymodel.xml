@@ -106,4 +106,66 @@ under the License.
         </relation>
     </view-entity>
 
+
+    <!-- Party and TelecomNumber and PostalAddress -->
+    <view-entity entity-name="PartyAndContact"
+                 package-name="com.banfftech.common"
+                 never-cache="true">
+        <member-entity entity-alias="PTY" entity-name="Party"/>
+        <member-entity entity-alias="PPPH" entity-name="PartyContactMechPurpose"/><!-- PRIMARY_PHONE -->
+        <member-entity entity-alias="PPHM" entity-name="PartyContactMechPurpose"/><!-- PHONE_MOBILE -->
+        <member-entity entity-alias="PPE" entity-name="PartyContactMechPurpose"/><!-- PRIMARY_EMAIL -->
+        <member-entity entity-alias="PPL" entity-name="PartyContactMechPurpose"/><!-- PRIMARY_LOCATION -->
+        <member-entity entity-alias="TPPH" entity-name="TelecomNumber"/><!-- primary phone number -->
+        <member-entity entity-alias="TPHM" entity-name="TelecomNumber"/><!-- mobile phone number -->
+        <member-entity entity-alias="PAPL" entity-name="PostalAddress"/><!-- primary location -->
+        <member-entity entity-alias="CPE" entity-name="ContactMech"/><!-- email -->
+        <alias-all entity-alias="PTY" group-by="true"/>
+        <alias name="primaryPhone" field="contactNumber" entity-alias="TPPH" group-by="true"/>
+        <alias name="phoneMobile" field="contactNumber" entity-alias="TPHM" group-by="true"/>
+        <alias name="primaryEmail" field="infoString" entity-alias="CPE" group-by="true"/>
+        <alias name="address1" field="address1" entity-alias="PAPL" group-by="true"/>
+        <alias name="address2" field="address2" entity-alias="PAPL" group-by="true"/>
+        <alias name="city" field="city" entity-alias="PAPL" group-by="true"/>
+        <view-link entity-alias="PTY" rel-entity-alias="PPPH" rel-optional="true"><!-- primary phone number -->
+            <key-map field-name="partyId"/>
+            <entity-condition>
+                <condition-expr entity-alias="PPPH" field-name="contactMechPurposeTypeId" value="PRIMARY_PHONE"/>
+            </entity-condition>
+        </view-link>
+        <view-link entity-alias="PTY" rel-entity-alias="PPHM" rel-optional="true"><!-- mobile phone number -->
+            <key-map field-name="partyId"/>
+            <entity-condition>
+                <condition-expr entity-alias="PPHM" field-name="contactMechPurposeTypeId" value="PHONE_MOBILE"/>
+            </entity-condition>
+        </view-link>
+        <view-link entity-alias="PTY" rel-entity-alias="PPE" rel-optional="true"><!-- email -->
+            <key-map field-name="partyId"/>
+            <entity-condition>
+                <condition-expr entity-alias="PPE" field-name="contactMechPurposeTypeId" value="PRIMARY_EMAIL"/>
+            </entity-condition>
+        </view-link>
+        <view-link entity-alias="PTY" rel-entity-alias="PPL" rel-optional="true"><!-- primary location -->
+            <key-map field-name="partyId"/>
+            <entity-condition>
+                <condition-expr entity-alias="PPHM" field-name="contactMechPurposeTypeId" value="PRIMARY_LOCATION"/>
+            </entity-condition>
+        </view-link>
+        <view-link entity-alias="PPPH" rel-entity-alias="TPPH" rel-optional="true"><!-- primary phone number -->
+            <key-map field-name="contactMechId"/>
+        </view-link>
+        <view-link entity-alias="PPHM" rel-entity-alias="TPHM" rel-optional="true"><!-- mobile phone number -->
+            <key-map field-name="contactMechId"/>
+        </view-link>
+        <view-link entity-alias="PPE" rel-entity-alias="CPE" rel-optional="true"><!-- email -->
+            <key-map field-name="contactMechId"/>
+            <entity-condition>
+                <condition-expr entity-alias="CPE" field-name="contactMechTypeId" value="EMAIL_ADDRESS"/>
+            </entity-condition>
+        </view-link>
+        <view-link entity-alias="PPL" rel-entity-alias="PAPL" rel-optional="true"><!-- mobile phone number -->
+            <key-map field-name="contactMechId"/>
+        </view-link>
+    </view-entity>
+
 </entitymodel>
