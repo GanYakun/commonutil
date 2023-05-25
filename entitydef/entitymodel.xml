@@ -148,7 +148,7 @@ under the License.
         <view-link entity-alias="PTY" rel-entity-alias="PPL" rel-optional="true"><!-- primary location -->
             <key-map field-name="partyId"/>
             <entity-condition>
-                <condition-expr entity-alias="PPHM" field-name="contactMechPurposeTypeId" value="PRIMARY_LOCATION"/>
+                <condition-expr entity-alias="PPL" field-name="contactMechPurposeTypeId" value="PRIMARY_LOCATION"/>
             </entity-condition>
         </view-link>
         <view-link entity-alias="PPPH" rel-entity-alias="TPPH" rel-optional="true"><!-- primary phone number -->
@@ -163,7 +163,7 @@ under the License.
                 <condition-expr entity-alias="CPE" field-name="contactMechTypeId" value="EMAIL_ADDRESS"/>
             </entity-condition>
         </view-link>
-        <view-link entity-alias="PPL" rel-entity-alias="PAPL" rel-optional="true"><!-- mobile phone number -->
+        <view-link entity-alias="PPL" rel-entity-alias="PAPL" rel-optional="true"><!-- primary location -->
             <key-map field-name="contactMechId"/>
         </view-link>
     </view-entity>
