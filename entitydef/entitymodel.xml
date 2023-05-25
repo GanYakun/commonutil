@@ -70,7 +70,7 @@ under the License.
         <relation type="one" fk-name="MSG_TO_CHAT" rel-entity-name="Chat">
             <key-map field-name="chatId"/>
         </relation>
-        <relation type="one" fk-name="CHAT_PARTY" rel-entity-name="Party">
+        <relation type="one" fk-name="CHAT_MSG_PARTY" rel-entity-name="Party">
             <key-map field-name="fromPartyId" rel-field-name="partyId"/>
         </relation>
         <relation type="one" fk-name="CHAT_TYPE" rel-entity-name="ChatMessageType">
