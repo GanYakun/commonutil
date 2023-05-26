@@ -3,7 +3,7 @@
 <service-eca xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/service-eca.xsd">
 
-    <!-- 记录货运状态变更时间 -->
+    <!-- 创建 PostalAddress前创建 ContactMech -->
 <!--    <eca service="banfftech.createPostalAddress" event="invoke">-->
 <!--        <action service="banfftech.createContactMech" mode="sync"/>-->
 <!--    </eca>-->
