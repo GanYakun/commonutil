@@ -59,4 +59,25 @@
         <override name="comments" allow-html="safe"/>
     </service>
 
+    <service name="banfftech.createPartyAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="PartyAndContact"
+             invoke="createPartyAndContact">
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.updatePartyAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="PartyAndContact"
+             invoke="updatePartyAndContact">
+        <auto-attributes include="pk" mode="INOUT" />
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createContentAndMediaDataResource" engine="java"
+             location="com.banfftech.common.services.CommonServices" default-entity-name="ContentAndMediaDataResource"
+             invoke="createContentAndMediaDataResource">
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
 </services>

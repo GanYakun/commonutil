@@ -232,6 +232,12 @@
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
+    <service name="banfftech.updateContactMech" default-entity-name="ContactMech" engine="entity-auto" invoke="update"
+             auth="true">
+        <description>Update a createContactMech</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
     <!--PartyContactMechPurpose-->
     <service name="banfftech.createPartyContactMechPurpose" default-entity-name="PartyContactMechPurpose"
              engine="entity-auto" invoke="create" auth="true">

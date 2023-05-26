@@ -10,6 +10,7 @@ import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.condition.EntityCondition;
 import org.apache.ofbiz.entity.model.ModelEntity;
 import org.apache.ofbiz.entity.model.ModelField;
+import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.*;
 
@@ -166,6 +167,19 @@ public class CommonServices {
             }
         }
         return null;
+    }
+
+
+
+    public static Map<String, Object> createContentAndMediaDataResource(DispatchContext dctx, Map<String, ? extends Object> context) throws GenericEntityException {
+        Delegator delegator = dctx.getDelegator();
+        //TODO: implement
+        String dataResourceId = "ID" + delegator.getNextSeqId("DataResourceId");
+        GenericValue dataResource = delegator.create("DataResource", UtilMisc.toMap("dataResourceId", dataResourceId, "mimeTypeId", context.get("mimeTypeId")));
+        GenericValue image = delegator.create("ImageDataResource", UtilMisc.toMap("dataResourceId", dataResourceId, "imageData", context.get("imageData")));
+        GenericValue content = delegator.create("Content", UtilMisc.toMap("contentId", context.get("contentId"), "dataResourceId", dataResourceId));
+
+        return ServiceUtil.returnSuccess();
     }
 
 

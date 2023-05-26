@@ -106,7 +106,6 @@ under the License.
         </relation>
     </view-entity>
 
-
     <!-- Party and TelecomNumber and PostalAddress -->
     <view-entity entity-name="PartyAndContact"
                  package-name="com.banfftech.common"
@@ -166,6 +165,43 @@ under the License.
         <view-link entity-alias="PPL" rel-entity-alias="PAPL" rel-optional="true"><!-- primary location -->
             <key-map field-name="contactMechId"/>
         </view-link>
+    </view-entity>
+
+    <view-entity entity-name="ContentAndMediaDataResource"
+                 package-name="org.apache.ofbiz.content.content"
+                 title="Content and DataResource View Entity">
+        <member-entity entity-alias="CO" entity-name="Content"/>
+        <member-entity entity-alias="DR" entity-name="DataResource"/>
+        <member-entity entity-alias="IDR" entity-name="ImageDataResource"/>
+        <member-entity entity-alias="VDR" entity-name="VideoDataResource"/>
+        <member-entity entity-alias="ADR" entity-name="AudioDataResource"/>
+        <member-entity entity-alias="ODR" entity-name="OtherDataResource"/>
+        <alias-all entity-alias="CO">
+            <exclude field="mimeTypeId"/>
+        </alias-all>
+        <alias-all entity-alias="DR"/>
+        <alias name="imageData" entity-alias="IDR" field="imageData"/>
+        <alias name="videoData" entity-alias="VDR" field="videoData"/>
+        <alias name="audioData" entity-alias="ADR" field="audioData"/>
+        <alias name="otherData" entity-alias="ODR" field="otherData"/>
+        <view-link entity-alias="CO" rel-entity-alias="DR" >
+            <key-map field-name="dataResourceId"/>
+        </view-link>
+        <view-link entity-alias="DR" rel-entity-alias="IDR" rel-optional="true">
+            <key-map field-name="dataResourceId"/>
+        </view-link>
+        <view-link entity-alias="DR" rel-entity-alias="VDR" rel-optional="true">
+            <key-map field-name="dataResourceId"/>
+        </view-link>
+        <view-link entity-alias="DR" rel-entity-alias="ADR" rel-optional="true">
+            <key-map field-name="dataResourceId"/>
+        </view-link>
+        <view-link entity-alias="DR" rel-entity-alias="ODR" rel-optional="true">
+            <key-map field-name="dataResourceId"/>
+        </view-link>
+        <relation type="many" rel-entity-name="ContentRole">
+            <key-map field-name="contentId"/>
+        </relation>
     </view-entity>
 
 </entitymodel>

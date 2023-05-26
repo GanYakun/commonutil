@@ -23,4 +23,10 @@
 			<description>联系人</description>
 		</field>
 	</extend-entity>
+
+	<extend-entity entity-name="FacilityContent">
+		<relation type="one-nofk" rel-entity-name="ContentAndMediaDataResource">
+			<key-map field-name="contentId" rel-field-name="contentId"/>
+		</relation>
+	</extend-entity>
 </entitymodel>
