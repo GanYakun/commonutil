@@ -80,4 +80,11 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
 
+    <service name="banfftech.updateContentAndMediaDataResource" engine="java"
+             location="com.banfftech.common.services.CommonServices" default-entity-name="ContentAndMediaDataResource"
+             invoke="updateContentAndMediaDataResource">
+        <auto-attributes include="pk" mode="INOUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
 </services>
