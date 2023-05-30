@@ -12,6 +12,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.ofbiz.base.util.UtilValidate;
+import org.apache.ofbiz.base.util.UtilXml;
 
 import java.util.Map;
 
@@ -46,9 +47,33 @@ public class CamelUtil {
         JSONObject jsonObject = JSONObject.fromObject(responseString);
         if(jsonObject.containsKey("dataInputs")) {
             String dataInputs = jsonObject.getString("dataInputs");
+            if (!isValidJson(dataInputs)) {
+                //error
+                String textContent = UtilXml.readXmlDocument(dataInputs).getElementsByTagName("msg").item(0).getTextContent();
+                throw new Exception(textContent);
+            }
+            if (dataInputs.startsWith("{")) {
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.add(jsonObject);
+                return jsonArray;
+            }
             return JSONArray.fromObject(dataInputs);
         } else {
             throw new Exception("request error : " + jsonObject);
+        }
+
+    }
+
+    public static boolean isValidJson(String jsonString) {
+        try {
+            if (jsonString.startsWith("[")) {
+                JSONArray.fromObject(jsonString);
+            } else {
+                JSONObject.fromObject(jsonString);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 

@@ -169,17 +169,77 @@ public class CommonServices {
         return null;
     }
 
-
-
-    public static Map<String, Object> createContentAndMediaDataResource(DispatchContext dctx, Map<String, ? extends Object> context) throws GenericEntityException {
+    public static Map<String, Object> createContentAndMediaDataResource(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException, GenericEntityException {
         Delegator delegator = dctx.getDelegator();
-        //TODO: implement
-        String dataResourceId = "ID" + delegator.getNextSeqId("DataResourceId");
-        GenericValue dataResource = delegator.create("DataResource", UtilMisc.toMap("dataResourceId", dataResourceId, "mimeTypeId", context.get("mimeTypeId")));
-        GenericValue image = delegator.create("ImageDataResource", UtilMisc.toMap("dataResourceId", dataResourceId, "imageData", context.get("imageData")));
-        GenericValue content = delegator.create("Content", UtilMisc.toMap("contentId", context.get("contentId"), "dataResourceId", dataResourceId));
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue systemUser = Util.getSystemUser(delegator);
+        //create DataResource
+        Map<String, Object> result = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createDataResource", systemUser);
+        String dataResourceId = (String) result.get("dataResourceId");
 
-        return ServiceUtil.returnSuccess();
+        //create ImageDataResource
+        Map<String, Object> createMediaParam = UtilMisc.toMap("dataResourceId", dataResourceId, "userLogin", systemUser);
+        if (context.containsKey("imageData")) {
+            createMediaParam.put("imageData", context.get("imageData"));
+            dispatcher.runSync("banfftech.createImageDataResource", createMediaParam);
+        }
+        if (context.containsKey("videoData")) {
+            createMediaParam.put("videoData", context.get("videoData"));
+            dispatcher.runSync("banfftech.createVideoDataResource", createMediaParam);
+        }
+        if (context.containsKey("audioData")) {
+            createMediaParam.put("audioData", context.get("audioData"));
+            dispatcher.runSync("banfftech.createAudioDataResource", createMediaParam);
+        }
+        if (context.containsKey("otherData")) {
+            createMediaParam.put("otherData", context.get("otherData"));
+            dispatcher.runSync("banfftech.createAudioDataResource", createMediaParam);
+        }
+        String contentId = (String) context.get("contentId");
+        if (UtilValidate.isEmpty(contentId)) {
+            contentId = delegator.getNextSeqId("Content");
+        }
+        context.put("contentId", contentId);
+        context.put("dataResourceId", dataResourceId);
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createContent", systemUser);
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        resultMap.put("contentId", contentId);
+        return resultMap;
+    }
+
+    public static Map<String, Object> updateContentAndMediaDataResource(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, GenericServiceException {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue systemUser = Util.getSystemUser(delegator);
+        String contentId = (String) context.get("contentId");
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateContent", systemUser);
+        GenericValue content = delegator.findOne("Content",UtilMisc.toMap("contentId", contentId), true);
+        String dataResourceId = content.getString("dataResourceId");
+        if (UtilValidate.isNotEmpty(dataResourceId)) {
+            context.put("dataResourceId", dataResourceId);
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateDataResource", systemUser);
+            //update ImageDataResource
+            Map<String, Object> updateMediaParam = UtilMisc.toMap("dataResourceId", dataResourceId, "userLogin", systemUser);
+            if (context.containsKey("imageData")) {
+                updateMediaParam.put("imageData", context.get("imageData"));
+                dispatcher.runSync("banfftech.updateImageDataResource", updateMediaParam);
+            }
+            if (context.containsKey("videoData")) {
+                updateMediaParam.put("videoData", context.get("videoData"));
+                dispatcher.runSync("banfftech.updateVideoDataResource", updateMediaParam);
+            }
+            if (context.containsKey("audioData")) {
+                updateMediaParam.put("audioData", context.get("audioData"));
+                dispatcher.runSync("banfftech.updateAudioDataResource", updateMediaParam);
+            }
+            if (context.containsKey("otherData")) {
+                updateMediaParam.put("otherData", context.get("otherData"));
+                dispatcher.runSync("banfftech.updateAudioDataResource", updateMediaParam);
+            }
+        }
+        Map<String, Object> map = ServiceUtil.returnSuccess();
+        map.put("contentId", contentId);
+        return map;
     }
 
 

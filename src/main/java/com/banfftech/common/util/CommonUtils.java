@@ -97,21 +97,21 @@ public class CommonUtils {
     }
 
 
-    public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, String userLoginId)
+    public static Map<String, Object> setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, String userLoginId)
             throws GeneralServiceException, GenericServiceException, GenericEntityException {
         Delegator delegator = dctx.getDispatcher().getDelegator();
 
         GenericValue userLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), true);
-        setServiceFieldsAndRun(dctx, context, serviceName, userLogin);
+        return setServiceFieldsAndRun(dctx, context, serviceName, userLogin);
     }
 
-    public static void setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, GenericValue userLogin)
+    public static Map<String, Object> setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, GenericValue userLogin)
             throws GeneralServiceException, GenericServiceException {
         LocalDispatcher dispatcher = dctx.getDispatcher();
 
         Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, serviceName,
                 context, userLogin, null, null);
-        dispatcher.runSync(serviceName, UtilMisc.toMap(validFieldsForService));
+        return dispatcher.runSync(serviceName, UtilMisc.toMap(validFieldsForService));
     }
 
     public static GenericValue getObjectAttributeGv(GenericValue genericValue, String attrName) throws GenericEntityException {
