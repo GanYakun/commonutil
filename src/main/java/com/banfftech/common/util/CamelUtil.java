@@ -52,6 +52,11 @@ public class CamelUtil {
                 String textContent = UtilXml.readXmlDocument(dataInputs).getElementsByTagName("msg").item(0).getTextContent();
                 throw new Exception(textContent);
             }
+            if (dataInputs.startsWith("{")) {
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.add(jsonObject);
+                return jsonArray;
+            }
             return JSONArray.fromObject(dataInputs);
         } else {
             throw new Exception("request error : " + jsonObject);
