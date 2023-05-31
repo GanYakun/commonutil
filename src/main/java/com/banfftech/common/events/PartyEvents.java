@@ -78,8 +78,8 @@ public class PartyEvents {
         Util.createNavDraftData(oDataContext, sapContextId, UtilMisc.toMap("partyId", partyId, "roleTypeId", roleTypeId),
                 "PartyRole", UtilMisc.toMap("partyId", partyId, "roleTypeId", roleTypeId));
         //创建PostalAddressDraft
-        Util.createNavDraftData(oDataContext, sapContextId, UtilMisc.toMap("contactMechId", contactMechId),
-                "PostalAddress", UtilMisc.toMap("contactMechId", contactMechId));
+        Util.createNavDraftData(oDataContext, sapContextId, UtilMisc.toMap("partyId", partyId),
+                "PartyAndContact", UtilMisc.toMap("partyId", partyId));
 
     }
 
