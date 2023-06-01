@@ -14,6 +14,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.ofbiz.base.util.UtilValidate;
 import org.apache.ofbiz.base.util.UtilXml;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -32,11 +33,13 @@ public class CamelUtil {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         if (UtilValidate.isNotEmpty(param)) {
             for (Map.Entry<String, Object> entry : param.entrySet()) {
-                builder.addTextBody(entry.getKey(), (String) entry.getValue(), ContentType.TEXT_PLAIN);
+                ContentType contentType = ContentType.create(ContentType.TEXT_PLAIN.getMimeType(), "UTF-8");
+                builder.addTextBody(entry.getKey(), (String) entry.getValue(),contentType);
             }
         }
         HttpEntity requestEntity = builder.build();
         httpPost.setEntity(requestEntity);
+
 
         // 发送请求并获取响应
         HttpResponse response = httpClient.execute(httpPost);
