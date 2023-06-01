@@ -50,8 +50,9 @@ public class PartyEvents {
             String partyId = delegator.getNextSeqId("Party");
             actionParameters.put("partyId", partyId);
         }
-        String partyName = (String) actionParameters.get("partyName");
-        actionParameters.putAll(UtilMisc.toMap("partyTypeId", partyTypeId, "partyName", partyName));
+
+        actionParameters.put("partyTypeId", partyTypeId);
+        actionParameters.put("statusId", "PARTY_ENABLED");
         //创建PartyDraft
         OdataOfbizEntity ofbizEntity = (OdataOfbizEntity) ProcessorServices.stickySessionNewAction(oDataContext, actionParameters, edmBindingTarget);
         //创建Party相关子对象的Draft
