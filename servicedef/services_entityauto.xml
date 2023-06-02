@@ -458,5 +458,15 @@
         <auto-attributes include="pk" mode="IN" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
+    <service name="banfftech.createParty" default-entity-name="Party" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a Party</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateParty" default-entity-name="Party" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a Party</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
 
 </services>
