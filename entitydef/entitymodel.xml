@@ -165,6 +165,9 @@ under the License.
         <view-link entity-alias="PPL" rel-entity-alias="PAPL" rel-optional="true"><!-- primary location -->
             <key-map field-name="contactMechId"/>
         </view-link>
+        <relation type="one-nofk" rel-entity-name="PartyRole">
+            <key-map field-name="partyId"/>
+        </relation>
     </view-entity>
 
     <view-entity entity-name="ContentAndMediaDataResource"
