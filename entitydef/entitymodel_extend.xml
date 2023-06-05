@@ -23,7 +23,7 @@
 			<description>联系人</description>
 		</field>
 	</extend-entity>
-	
+
 <!--F-->
 	<!--Facility-->
 	<extend-entity entity-name="Facility">
