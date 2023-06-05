@@ -38,4 +38,11 @@
 			<key-map field-name="contentId" rel-field-name="contentId"/>
 		</relation>
 	</extend-entity>
+<!--P-->
+	<!--Person-->
+	<extend-entity entity-name="Person">
+		<relation type="one-nofk" rel-entity-name="PartyAndContact">
+			<key-map field-name="partyId"/>
+		</relation>
+	</extend-entity>
 </entitymodel>
