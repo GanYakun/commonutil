@@ -5,25 +5,6 @@
 	<description>None</description>
 	<copyright></copyright>
 	<version></version>
-
-	<extend-entity entity-name="PostalAddress">
-		<field name="phoneNumber" type="short-varchar">
-			<description>手机号码</description>
-		</field>
-		<field name="telephoneNumber" type="short-varchar">
-			<description>电话号码</description>
-		</field>
-		<field name="fax" type="short-varchar">
-			<description>传真</description>
-		</field>
-		<field name="email" type="long-varchar">
-			<description>邮箱</description>
-		</field>
-		<field name="contact" type="long-varchar">
-			<description>联系人</description>
-		</field>
-	</extend-entity>
-	
 <!--F-->
 	<!--Facility-->
 	<extend-entity entity-name="Facility">
