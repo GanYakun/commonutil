@@ -1,7 +1,5 @@
 package com.banfftech.common.util;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -11,10 +9,11 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.ofbiz.base.conversion.JSONConverters;
+import org.apache.ofbiz.base.lang.JSON;
 import org.apache.ofbiz.base.util.UtilValidate;
 import org.apache.ofbiz.base.util.UtilXml;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -23,56 +22,53 @@ import java.util.Map;
  */
 public class CamelUtil {
 
-    public static JSONArray sendFormPost(String url, Map<String, Object> param) throws Exception {
+    public static JSON sendFormPost(String url, Map<String, Object> param) throws Exception {
+        JSONConverters.JSONToMap jsonToMap = new JSONConverters.JSONToMap();
         HttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         //timeout 10s
         httpPost.setConfig(RequestConfig.custom().setConnectTimeout(10000).build());
-
         // 设置请求体
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         if (UtilValidate.isNotEmpty(param)) {
             for (Map.Entry<String, Object> entry : param.entrySet()) {
                 ContentType contentType = ContentType.create(ContentType.TEXT_PLAIN.getMimeType(), "UTF-8");
-                builder.addTextBody(entry.getKey(), (String) entry.getValue(),contentType);
+                builder.addTextBody(entry.getKey(), (String) entry.getValue(), contentType);
             }
         }
         HttpEntity requestEntity = builder.build();
         httpPost.setEntity(requestEntity);
-
-
         // 发送请求并获取响应
         HttpResponse response = httpClient.execute(httpPost);
         HttpEntity responseEntity = response.getEntity();
         // 处理响应
         String responseString = EntityUtils.toString(responseEntity);
-        // 返回响应
-        JSONObject jsonObject = JSONObject.fromObject(responseString);
-        if(jsonObject.containsKey("dataInputs")) {
-            String dataInputs = jsonObject.getString("dataInputs");
+        JSON resultJson = JSON.from(responseString);
+
+        Map<String, Object> resultMap = jsonToMap.convert(resultJson);
+        if (resultMap.containsKey("dataInputs")) {
+            String dataInputs = (String) resultMap.get("dataInputs");
             if (!isValidJson(dataInputs)) {
                 //error
                 String textContent = UtilXml.readXmlDocument(dataInputs).getElementsByTagName("msg").item(0).getTextContent();
                 throw new Exception(textContent);
             }
-            if (dataInputs.startsWith("{")) {
-                JSONArray jsonArray = new JSONArray();
-                jsonArray.add(jsonObject);
-                return jsonArray;
-            }
-            return JSONArray.fromObject(dataInputs);
+            return JSON.from(dataInputs);
         } else {
-            throw new Exception("request error : " + jsonObject);
+            throw new Exception("request error : " + resultMap);
         }
 
     }
 
     public static boolean isValidJson(String jsonString) {
         try {
+            JSON from = JSON.from(jsonString);
             if (jsonString.startsWith("[")) {
-                JSONArray.fromObject(jsonString);
+                JSONConverters.JSONToList jsonToList = new JSONConverters.JSONToList();
+                jsonToList.convert(from);
             } else {
-                JSONObject.fromObject(jsonString);
+                JSONConverters.JSONToMap jsonToMap = new JSONConverters.JSONToMap();
+                jsonToMap.convert(from);
             }
             return true;
         } catch (Exception e) {
