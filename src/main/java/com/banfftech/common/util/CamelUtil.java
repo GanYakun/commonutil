@@ -1,18 +1,11 @@
 package com.banfftech.common.util;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.ofbiz.base.conversion.JSONConverters;
 import org.apache.ofbiz.base.lang.JSON;
-import org.apache.ofbiz.base.util.UtilValidate;
+import org.apache.ofbiz.base.util.HttpClient;
 import org.apache.ofbiz.base.util.UtilXml;
+import org.xml.sax.SAXException;
 
 import java.util.Map;
 
@@ -24,34 +17,24 @@ public class CamelUtil {
 
     public static JSON sendFormPost(String url, Map<String, Object> param) throws Exception {
         JSONConverters.JSONToMap jsonToMap = new JSONConverters.JSONToMap();
-        HttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(url);
-        //timeout 10s
-        httpPost.setConfig(RequestConfig.custom().setConnectTimeout(10000).build());
-        // 设置请求体
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        if (UtilValidate.isNotEmpty(param)) {
-            for (Map.Entry<String, Object> entry : param.entrySet()) {
-                ContentType contentType = ContentType.create(ContentType.TEXT_PLAIN.getMimeType(), "UTF-8");
-                builder.addTextBody(entry.getKey(), (String) entry.getValue(), contentType);
-            }
-        }
-        HttpEntity requestEntity = builder.build();
-        httpPost.setEntity(requestEntity);
-        // 发送请求并获取响应
-        HttpResponse response = httpClient.execute(httpPost);
-        HttpEntity responseEntity = response.getEntity();
-        // 处理响应
-        String responseString = EntityUtils.toString(responseEntity);
-        JSON resultJson = JSON.from(responseString);
+        HttpClient ofbizHttpClient = new HttpClient(url);
+        ofbizHttpClient.setParameters(param);
+        ContentType contentType = ContentType.create(ContentType.APPLICATION_JSON.toString(), "UTF-8");
+        ofbizHttpClient.setContentType(contentType.toString());
+        String responseString = ofbizHttpClient.post();
 
+        JSON resultJson = JSON.from(responseString);
         Map<String, Object> resultMap = jsonToMap.convert(resultJson);
         if (resultMap.containsKey("dataInputs")) {
             String dataInputs = (String) resultMap.get("dataInputs");
             if (!isValidJson(dataInputs)) {
                 //error
-                String textContent = UtilXml.readXmlDocument(dataInputs).getElementsByTagName("msg").item(0).getTextContent();
-                throw new Exception(textContent);
+                try {
+                    String textContent = UtilXml.readXmlDocument(dataInputs).getElementsByTagName("msg").item(0).getTextContent();
+                    throw new Exception(textContent);
+                } catch (SAXException e) {
+                    throw new Exception(dataInputs);
+                }
             }
             return JSON.from(dataInputs);
         } else {
