@@ -17,12 +17,12 @@ public class CamelUtil {
 
     public static JSON sendFormPost(String url, Map<String, Object> param) throws Exception {
         JSONConverters.JSONToMap jsonToMap = new JSONConverters.JSONToMap();
+        JSONConverters.MapToJSON mapToJSON = new JSONConverters.MapToJSON();
+        JSON convert = mapToJSON.convert(param);
         HttpClient ofbizHttpClient = new HttpClient(url);
-        ofbizHttpClient.setParameters(param);
-        ContentType contentType = ContentType.create(ContentType.APPLICATION_JSON.toString(), "UTF-8");
-        ofbizHttpClient.setContentType(contentType.toString());
+        ofbizHttpClient.setContentType("application/json;charset=UTF-8");
+        ofbizHttpClient.post(convert.toString());
         String responseString = ofbizHttpClient.post();
-
         JSON resultJson = JSON.from(responseString);
         Map<String, Object> resultMap = jsonToMap.convert(resultJson);
         if (resultMap.containsKey("dataInputs")) {
