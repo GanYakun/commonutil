@@ -27,4 +27,10 @@
 			<key-map field-name="partyId"/>
 		</relation>
 	</extend-entity>
+
+	<extend-entity entity-name="UserLogin">
+		<relation type="one-nofk" rel-entity-name="PartyAndContact">
+			<key-map field-name="partyId"/>
+		</relation>
+	</extend-entity>
 </entitymodel>

@@ -1,16 +1,17 @@
 <ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
 
-    <EntityType Name="PartyAndContact" EntitySetName="Parties" AutoProperties="true" DraftEntityName="PartyAndContactDraft"
+    <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" DraftEntityName="PartyAndContactDraft"
                 Properties="partyId,partyTypeId,partyName,phoneMobile">
         <LineItem>
-            <DataField Values="partyId,partyName,UserLogin/userLoginId,PartyRole/roleTypeId" Importance="High"/>
+            <DataField Values="partyId,partyName,phoneMobile,UserLogin/userLoginId,PartyRole/roleTypeId,OrgPartyGroup/groupName" Importance="High"/>
         </LineItem>
+        <SelectionFields PropertyPath="partyName,phoneMobile,UserLogin/userLoginId"/>
         <NavigationProperty Name="Person"/>
         <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole"/>
         <NavigationProperty Name="UserLogin"/>
         <NavigationProperty Name="OrgPartyGroup"  IsCollection="false" Type="PartyGroup"
-                            Relations="FromPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE and roleTypeIdTo=Employee)/FromParty/PartyGroup"/>
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE and roleTypeIdTo=Employee)/FromParty/PartyGroup"/>
     </EntityType>
 
     <EntityType Name="Person" EntitySetName="People"
@@ -19,10 +20,25 @@
     <EntityType Name="PartyGroup" EntitySetName="PartyGroups"
                 Properties="partyId,groupName,comments"/>
 
-    <EntityType Name="PartyRole" EntitySetName="PartyRoles" AutoProperties="true"/>
+    <EntityType Name="PartyRole" EntitySetName="PartyRoles" AutoProperties="true">
+        <Property Name="roleTypeId">
+            <Text Path="RoleType/description" TextArrangement="TextFirst"/>
+        </Property>
+        <NavigationProperty Name="RoleType"/>
+    </EntityType>
 
-    <EntityType Name="UserLogin" EntitySetName="UserLogins"
-                Properties="userLoginId,enabled,partyId"/>
+    <EntityType Name="RoleType" AutoProperties="true" EntitySetName="RoleTypes"/>
+
+    <EntityType Name="UserLogin" EntitySetName="UserLogins" DraftEntityName="UserLoginDraft"
+                Properties="userLoginId,enabled">
+        <NavigationProperty Name="PartyAndContact"/>
+        <NavigationProperty Name="UserLoginSecurityGroup"/>
+    </EntityType>
+
+    <EntityType Name="UserLoginSecurityGroup" EntitySetName="UserLoginSecurityGroups" AutoProperties="true">
+        <NavigationProperty Name="SecurityGroupPermission"/>
+    </EntityType>
+    <EntityType Name="SecurityGroupPermission" EntitySetName="SecurityGroupPermission" AutoProperties="true"/>
 
 <!--    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" AutoProperties="true">-->
 <!--        <NavigationProperty Name="FromParty" Type="Party" Relations="FromParty"/>-->
