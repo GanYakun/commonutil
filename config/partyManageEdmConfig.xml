@@ -1,10 +1,16 @@
 <ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
 
-    <EntityType Name="Party" EntitySetName="Parties" DraftEntityName="PartyDraft"
+    <EntityType Name="PartyAndContactMech" EntitySetName="Parties" DraftEntityName="PartyAndContactMechDraft"
                 Properties="partyId,partyTypeId,partyName">
+        <LineItem Qualifier="partyList">
+            <DataField Values="partyId,partyName,UserLogin/userLoginId,PartyRole/roleTypeId" Importance="High"/>
+        </LineItem>
         <NavigationProperty Name="Person"/>
+        <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole"/>
         <NavigationProperty Name="UserLogin"/>
+        <NavigationProperty Name="OrgPartyGroup"  IsCollection="false" Type="PartyGroup"
+                            Relations="FromPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE and roleTypeIdTo=Employee)/FromParty/PartyGroup"/>
     </EntityType>
 
     <EntityType Name="Person" EntitySetName="People"
@@ -18,9 +24,9 @@
     <EntityType Name="UserLogin" EntitySetName="UserLogins"
                 Properties="userLoginId,enabled,partyId"/>
 
-    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" AutoProperties="true">
-        <NavigationProperty Name="FromParty" Type="Party" Relations="FromParty"/>
-        <NavigationProperty Name="ToParty" Type="Party" Relations="FromParty"/>
-    </EntityType>
+<!--    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" AutoProperties="true">-->
+<!--        <NavigationProperty Name="FromParty" Type="Party" Relations="FromParty"/>-->
+<!--        <NavigationProperty Name="ToParty" Type="Party" Relations="FromParty"/>-->
+<!--    </EntityType>-->
 
 </ofbiz-edm>
