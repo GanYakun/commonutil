@@ -1,8 +1,8 @@
 <ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
 
-    <EntityType Name="PartyAndContactMech" EntitySetName="Parties" DraftEntityName="PartyAndContactMechDraft"
-                Properties="partyId,partyTypeId,partyName">
-        <LineItem Qualifier="partyList">
+    <EntityType Name="PartyAndContact" EntitySetName="Parties" AutoProperties="true" DraftEntityName="PartyAndContactDraft"
+                Properties="partyId,partyTypeId,partyName,phoneMobile">
+        <LineItem>
             <DataField Values="partyId,partyName,UserLogin/userLoginId,PartyRole/roleTypeId" Importance="High"/>
         </LineItem>
         <NavigationProperty Name="Person"/>
