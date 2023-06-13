@@ -1,0 +1,15 @@
+<ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
+
+    <EntityType Name="UserLogin" EntitySetName="UserLogins" DraftEntityName="UserLoginDraft"
+                Properties="userLoginId,enabled">
+        <NavigationProperty Name="Party"/>
+        <NavigationProperty Name="UserLoginSecurityGroup"/>
+    </EntityType>
+
+    <EntityType Name="Party" EntitySetName="Parties" Properties="partyId,partyName"/>
+    <EntityType Name="UserLoginSecurityGroup" EntitySetName="UserLoginSecurityGroups" AutoProperties="true">
+        <NavigationProperty Name="SecurityGroupPermission"/>
+    </EntityType>
+    <EntityType Name="SecurityGroupPermission" EntitySetName="SecurityGroupPermission" AutoProperties="true"/>
+
+</ofbiz-edm>

@@ -1,0 +1,26 @@
+<ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
+
+    <EntityType Name="Party" EntitySetName="Parties" DraftEntityName="PartyDraft"
+                Properties="partyId,partyTypeId,partyName">
+        <NavigationProperty Name="Person"/>
+        <NavigationProperty Name="PartyRole"/>
+        <NavigationProperty Name="UserLogin"/>
+    </EntityType>
+
+    <EntityType Name="Person" EntitySetName="People"
+                Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
+
+    <EntityType Name="PartyGroup" EntitySetName="PartyGroups"
+                Properties="partyId,groupName,comments"/>
+
+    <EntityType Name="PartyRole" EntitySetName="PartyRoles" AutoProperties="true"/>
+
+    <EntityType Name="UserLogin" EntitySetName="UserLogins"
+                Properties="userLoginId,enabled,partyId"/>
+
+    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" AutoProperties="true">
+        <NavigationProperty Name="FromParty" Type="Party" Relations="FromParty"/>
+        <NavigationProperty Name="ToParty" Type="Party" Relations="FromParty"/>
+    </EntityType>
+
+</ofbiz-edm>
