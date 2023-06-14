@@ -1,0 +1,61 @@
+<ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
+
+    <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" DraftEntityName="PartyAndContactDraft"
+                Properties="partyId,partyTypeId,partyName,phoneMobile" EntityCondition="orgId=${userLogin.orgId}">
+        <HeaderInfo TypeName="People Manage" TypeNamePlural="">
+            <Title Path="partyId"/>
+            <Description Path="partyName"/>
+        </HeaderInfo>
+        <NavigationProperty Name="Person"/>
+        <NavigationProperty Name="PartyGroup"/>
+        <NavigationProperty Name="PartyRole"/>
+        <NavigationProperty Name="UserLogin" Cascade="true" IsCollection="false"/>
+        <NavigationProperty Name="OrgPartyRelationship" Cascade="true" IsCollection="false" Type="PartyRelationship"
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE and roleTypeIdTo=Employee)"/>
+    </EntityType>
+
+    <EntityType Name="Party" AutoProperties="true">
+        <NavigationProperty Name="Person"/>
+        <NavigationProperty Name="PartyGroup"/>
+        <NavigationProperty Name="PartyRole"/>
+    </EntityType>
+    <EntityType Name="Person" EntitySetName="People"
+                Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
+
+    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships"
+                Properties="partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" DraftEntityName="PartyRelationshipDraft">
+        <NavigationProperty Name="FromParty"/>
+        <NavigationProperty Name="ToParty"/>
+    </EntityType>
+
+    <EntityType Name="PartyGroup" EntitySetName="PartyGroups"
+                Properties="groupName,comments">
+        <Property Name="partyId">
+            <Text Path="groupName" TextArrangement="TextOnly"/>
+        </Property>
+
+    </EntityType>
+
+    <EntityType Name="PartyRole" EntitySetName="PartyRoles" AutoProperties="true" DraftEntityName="PartyRoleDraft">
+        <NavigationProperty Name="RoleType"/>
+    </EntityType>
+
+    <EntityType Name="RoleType" AutoProperties="true" EntitySetName="RoleTypes">
+        <Property Name="roleTypeId">
+            <Text Path="description" TextArrangement="TextFirst"/>
+        </Property>
+        <ValueList CollectionPath="RoleTypes" WithFixedValues="true" Label="{@i18n>RoleType}"/>
+    </EntityType>
+
+    <EntityType Name="UserLogin" EntitySetName="UserLogins" DraftEntityName="UserLoginDraft"
+                Properties="userLoginId,enabled,partyId" EntityCondition="orgId=${userLogin.orgId}">
+        <NavigationProperty Name="PartyAndContact"/>
+        <NavigationProperty Name="UserLoginSecurityGroup"/>
+    </EntityType>
+
+    <EntityType Name="UserLoginSecurityGroup" EntitySetName="UserLoginSecurityGroups" AutoProperties="true">
+        <NavigationProperty Name="SecurityGroupPermission"/>
+    </EntityType>
+    <EntityType Name="SecurityGroupPermission" EntitySetName="SecurityGroupPermission" AutoProperties="true"/>
+
+</ofbiz-edm>

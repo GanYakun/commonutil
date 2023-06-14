@@ -87,4 +87,11 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
 
+    <service name="banfftech.createPartyRelationship" engine="java" default-entity-name="PartyRelationship" invoke="createPartyRelationship" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Create PartyRelationship</description>
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
 </services>

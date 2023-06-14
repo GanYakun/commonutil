@@ -168,6 +168,16 @@
         <description>Delete a PartyGroup</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+    <service name="banfftech.updatePartyRelationship" default-entity-name="PartyRelationship" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a PartyRelationship</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.createPartyRelationshipByEntityAuto" default-entity-name="PartyRelationship" engine="entity-auto" invoke="create" auth="true">
+        <description>Update a PartyRelationship</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
     <!--PartyContactMech-->
     <service name="banfftech.createPartyContactMech" default-entity-name="PartyContactMech" engine="entity-auto" invoke="create" auth="true">
         <description>Create a PartyContactMech</description>

@@ -1,14 +1,14 @@
 package com.banfftech.common.services;
 
+import com.banfftech.common.util.CommonUtils;
+import com.dpbird.odata.OfbizODataException;
 import org.apache.ofbiz.base.util.*;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityTypeUtil;
-import org.apache.ofbiz.service.DispatchContext;
-import org.apache.ofbiz.service.ModelService;
-import org.apache.ofbiz.service.ServiceUtil;
+import org.apache.ofbiz.service.*;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -124,5 +124,22 @@ public class PartyServices {
         result.put("partyId", partyId);
         result.put(ModelService.RESPONSE_MESSAGE, ModelService.RESPOND_SUCCESS);
         return result;
+    }
+
+    public static Map<String, Object> createPartyRelationship(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        String roleTypeIdTo = (String) context.get("roleTypeIdTo");
+        String partyIdTo = (String) context.get("partyIdTo");
+        context.put("fromDate", UtilDateTime.nowTimestamp());
+
+        GenericValue partyRole = delegator.findOne("PartyRole", UtilMisc.toMap("partyId", partyIdTo, "roleTypeId", roleTypeIdTo), false);
+        if (UtilValidate.isEmpty(partyRole)) {
+            Map<String, Object> partyRoleResultMap = dispatcher.runSync("banfftech.createPartyRole", UtilMisc.toMap("userLogin", context.get("userLogin"), "partyId", context.get("partyIdTo"), "roleTypeId", context.get("roleTypeIdTo")));
+        }
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyRelationshipByEntityAuto", (GenericValue) context.get("userLogin"));
+
+        return resultMap;
     }
 }
