@@ -52,10 +52,10 @@
 
     <EntityType Name="Person" EntitySetName="People" Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
 
-    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships"
+    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" DraftEntityName="PartyRelationshipDraft"
                 Properties="partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
-        <NavigationProperty Name="FromParty"/>
-        <NavigationProperty Name="ToParty"/>
+        <NavigationProperty Name="FromParty" ReadOnly="true"/>
+        <NavigationProperty Name="ToParty" ReadOnly="true"/>
     </EntityType>
 
     <EntityType Name="PartyGroup" EntitySetName="PartyGroups"
@@ -63,7 +63,6 @@
         <Property Name="partyId">
             <Text Path="groupName" TextArrangement="TextOnly"/>
         </Property>
-        <NavigationProperty Name="OrgPartyGroup" Relations="Party/OrgPartyGroup" Type="PartyGroup" IsCollection="false"/>
     </EntityType>
 
     <EntityType Name="PartyRole" EntitySetName="PartyRoles" DraftEntityName="PartyRoleDraft">
