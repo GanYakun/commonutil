@@ -1,16 +1,59 @@
 <ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
 
-
-    <EntityType Name="Party" EntitySetName="Parties" AutoProperties="true">
+    <EntityType Name="Party" EntitySetName="Parties" AutoProperties="true" DraftEntityName="PartyDraft">
+        <HeaderInfo TypeName="Party Manage" TypeNamePlural="">
+            <Title Path="partyId"/>
+            <Description Path="partyName"/>
+        </HeaderInfo>
         <NavigationProperty Name="Person"/>
         <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole"/>
+        <NavigationProperty Name="PrimaryPostalAddress" Type="ContactMech"
+                            Relations="PartyContactMech/ContactMech(contactMechTypeId=POSTAL_ADDRESS)" IsCollection="false"/>
+        <NavigationProperty Name="PrimaryTelecomNumber" Type="ContactMech"
+                            Relations="PartyContactMech/ContactMech(contactMechTypeId=TELECOM_NUMBER)" IsCollection="false"/>
     </EntityType>
-    <EntityType Name="Person" EntitySetName="People"
-                Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
+
+    <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" AutoProperties="true" DraftEntityName="PartyAndContactDraft">
+        <HeaderInfo TypeName="Party Manage" TypeNamePlural="">
+            <Title Path="partyId"/>
+            <Description Path="partyName"/>
+        </HeaderInfo>
+        <SelectionFields PropertyPath="partyId,partyName,phoneMobile,UserLogin/userLoginId"/>
+        <LineItem>
+            <DataField Values="partyId,partyName,phoneMobile,UserLogin/userLoginId"/>
+        </LineItem>
+        <NavigationProperty Name="Person"/>
+        <NavigationProperty Name="PartyGroup"/>
+        <NavigationProperty Name="PartyRole"/>
+        <NavigationProperty Name="UserLogin" IsCollection="false" Cascade="true"/>
+        <NavigationProperty Name="OrgPartyRelationship" IsCollection="false" Type="PartyRelationship"
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT and roleTypeIdTo=MANAGER)"/>
+        <Action Name="PartyAndContactNewAction" IsBound="true" EntitySetPath="partyAndContact"
+                OfbizService="com.dpbird.odata.services.ProcessorServices.stickySessionNewAction"
+                StickySession="true">
+            <Parameter Name="partyAndContact" Type="PartyAndContact" Nullable="false" IsCollection="true" />
+            <Parameter Name="userLoginId" Type="String" Nullable="false" IsCollection="false" />
+            <ReturnType Type="PartyAndContact" />
+        </Action>
+        <Action Name="PartyAndContactEditAction" IsBound="true" EntitySetPath="partyAndContact"
+                OfbizService="com.dpbird.odata.services.ProcessorServices.stickySessionEditAction"
+                StickySession="true">
+            <Parameter Name="partyAndContact" Type="PartyAndContact" Nullable="false" IsCollection="false"/>
+            <ReturnType Type="PartyAndContact"/>
+        </Action>
+        <Action Name="PartyAndContactSaveAction" IsBound="true" EntitySetPath="partyAndContact"
+                OfbizService="com.dpbird.odata.services.ProcessorServices.stickySessionSaveAction"
+                StickySession="true">
+            <Parameter Name="partyAndContact" Type="PartyAndContact" Nullable="false" IsCollection="false" />
+            <ReturnType Type="PartyAndContact" />
+        </Action>
+    </EntityType>
+
+    <EntityType Name="Person" EntitySetName="People" Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
 
     <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships"
-                Properties="partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" DraftEntityName="PartyRelationshipDraft">
+                Properties="partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
         <NavigationProperty Name="FromParty"/>
         <NavigationProperty Name="ToParty"/>
     </EntityType>
@@ -23,7 +66,9 @@
         <NavigationProperty Name="OrgPartyGroup" Relations="Party/OrgPartyGroup" Type="PartyGroup" IsCollection="false"/>
     </EntityType>
 
-    <EntityType Name="PartyRole" EntitySetName="PartyRoles" AutoProperties="true" DraftEntityName="PartyRoleDraft">
+    <EntityType Name="PartyRole" EntitySetName="PartyRoles" DraftEntityName="PartyRoleDraft">
+        <Property Name="partyId" Computed="true"/>
+        <Property Name="roleTypeId" />
         <NavigationProperty Name="RoleType"/>
     </EntityType>
 
@@ -43,5 +88,19 @@
         <NavigationProperty Name="SecurityGroupPermission"/>
     </EntityType>
     <EntityType Name="SecurityGroupPermission" EntitySetName="SecurityGroupPermission" AutoProperties="true"/>
+    
+    <EntityType Name="ContactMech" EntitySetName="ContactMechs" AutoProperties="true">
+        <NavigationProperty Name="TelecomNumber"/>
+        <NavigationProperty Name="PostalAddress"/>
+    </EntityType>
+
+    <EntityType Name="TelecomNumber" EntitySetName="TelecomNumbers" AutoProperties="true"/>
+    <EntityType Name="PostalAddress" EntitySetName="PostalAddresses" AutoProperties="true"/>
+
+    <Action Name="DiscardAction"/>
+
+    <EntityContainer>
+        <ActionImport Name="DiscardAction" Action="DiscardAction" />
+    </EntityContainer>
 
 </ofbiz-edm>
