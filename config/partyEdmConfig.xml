@@ -78,8 +78,7 @@
         <ValueList CollectionPath="RoleTypes" WithFixedValues="true" Label="{@i18n>RoleType}"/>
     </EntityType>
 
-    <EntityType Name="UserLogin" EntitySetName="UserLogins" DraftEntityName="UserLoginDraft"
-                Properties="userLoginId,enabled,partyId" EntityCondition="orgId=${userLogin.orgId}">
+    <EntityType Name="UserLogin" EntitySetName="UserLogins" AutoProperties="true" DraftEntityName="UserLoginDraft">
         <NavigationProperty Name="UserLoginSecurityGroup"/>
     </EntityType>
 
