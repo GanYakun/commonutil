@@ -16,8 +16,8 @@
 
     <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" AutoProperties="true" DraftEntityName="PartyAndContactDraft">
         <HeaderInfo TypeName="Party Manage" TypeNamePlural="">
-            <Title Path="partyId"/>
-            <Description Path="partyName"/>
+            <Title Path="partyName"/>
+            <Description Path="UserLogin/userLoginId"/>
         </HeaderInfo>
         <SelectionFields PropertyPath="partyId,partyName,phoneMobile,UserLogin/userLoginId"/>
         <LineItem>
@@ -29,6 +29,8 @@
         <NavigationProperty Name="UserLogin" IsCollection="false" Cascade="true"/>
         <NavigationProperty Name="OrgPartyRelationship" IsCollection="false" Type="PartyRelationship"
                             Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT and roleTypeIdTo=MANAGER)"/>
+        <NavigationProperty Name="CompanyPartyRelationship" IsCollection="false" Type="PartyRelationship"
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE and roleTypeIdTo=MANAGER)"/>
         <Action Name="PartyAndContactNewAction" IsBound="true" EntitySetPath="partyAndContact"
                 OfbizService="com.dpbird.odata.services.ProcessorServices.stickySessionNewAction"
                 StickySession="true">
