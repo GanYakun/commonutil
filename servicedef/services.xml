@@ -94,4 +94,18 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
 
+    <service name="banfftech.createMemberProductCategory" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="MemberProductCategory"
+             invoke="createMemberProductCategory">
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.updateMemberProductCategory" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="MemberProductCategory"
+             invoke="updateMemberProductCategory">
+        <auto-attributes include="pk" mode="IN" />
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
 </services>

@@ -1,5 +1,6 @@
 package com.banfftech.common.services;
 
+import com.banfftech.common.util.CommonUtils;
 import org.apache.ofbiz.base.util.Debug;
 import org.apache.ofbiz.base.util.UtilDateTime;
 import org.apache.ofbiz.base.util.UtilMisc;
@@ -156,5 +157,31 @@ public class ContactService {
                 "contactMechPurposeTypeId", "PRIMARY_LOCATION", "fromDate", UtilDateTime.nowTimestamp(), "userLogin", userLogin));
         return contactMechId;
     }
+
+
+
+    public static Map<String, Object> createMemberProductCategory(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException, GenericEntityException {
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+        String productId = (String) context.get("productId");
+        String productCategoryId = (String) context.get("productCategoryId");
+        if (UtilValidate.isEmpty(productId) && UtilValidate.isEmpty(productCategoryId)) {
+            return ServiceUtil.returnError("Missing products or categories");
+        }
+        if (UtilValidate.isEmpty(context.get("id"))) {
+            context.put("id", dctx.getDelegator().getNextSeqId("ProductCategoryMember"));
+        }
+        return CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createProductCategoryMember", userLogin);
+    }
+
+    public static Map<String, Object> updateMemberProductCategory(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException, GenericEntityException {
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+        String productId = (String) context.get("productId");
+        String productCategoryId = (String) context.get("productCategoryId");
+        if (UtilValidate.isEmpty(productId) && UtilValidate.isEmpty(productCategoryId)) {
+            return ServiceUtil.returnError("Missing products or categories");
+        }
+        return CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateProductCategoryMember", userLogin);
+    }
+
 
 }
