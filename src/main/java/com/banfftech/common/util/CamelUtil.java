@@ -3,6 +3,7 @@ package com.banfftech.common.util;
 import org.apache.http.entity.ContentType;
 import org.apache.ofbiz.base.conversion.JSONConverters;
 import org.apache.ofbiz.base.lang.JSON;
+import org.apache.ofbiz.base.util.Debug;
 import org.apache.ofbiz.base.util.HttpClient;
 import org.apache.ofbiz.base.util.UtilXml;
 import org.xml.sax.SAXException;
@@ -22,6 +23,7 @@ public class CamelUtil {
         HttpClient ofbizHttpClient = new HttpClient(url);
         ofbizHttpClient.setContentType("application/json;charset=UTF-8");
         String responseString = ofbizHttpClient.post(convert.toString());
+        Debug.log(">> Camel Result :" + responseString);
         JSON resultJson = JSON.from(responseString);
         Map<String, Object> resultMap = jsonToMap.convert(resultJson);
         if (resultMap.containsKey("dataInputs")) {
@@ -31,7 +33,7 @@ public class CamelUtil {
                 try {
                     String textContent = UtilXml.readXmlDocument(dataInputs).getElementsByTagName("msg").item(0).getTextContent();
                     throw new Exception(textContent);
-                } catch (SAXException e) {
+                } catch (Exception e) {
                     throw new Exception(dataInputs);
                 }
             }
