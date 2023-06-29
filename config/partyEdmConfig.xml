@@ -25,7 +25,7 @@
         </LineItem>
         <NavigationProperty Name="Person"/>
         <NavigationProperty Name="PartyGroup"/>
-        <NavigationProperty Name="PartyRole"/>
+        <NavigationProperty Name="PartyRole" />
         <NavigationProperty Name="UserLogin" IsCollection="false" Cascade="true"/>
         <NavigationProperty Name="OrgPartyRelationship" IsCollection="false" Type="PartyRelationship"
                             Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT and roleTypeIdTo=MANAGER)"/>
@@ -68,6 +68,12 @@
     </EntityType>
 
     <EntityType Name="PartyRole" EntitySetName="PartyRoles" DraftEntityName="PartyRoleDraft">
+        <Property Name="partyId" Computed="true"/>
+        <Property Name="roleTypeId" />
+        <NavigationProperty Name="RoleType"/>
+    </EntityType>
+
+    <EntityType Name="CompanyPartyRole" OfbizEntity="PartyRole" EntitySetName="CompanyPartyRoles" DraftEntityName="CompanyPartyRoleDraft">
         <Property Name="partyId" Computed="true"/>
         <Property Name="roleTypeId" />
         <NavigationProperty Name="RoleType"/>
