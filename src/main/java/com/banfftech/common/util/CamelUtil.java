@@ -21,8 +21,7 @@ public class CamelUtil {
         JSON convert = mapToJSON.convert(param);
         HttpClient ofbizHttpClient = new HttpClient(url);
         ofbizHttpClient.setContentType("application/json;charset=UTF-8");
-        ofbizHttpClient.post(convert.toString());
-        String responseString = ofbizHttpClient.post();
+        String responseString = ofbizHttpClient.post(convert.toString());
         JSON resultJson = JSON.from(responseString);
         Map<String, Object> resultMap = jsonToMap.convert(resultJson);
         if (resultMap.containsKey("dataInputs")) {
