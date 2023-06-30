@@ -139,38 +139,44 @@ public class ChatEvent {
                 //获取科室
                 GenericValue relationShip = EntityQuery.use(delegator).from("PartyRelationship")
                         .where("partyIdTo", partyId, "roleTypeIdFrom", "DEPARTMENT", "roleTypeIdTo", "DOCTOR").filterByDate().queryFirst();
-                //当前科室的所有住院列表
-                List<GenericValue> assList = EntityQuery.use(delegator).from("WorkEffortPartyAssignmentWorkEffToDep")
-                        .where("partyId", relationShip.getString("partyIdFrom"), "currentStatusId", "BEING_HOSPITALIZED").select("workEffortId").queryList();
-                List<String> workEffortIdList = EntityUtil.getFieldListFromEntityList(assList, "workEffortId", true);
-                EntityCondition condition = EntityCondition.makeCondition("roleTypeId", "PATIENT");
-                condition = Util.appendCondition(condition, EntityCondition.makeCondition("workEffortId", EntityOperator.IN, workEffortIdList));
-                List<GenericValue> workEffortPartyAssignments = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where(condition).queryList();
-                int noRead = 0;
-                for (GenericValue ass : workEffortPartyAssignments) {
-                    String workEffortId = ass.getString("workEffortId");
-                    GenericValue currentChat = getChat(delegator, dispatcher, workEffortId);
-                    GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("chatId", currentChat.getString("chatId"))
-                            .orderBy("-sequence").queryFirst();
-                    if (UtilValidate.isNotEmpty(lastChat)) {
-                        JSONObject chatJson = new JSONObject();
-                        GenericValue party = ass.getRelatedOne("Party", false);
-                        chatJson.put("title", party.getString("partyName"));
-                        chatJson.put("chatId", currentChat.getString("chatId"));
-                        chatJson.put("workEffortId", workEffortId);
-                        chatJson.put("dateTime", lastChat.getTimestamp("createdStamp").toString());
-                        String msgStatus = currentChat.getString("msgStatus");
-                        if (UtilValidate.isNotEmpty(msgStatus)) {
-                            chatJson.elementOpt("msgStatus", currentChat.getString("msgStatus"));
-                            if (msgStatus.equals(E_NO_READ)) {
-                                noRead++;
+                if (UtilValidate.isEmpty(relationShip)) {
+                    //没查到科室
+                    mainJson.put("list", chatJsonList);
+                    mainJson.put("noRead", 0);
+                } else {
+                    //当前科室的所有住院列表
+                    List<GenericValue> assList = EntityQuery.use(delegator).from("WorkEffortPartyAssignmentWorkEffToDep")
+                            .where("partyId", relationShip.getString("partyIdFrom"), "currentStatusId", "BEING_HOSPITALIZED").select("workEffortId").queryList();
+                    List<String> workEffortIdList = EntityUtil.getFieldListFromEntityList(assList, "workEffortId", true);
+                    EntityCondition condition = EntityCondition.makeCondition("roleTypeId", "PATIENT");
+                    condition = Util.appendCondition(condition, EntityCondition.makeCondition("workEffortId", EntityOperator.IN, workEffortIdList));
+                    List<GenericValue> workEffortPartyAssignments = EntityQuery.use(delegator).from("WorkEffortPartyAssignment").where(condition).queryList();
+                    int noRead = 0;
+                    for (GenericValue ass : workEffortPartyAssignments) {
+                        String workEffortId = ass.getString("workEffortId");
+                        GenericValue currentChat = getChat(delegator, dispatcher, workEffortId);
+                        GenericValue lastChat = EntityQuery.use(delegator).from("ChatMessage").where("chatId", currentChat.getString("chatId"))
+                                .orderBy("-sequence").queryFirst();
+                        if (UtilValidate.isNotEmpty(lastChat)) {
+                            JSONObject chatJson = new JSONObject();
+                            GenericValue party = ass.getRelatedOne("Party", false);
+                            chatJson.put("title", party.getString("partyName"));
+                            chatJson.put("chatId", currentChat.getString("chatId"));
+                            chatJson.put("workEffortId", workEffortId);
+                            chatJson.put("dateTime", lastChat.getTimestamp("createdStamp").toString());
+                            String msgStatus = currentChat.getString("msgStatus");
+                            if (UtilValidate.isNotEmpty(msgStatus)) {
+                                chatJson.elementOpt("msgStatus", currentChat.getString("msgStatus"));
+                                if (msgStatus.equals(E_NO_READ)) {
+                                    noRead++;
+                                }
                             }
+                            chatJsonList.add(chatJson);
                         }
-                        chatJsonList.add(chatJson);
                     }
+                    mainJson.put("list", chatJsonList);
+                    mainJson.put("noRead", noRead);
                 }
-                mainJson.put("list", chatJsonList);
-                mainJson.put("noRead", noRead);
             }
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
