@@ -3,8 +3,12 @@
 <service-eca xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/service-eca.xsd">
 
-    <!-- 创建 PostalAddress前创建 ContactMech -->
-<!--    <eca service="banfftech.createPostalAddress" event="invoke">-->
-<!--        <action service="banfftech.createContactMech" mode="sync"/>-->
-<!--    </eca>-->
+    <eca service="banfftech.createInventoryCount" event="invoke">
+        <set field-name="workEffortTypeId" value="INVENTORY_COUNT"/>
+        <action service="banfftech.createWorkEffort" mode="sync"/>
+    </eca>
+    <eca service="banfftech.createInventoryMove" event="invoke">
+        <set field-name="workEffortTypeId" value="INVENTORY_MOVE"/>
+        <action service="banfftech.createWorkEffort" mode="sync"/>
+    </eca>
 </service-eca>
