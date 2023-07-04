@@ -12,30 +12,34 @@
                             Relations="PartyContactMech/ContactMech(contactMechTypeId=POSTAL_ADDRESS)" IsCollection="false"/>
         <NavigationProperty Name="PrimaryTelecomNumber" Type="ContactMech"
                             Relations="PartyContactMech/ContactMech(contactMechTypeId=TELECOM_NUMBER)" IsCollection="false"/>
+        <NavigationProperty Name="OrgPartyRelationship" Cascade="true" IsCollection="false" Type="PartyRelationship"
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT)"/>
+        <NavigationProperty Name="CompanyPartyRelationship" IsCollection="false" Type="PartyRelationship"
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE)"/>
     </EntityType>
 
     <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" AutoProperties="true" DraftEntityName="PartyAndContactDraft">
         <HeaderInfo TypeName="Party Manage" TypeNamePlural="">
             <Title Path="partyName"/>
-            <Description Path="UserLogin/userLoginId"/>
+            <Description Path="externalId"/>
         </HeaderInfo>
-        <SelectionFields PropertyPath="partyId,partyName,phoneMobile,UserLogin/userLoginId"/>
+        <SelectionFields PropertyPath="partyId,partyName,phoneMobile,externalId"/>
         <LineItem>
-            <DataField Values="partyId,partyName,phoneMobile,UserLogin/userLoginId"/>
+            <DataField Values="partyId,partyName,phoneMobile,externalId"/>
         </LineItem>
+        <Property Name="externalId" Required="true" Only="true"/>
         <NavigationProperty Name="Person"/>
         <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole" />
         <NavigationProperty Name="UserLogin" IsCollection="false" Cascade="true"/>
         <NavigationProperty Name="OrgPartyRelationship" IsCollection="false" Type="PartyRelationship"
-                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT and roleTypeIdTo=MANAGER)"/>
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT)"/>
         <NavigationProperty Name="CompanyPartyRelationship" IsCollection="false" Type="PartyRelationship"
-                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE and roleTypeIdTo=MANAGER)"/>
+                            Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE)"/>
         <Action Name="PartyAndContactNewAction" IsBound="true" EntitySetPath="partyAndContact"
                 OfbizService="com.dpbird.odata.services.ProcessorServices.stickySessionNewAction"
                 StickySession="true">
             <Parameter Name="partyAndContact" Type="PartyAndContact" Nullable="false" IsCollection="true" />
-            <Parameter Name="userLoginId" Type="String" Nullable="false" IsCollection="false" />
             <ReturnType Type="PartyAndContact" />
         </Action>
         <Action Name="PartyAndContactEditAction" IsBound="true" EntitySetPath="partyAndContact"
@@ -55,7 +59,13 @@
     <EntityType Name="Person" EntitySetName="People" Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
 
     <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" DraftEntityName="PartyRelationshipDraft"
-                Properties="partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
+                Properties="id,partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
+        <Property Name="partyIdFrom" Required="true">
+            <Text Path="FromParty/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="partyIdTo">
+            <Text Path="ToParty/partyName" TextArrangement="TextOnly"/>
+        </Property>
         <NavigationProperty Name="FromParty" ReadOnly="true"/>
         <NavigationProperty Name="ToParty" ReadOnly="true"/>
     </EntityType>
