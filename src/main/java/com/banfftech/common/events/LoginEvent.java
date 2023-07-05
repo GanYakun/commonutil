@@ -38,6 +38,22 @@ public class LoginEvent {
         //externalId
         String externalId = request.getParameter("USERNAME");
         String password = request.getParameter("PASSWORD");
+        if (UtilValidate.isNotEmpty(request.getAttribute("USERNAME"))) {
+            externalId = (String) request.getAttribute("USERNAME");
+        }
+        if (UtilValidate.isNotEmpty(request.getAttribute("PASSWORD"))) {
+            password = (String) request.getAttribute("PASSWORD");
+        }
+        if (UtilValidate.isEmpty(externalId)) {
+            String message = UtilProperties.getMessage(resource, "loginevents.username_was_empty_reenter", UtilHttp.getLocale(request));
+            request.setAttribute("_ERROR_MESSAGE_", message);
+            return "error";
+        }
+        if (UtilValidate.isEmpty(password)) {
+            String message = UtilProperties.getMessage(resource, "loginevents.password_was_empty_reenter", UtilHttp.getLocale(request));
+            request.setAttribute("_ERROR_MESSAGE_", message);
+            return "error";
+        }
         try {
             GenericValue party = EntityQuery.use(delegator).from("Party").where("externalId", externalId).queryFirst();
             if (UtilValidate.isEmpty(party)) {

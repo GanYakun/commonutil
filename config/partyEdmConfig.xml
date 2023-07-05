@@ -28,6 +28,7 @@
             <DataField Values="partyId,partyName,phoneMobile,externalId"/>
         </LineItem>
         <Property Name="externalId" Required="true" Only="true"/>
+        <Property Name="phoneMobile" Only="true"/>
         <NavigationProperty Name="Person"/>
         <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole" />
