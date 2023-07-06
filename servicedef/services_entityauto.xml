@@ -493,25 +493,5 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-    <service name="banfftech.createInventoryCount" default-entity-name="InventoryCount" engine="entity-auto" invoke="create" auth="true">
-        <description>Create a InventoryCount</description>
-        <auto-attributes include="pk" mode="INOUT" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
-    <service name="banfftech.updateInventoryCount" default-entity-name="InventoryCount" engine="entity-auto" invoke="update" auth="true">
-        <description>Update a InventoryCount</description>
-        <auto-attributes include="pk" mode="IN" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
-    <service name="banfftech.createInventoryMove" default-entity-name="InventoryMove" engine="entity-auto" invoke="create" auth="true">
-        <description>Create a InventoryMove</description>
-        <auto-attributes include="pk" mode="INOUT" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
-    <service name="banfftech.updateInventoryMove" default-entity-name="InventoryMove" engine="entity-auto" invoke="update" auth="true">
-        <description>Update a InventoryMove</description>
-        <auto-attributes include="pk" mode="IN" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
 
 </services>
