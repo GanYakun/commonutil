@@ -60,7 +60,7 @@
     <EntityType Name="Person" EntitySetName="People" Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
 
     <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" DraftEntityName="PartyRelationshipDraft"
-                Properties="id,partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
+                Properties="partyRelationshipId,partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
         <Property Name="partyIdFrom" Required="true">
             <Text Path="FromParty/partyName" TextArrangement="TextOnly"/>
         </Property>
