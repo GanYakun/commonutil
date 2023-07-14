@@ -21,10 +21,7 @@ under the License.
 <entity-eca xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/entity-eca.xsd">
 
-    <!-- update the totals for serialized inventory items -->
-    <eca entity="InventoryItem" operation="create-store" event="return">
-        <action service="updateSerializedInventoryTotals" mode="sync"/>
-    </eca>
+    <!-- Sum all InventoryItemDetail quantity -->
     <eca entity="InventoryItemDetail" operation="create-store-remove" event="return">
         <action service="updateInventoryItemFromDetail" mode="sync"/>
     </eca>

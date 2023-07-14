@@ -24,69 +24,6 @@ under the License.
     <!-- a method to centralize facility security code, meant to be called in-line with
         call-simple-method, and the checkAction and callingMethodName attributes should be in the method context -->
 
-    <simple-method method-name="updateSerializedInventoryTotals" short-description="Update the totals on serialized inventory">
-        <entity-one entity-name="InventoryItem" value-field="inventoryItem"/>
-        <if-compare field="inventoryItem.inventoryItemTypeId" value="SERIALIZED_INV_ITEM" operator="equals">
-            <if>
-                <!-- available -->
-                <condition>
-                    <and>
-                        <if-compare field="inventoryItem.statusId" value="INV_AVAILABLE" operator="equals"/>
-                        <or>
-                            <if-compare field="inventoryItem.availableToPromiseTotal" operator="not-equals" value="1" type="BigDecimal"/>
-                            <if-compare field="inventoryItem.quantityOnHandTotal" operator="not-equals" value="1" type="BigDecimal"/>
-                        </or>
-                    </and>
-                </condition>
-                <then>
-                    <set field="inventoryItem.availableToPromiseTotal" value="1" type="BigDecimal"/>
-                    <set field="inventoryItem.quantityOnHandTotal" value="1" type="BigDecimal"/>
-                    <log level="info" message="In updateSerializedInventoryTotals Storing totals for item [${inventoryItem.inventoryItemId}] INV_AVAIABLE [1/1]"/>
-                    <store-value value-field="inventoryItem"/>
-                </then>
-
-                <!-- delivered -->
-                <else-if>
-                    <condition>
-                        <and>
-                            <if-compare field="inventoryItem.statusId" value="INV_DELIVERED" operator="equals"/>
-                            <or>
-                                <if-compare field="inventoryItem.availableToPromiseTotal" operator="not-equals" value="0" type="BigDecimal"/>
-                                <if-compare field="inventoryItem.quantityOnHandTotal" operator="not-equals" value="0" type="BigDecimal"/>
-                            </or>
-                        </and>
-                    </condition>
-                    <then>
-                        <set field="inventoryItem.availableToPromiseTotal" value="0" type="BigDecimal"/>
-                        <set field="inventoryItem.quantityOnHandTotal" value="0" type="BigDecimal"/>
-                        <log level="info" message="In updateSerializedInventoryTotals Storing totals [${inventoryItem.inventoryItemId}] for INV_DELIVERED [0/0]"/>
-                        <store-value value-field="inventoryItem"/>
-                    </then>
-                </else-if>
-
-                <!-- any promised; or on-hand but not available status -->
-                <else-if>
-                    <condition>
-                        <and>
-                            <if-compare field="inventoryItem.statusId" operator="not-equals" value="INV_AVAILABLE"/>
-                            <if-compare field="inventoryItem.statusId" operator="not-equals" value="INV_DELIVERED"/>
-                            <or>
-                                <if-compare field="inventoryItem.availableToPromiseTotal" operator="not-equals" value="0" type="BigDecimal"/>
-                                <if-compare field="inventoryItem.quantityOnHandTotal" operator="not-equals" value="1" type="BigDecimal"/>
-                            </or>
-                        </and>
-                    </condition>
-                    <then>
-                        <set field="inventoryItem.availableToPromiseTotal" value="0" type="BigDecimal"/>
-                        <set field="inventoryItem.quantityOnHandTotal" value="1" type="BigDecimal"/>
-                        <log level="info" message="In updateSerializedInventoryTotals Storing totals [${inventoryItem.inventoryItemId}] for other status [0/1]"/>
-                        <store-value value-field="inventoryItem"/>
-                    </then>
-                </else-if>
-            </if>
-        </if-compare>
-    </simple-method>
-
     <simple-method method-name="updateInventoryItemFromDetail" short-description="Update an InventoryItem From the Associated Detail Records" login-required="false">
         <entity-one entity-name="InventoryItem" value-field="inventoryItem"/>
         <entity-one entity-name="InventoryItemDetailSummary" value-field="inventoryItemDetailSummary"/>
