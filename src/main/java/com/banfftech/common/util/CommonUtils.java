@@ -9,6 +9,8 @@ import org.apache.ofbiz.entity.GenericPK;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.*;
+import org.apache.olingo.commons.api.data.ComplexValue;
+import org.apache.olingo.commons.api.data.Property;
 
 import java.util.*;
 
@@ -176,4 +178,21 @@ public class CommonUtils {
         }
         return resultField.toString();
     }
+
+    public static Map<String, Object> complexToMap(ComplexValue complexValue) {
+        Map<String, Object> resultMap = new HashMap<>();
+        for (Property property : complexValue.getValue()) {
+            resultMap.put(property.getName(), property.getValue());
+        }
+        return resultMap;
+    }
+
+    public static List<Map<String, Object>> complexToMap(List<ComplexValue> complexValues) {
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        for (ComplexValue complexValue : complexValues) {
+            resultList.add(complexToMap(complexValue));
+        }
+        return resultList;
+    }
+
 }
