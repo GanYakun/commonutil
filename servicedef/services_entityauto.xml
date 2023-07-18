@@ -274,12 +274,12 @@
     <service name="banfftech.createProduct" default-entity-name="Product" engine="entity-auto" invoke="create" auth="true">
         <description>Create a Product </description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
     </service>
     <service name="banfftech.updateProduct" default-entity-name="Product" engine="entity-auto" invoke="update" auth="true">
         <description>Update a Product</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
     </service>
     <service name="banfftech.deleteProduct" default-entity-name="Product" engine="entity-auto" invoke="delete" auth="true">
         <description>Delete a Product</description>
@@ -289,12 +289,12 @@
     <service name="banfftech.createProductCategory" default-entity-name="ProductCategory" engine="entity-auto" invoke="create" auth="true">
         <description>Create a ProductCategory </description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
     </service>
     <service name="banfftech.updateProductCategory" default-entity-name="ProductCategory" engine="entity-auto" invoke="update" auth="true">
         <description>Update a ProductCategory</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
     </service>
     <service name="banfftech.deleteProductCategory" default-entity-name="ProductCategory" engine="entity-auto" invoke="delete" auth="true">
         <description>Delete a ProductCategory</description>
