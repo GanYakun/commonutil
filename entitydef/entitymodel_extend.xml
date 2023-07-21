@@ -36,5 +36,11 @@
 		<relation type="one-nofk" rel-entity-name="PartyAndContact">
 			<key-map field-name="partyId"/>
 		</relation>
+		<relation type="many" title="From" rel-entity-name="PartyRelationship">
+			<key-map field-name="partyId" rel-field-name="partyIdFrom"/>
+		</relation>
+		<relation type="many" title="To" rel-entity-name="PartyRelationship">
+			<key-map field-name="partyId" rel-field-name="partyIdTo"/>
+		</relation>
 	</extend-entity>
 </entitymodel>
