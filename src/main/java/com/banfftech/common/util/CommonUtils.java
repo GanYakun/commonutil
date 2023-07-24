@@ -7,6 +7,7 @@ import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericPK;
 import org.apache.ofbiz.entity.GenericValue;
+import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.*;
 import org.apache.olingo.commons.api.data.ComplexValue;
@@ -193,6 +194,15 @@ public class CommonUtils {
             resultList.add(complexToMap(complexValue));
         }
         return resultList;
+    }
+
+    /**
+     * 查询用户所属机构
+     */
+    public static String getPartyCompany(String partyId, Delegator delegator) throws GenericEntityException {
+        GenericValue relationship = EntityQuery.use(delegator).from("PartyRelationship")
+                .where("partyIdTo", partyId, "roleTypeIdFrom", "ORGANIZATION_UNIT").queryFirst();
+        return relationship.getString("partyIdFrom");
     }
 
 }
