@@ -202,6 +202,9 @@ public class CommonUtils {
     public static String getPartyCompany(String partyId, Delegator delegator) throws GenericEntityException {
         GenericValue relationship = EntityQuery.use(delegator).from("PartyRelationship")
                 .where("partyIdTo", partyId, "roleTypeIdFrom", "ORGANIZATION_UNIT").queryFirst();
+        if(UtilValidate.isEmpty(relationship)){
+            return null;
+        }
         return relationship.getString("partyIdFrom");
     }
 
