@@ -33,10 +33,13 @@
         <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole" />
         <NavigationProperty Name="UserLogin" IsCollection="false" Cascade="true"/>
+        <NavigationProperty Name="PrimaryRole" Relations="PartyRole" IsCollection="false" Type="PartyRole"/>
         <NavigationProperty Name="OrgPartyRelationship" IsCollection="false" Type="PartyRelationship"
                             Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT)"/>
         <NavigationProperty Name="CompanyPartyRelationship" IsCollection="false" Type="PartyRelationship"
                             Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE)"/>
+        <NavigationProperty Name="SecurityPermission" Type="SecurityPermission" IsCollection="true"
+                            Relations="PartyRole/RoleType/RoleTypeSecurityPermission/SecurityPermission"/>
         <Action Name="PartyAndContactNewAction" IsBound="true" EntitySetPath="partyAndContact"
                 OfbizService="com.dpbird.odata.services.ProcessorServices.stickySessionNewAction"
                 StickySession="true">
@@ -105,7 +108,14 @@
         <NavigationProperty Name="SecurityGroupPermission"/>
     </EntityType>
     <EntityType Name="SecurityGroupPermission" EntitySetName="SecurityGroupPermission" AutoProperties="true"/>
-    
+    <EntityType Name="SecurityPermission" EntitySetName="SecurityPermissions" AutoProperties="true">
+        <LineItem Qualifier="permissionList">
+            <DataField Values="permissionId,description" Importance="High"/>
+        </LineItem>
+    </EntityType>
+    <EntityType Name="RoleTypeSecurityPermission" EntitySetName="RoleTypeSecurityPermissions" AutoProperties="true">
+        <NavigationProperty Name="SecurityPermission"/>
+    </EntityType>
     <EntityType Name="ContactMech" EntitySetName="ContactMechs" AutoProperties="true">
         <NavigationProperty Name="TelecomNumber"/>
         <NavigationProperty Name="PostalAddress"/>

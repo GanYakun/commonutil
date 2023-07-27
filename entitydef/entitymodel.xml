@@ -242,5 +242,17 @@ under the License.
         </relation>
     </view-entity>
 
+    <entity entity-name="RoleTypeSecurityPermission" package-name="com.banfftech.common" title="RoleType SecurityPermission">
+        <field name="roleTypeId" type="id"><description>角色主键</description></field>
+        <field name="permissionId" type="id"><description>权限主键</description></field>
+        <prim-key field="roleTypeId"/>
+        <prim-key field="permissionId"/>
+        <relation type="one" fk-name="ROLE_TYPE_PERMISSION_ASSOC_PERMISSION" rel-entity-name="SecurityPermission">
+            <key-map field-name="permissionId"/>
+        </relation>
+        <relation type="one" fk-name="ROLE_TYPE_SECURITY_PERMISSION_ASSOC_ROLE_TYPE" rel-entity-name="RoleType">
+            <key-map field-name="roleTypeId"/>
+        </relation>
+    </entity>
 
 </entitymodel>

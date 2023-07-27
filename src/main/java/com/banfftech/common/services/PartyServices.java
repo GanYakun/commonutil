@@ -135,7 +135,7 @@ public class PartyServices {
         context.put("fromDate", UtilDateTime.nowTimestamp());
 
         GenericValue partyRole = delegator.findOne("PartyRole", UtilMisc.toMap("partyId", partyIdTo, "roleTypeId", roleTypeIdTo), false);
-        if (UtilValidate.isEmpty(partyRole)) {
+        if (UtilValidate.isEmpty(partyRole) && UtilValidate.isNotEmpty(roleTypeIdTo)) {
             Map<String, Object> partyRoleResultMap = dispatcher.runSync("banfftech.createPartyRole", UtilMisc.toMap("userLogin", context.get("userLogin"), "partyId", context.get("partyIdTo"), "roleTypeId", context.get("roleTypeIdTo")));
         }
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyRelationshipByEntityAuto", (GenericValue) context.get("userLogin"));
