@@ -25,7 +25,7 @@
         </HeaderInfo>
         <SelectionFields PropertyPath="partyId,partyName,phoneMobile,externalId"/>
         <LineItem>
-            <DataField Values="partyId,partyName,phoneMobile,externalId"/>
+            <DataField Values="partyId,partyName,PrimaryRole/RoleType/roleTypeId,phoneMobile,externalId"/>
         </LineItem>
         <Property Name="externalId" Required="true" Only="true"/>
         <Property Name="phoneMobile" Only="true"/>
