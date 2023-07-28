@@ -23,12 +23,13 @@
             <Title Path="partyName"/>
             <Description Path="externalId"/>
         </HeaderInfo>
-        <SelectionFields PropertyPath="partyId,partyName,phoneMobile,externalId"/>
+        <SelectionFields PropertyPath="partyName,phoneMobile,externalId"/>
         <LineItem>
-            <DataField Values="partyId,partyName,PrimaryRole/RoleType/roleTypeId,phoneMobile,externalId"/>
+            <DataField Values="partyName,PrimaryRole/RoleType/roleTypeId,phoneMobile,externalId"/>
         </LineItem>
         <Property Name="externalId" Required="true" Only="true"/>
-        <Property Name="phoneMobile" Only="true"/>
+        <Property Name="phoneMobile" Only="true" Required="true"/>
+        <Property Name="partyName" Required="true"/>
         <NavigationProperty Name="Person"/>
         <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole" />
@@ -66,6 +67,7 @@
                 Properties="partyRelationshipId,partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
         <Property Name="partyIdFrom" Required="true">
             <Text Path="FromParty/partyName" TextArrangement="TextOnly"/>
+            <ValueList CollectionPath="Parties" Label=""/>
         </Property>
         <Property Name="partyIdTo">
             <Text Path="ToParty/partyName" TextArrangement="TextOnly"/>
