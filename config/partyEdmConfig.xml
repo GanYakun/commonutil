@@ -19,8 +19,7 @@
     </EntityType>
 
     <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" AutoProperties="true"
-                DraftEntityName="PartyAndContactDraft" SearchOption="partyId,partyName,phoneMobile,externalId"
-                Handler="component://ningbomat/groovyScripts/partyManage/addHiddenProperty.groovy">
+                DraftEntityName="PartyAndContactDraft" SearchOption="partyId,partyName,phoneMobile,externalId">
         <HeaderInfo TypeName="Party Manage" TypeNamePlural="">
             <Title Path="partyName"/>
             <Description Path="externalId"/>
@@ -29,10 +28,10 @@
         <LineItem>
             <DataField Values="partyName,PrimaryRole/RoleType/roleTypeId,phoneMobile,externalId"/>
         </LineItem>
-        <Property Name="hiddenEdit" Type="Boolean"/>
         <Property Name="externalId" Required="true" Only="true"/>
         <Property Name="phoneMobile" Only="true" Required="true"/>
         <Property Name="partyName" Required="true"/>
+        <RelAlias Name="PrimaryRole" Relations="PartyRole" Properties="roleTypeId"/>
         <NavigationProperty Name="Person"/>
         <NavigationProperty Name="PartyGroup"/>
         <NavigationProperty Name="PartyRole" />
