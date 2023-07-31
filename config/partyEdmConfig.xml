@@ -112,7 +112,7 @@
         <NavigationProperty Name="SecurityGroupPermission"/>
     </EntityType>
     <EntityType Name="SecurityGroupPermission" EntitySetName="SecurityGroupPermission" AutoProperties="true"/>
-    <EntityType Name="SecurityPermission" EntitySetName="SecurityPermissions" AutoProperties="true">
+    <EntityType Name="SecurityPermission" EntitySetName="SecurityPermissions" AutoProperties="true" SearchOption="permissionId,description">
         <LineItem Qualifier="permissionList">
             <DataField Values="permissionId,description" Importance="High"/>
         </LineItem>
