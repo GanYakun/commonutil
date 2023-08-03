@@ -18,7 +18,7 @@
                             Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE)"/>
     </EntityType>
 
-    <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" AutoProperties="true"
+    <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts" AutoProperties="true" Orderby="-createdDate"
                 DraftEntityName="PartyAndContactDraft" SearchOption="partyId,partyName,phoneMobile,externalId">
         <HeaderInfo TypeName="Party Manage" TypeNamePlural="">
             <Title Path="partyName"/>
