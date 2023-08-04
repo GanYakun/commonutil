@@ -1,6 +1,9 @@
 package com.banfftech.common.util;
 
+import com.dpbird.odata.OdataParts;
 import com.dpbird.odata.OfbizODataException;
+import com.dpbird.odata.edm.OdataOfbizEntity;
+import org.apache.ofbiz.base.util.UtilGenerics;
 import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilValidate;
 import org.apache.ofbiz.entity.Delegator;
@@ -212,6 +215,12 @@ public class CommonUtils {
         return relationship.getString("partyIdFrom");
     }
 
+    /**
+     * @param [dispatcher, genericValue, userLogin]
+     * @Author yyp
+     * @Description //主要作用:删除GenericValue-通过调用标准命名格式的deleteService
+     * @Date 11:38 2023/8/4
+     **/
     public static void removeGenericValueByAutoService(LocalDispatcher dispatcher, GenericValue genericValue, GenericValue userLogin)
             throws GenericServiceException {
         String genericValueName = genericValue.getModelEntity().getEntityName();
@@ -219,6 +228,27 @@ public class CommonUtils {
         primaryKeyMaps.put("userLogin", userLogin);
         String serviceName = "banfftech.delete" + genericValueName;
         dispatcher.runSync(serviceName, primaryKeyMaps);
+    }
+
+    /**
+     * @param
+     * @Author yyp
+     * @Description //主要作用:1、使用范围Action(子对象Action)或多段查询的目标对象;2、获取多段式查询的第一段GenericValue
+     * @Date 11:40 2023/8/4
+     **/
+
+    public static OdataOfbizEntity getOdataPartByEntityType(Map<String, Object> oDataContext, String entityName)
+            throws GenericServiceException {
+
+        List<OdataParts> odataParts = UtilGenerics.checkList(oDataContext.get("odataParts"));
+        for (OdataParts odataPart : odataParts) {
+            String odataPartEntityTypeName = odataPart.getEdmEntityType().getName();
+            if (entityName.equals(odataPartEntityTypeName)) {
+                return (OdataOfbizEntity) odataPart.getEntityData();
+            }
+        }
+
+        return null;
     }
 
 }
