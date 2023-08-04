@@ -22,6 +22,7 @@ import java.util.*;
 public class CommonUtils {
 
     private static Object GenericEntityException;
+
     /**
      * 检查哪些状态可以切换
      *
@@ -100,7 +101,7 @@ public class CommonUtils {
     }
 
 
-    public static Map<String, Object> setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, String userLoginId)
+    public static Map<String, Object> setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context, String serviceName, String userLoginId)
             throws GeneralServiceException, GenericServiceException, GenericEntityException {
         Delegator delegator = dctx.getDispatcher().getDelegator();
 
@@ -108,7 +109,7 @@ public class CommonUtils {
         return setServiceFieldsAndRun(dctx, context, serviceName, userLogin);
     }
 
-    public static Map<String, Object> setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context,String serviceName, GenericValue userLogin)
+    public static Map<String, Object> setServiceFieldsAndRun(DispatchContext dctx, Map<String, Object> context, String serviceName, GenericValue userLogin)
             throws GeneralServiceException, GenericServiceException {
         LocalDispatcher dispatcher = dctx.getDispatcher();
 
@@ -126,6 +127,7 @@ public class CommonUtils {
         fieldCondition.put("attrName", attrName);
         return delegator.findOne(attrEntityName, fieldCondition, false);
     }
+
     public static String getObjectAttribute(GenericValue genericValue, String attrName) {
         GenericValue attrGv;
         try {
@@ -136,6 +138,7 @@ public class CommonUtils {
         }
         return null;
     }
+
     public static Boolean getObjectAttributeAsBoolean(GenericValue genericValue, String attrName) {
         GenericValue attrGv;
         try {
@@ -162,6 +165,7 @@ public class CommonUtils {
             attrGv.store();
         }
     }
+
     public static void setObjectAttributeBoolean(GenericValue genericValue, String attrName, boolean booleanValue) throws GenericEntityException {
         String attrValue = "N";
         if (booleanValue) {
@@ -170,10 +174,10 @@ public class CommonUtils {
         setObjectAttribute(genericValue, attrName, attrValue);
     }
 
-    public static String joinMultipleFields (List<String> linkFields){
+    public static String joinMultipleFields(List<String> linkFields) {
         StringBuilder resultField = new StringBuilder();
-        for (String linkField : linkFields){
-            if (UtilValidate.isNotEmpty(linkField)){
+        for (String linkField : linkFields) {
+            if (UtilValidate.isNotEmpty(linkField)) {
                 resultField.append(linkField);
             }
         }
@@ -202,10 +206,19 @@ public class CommonUtils {
     public static String getPartyCompany(String partyId, Delegator delegator) throws GenericEntityException {
         GenericValue relationship = EntityQuery.use(delegator).from("PartyRelationship")
                 .where("partyIdTo", partyId, "roleTypeIdFrom", "ORGANIZATION_UNIT").queryFirst();
-        if(UtilValidate.isEmpty(relationship)){
+        if (UtilValidate.isEmpty(relationship)) {
             return null;
         }
         return relationship.getString("partyIdFrom");
+    }
+
+    public static void removeGenericValueByAutoService(LocalDispatcher dispatcher, GenericValue genericValue, GenericValue userLogin)
+            throws GenericServiceException {
+        String genericValueName = genericValue.getModelEntity().getEntityName();
+        Map<String, Object> primaryKeyMaps = new HashMap<>(genericValue.getPrimaryKey());
+        primaryKeyMaps.put("userLogin", userLogin);
+        String serviceName = "banfftech.delete" + genericValueName;
+        dispatcher.runSync(serviceName, primaryKeyMaps);
     }
 
 }
