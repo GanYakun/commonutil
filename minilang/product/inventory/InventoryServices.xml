@@ -31,6 +31,8 @@ under the License.
         <set field="inventoryItem.availableToPromiseTotal" from-field="inventoryItemDetailSummary.availableToPromiseTotal"/>
         <set field="inventoryItem.quantityOnHandTotal" from-field="inventoryItemDetailSummary.quantityOnHandTotal"/>
         <set field="inventoryItem.accountingQuantityTotal" from-field="inventoryItemDetailSummary.accountingQuantityTotal"/>
+        <set field="inventoryItem.averageUnitPrice" from-field="inventoryItemDetailSummary.averageUnitPrice"/>
+        <set field="inventoryItem.averageUnitPriceIncludeTax" from-field="inventoryItemDetailSummary.averageUnitPriceIncludeTax"/>
         <store-value value-field="inventoryItem"/>
     </simple-method>
 </simple-methods>
