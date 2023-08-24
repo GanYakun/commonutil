@@ -41,6 +41,8 @@
                             Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_UNIT)"/>
         <NavigationProperty Name="CompanyPartyRelationship" IsCollection="false" Type="PartyRelationship"
                             Relations="ToPartyRelationship(roleTypeIdFrom=ORGANIZATION_ROLE)"/>
+        <NavigationProperty Name="TeamPartyRelationship" IsCollection="false" Type="TeamPartyRelationship"
+                            Relations="ToPartyRelationship(roleTypeIdFrom=PARTNER)" Cascade="true"/>
         <NavigationProperty Name="SecurityPermission" Type="SecurityPermission" IsCollection="true"
                             Relations="PartyRole/RoleType/RoleTypeSecurityPermission/SecurityPermission"/>
         <Action Name="PartyAndContactNewAction" IsBound="true" EntitySetPath="partyAndContact"
@@ -65,11 +67,26 @@
 
     <EntityType Name="Person" EntitySetName="People" Properties="partyId,firstName,lastName,nickname,gender,birthDate,comments"/>
 
+    <!-- 组织机构 -->
     <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" DraftEntityName="PartyRelationshipDraft"
                 Properties="partyRelationshipId,partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate" >
         <Property Name="partyIdFrom" Required="true">
             <Text Path="FromParty/partyName" TextArrangement="TextOnly"/>
             <ValueList CollectionPath="Parties" Label=""/>
+        </Property>
+        <Property Name="partyIdTo">
+            <Text Path="ToParty/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <NavigationProperty Name="FromParty" ReadOnly="true"/>
+        <NavigationProperty Name="ToParty" ReadOnly="true"/>
+    </EntityType>
+
+    <!-- 团队/班组 -->
+    <EntityType Name="TeamPartyRelationship" OfbizEntity="PartyRelationship" EntitySetName="TeamPartyRelationships" DraftEntityName="TeamPartyRelationshipDraft"
+                Properties="partyRelationshipId,partyIdFrom,partyIdTo,roleTypeIdFrom,roleTypeIdTo,fromDate">
+        <Property Name="partyIdFrom" >
+            <Text Path="FromParty/partyName" TextArrangement="TextOnly"/>
+            <ValueList CollectionPath="Parties" Label="" WithFixedValues="true"/>
         </Property>
         <Property Name="partyIdTo">
             <Text Path="ToParty/partyName" TextArrangement="TextOnly"/>
