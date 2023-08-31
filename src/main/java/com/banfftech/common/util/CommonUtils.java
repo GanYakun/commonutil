@@ -233,7 +233,7 @@ public class CommonUtils {
     /**
      * @param
      * @Author yyp
-     * @Description //主要作用:1、使用范围Action(子对象Action)或多段查询的目标对象;2、获取多段式查询的第一段GenericValue
+     * @Description //主要作用:1、使用范围Action(子对象Action)或多段查询的目标对象;2、获取多段式查询的其中某一段OdataOfbizEntity
      * @Date 11:40 2023/8/4
      **/
 
