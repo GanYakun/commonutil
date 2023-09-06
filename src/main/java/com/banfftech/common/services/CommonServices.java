@@ -191,10 +191,6 @@ public class CommonServices {
             createMediaParam.put("audioData", context.get("audioData"));
             dispatcher.runSync("banfftech.createAudioDataResource", createMediaParam);
         }
-        if (context.containsKey("otherData")) {
-            createMediaParam.put("otherData", context.get("otherData"));
-            dispatcher.runSync("banfftech.createAudioDataResource", createMediaParam);
-        }
         String contentId = (String) context.get("contentId");
         if (UtilValidate.isEmpty(contentId)) {
             contentId = delegator.getNextSeqId("Content");
@@ -222,19 +218,21 @@ public class CommonServices {
             Map<String, Object> updateMediaParam = UtilMisc.toMap("dataResourceId", dataResourceId, "userLogin", systemUser);
             if (context.containsKey("imageData")) {
                 updateMediaParam.put("imageData", context.get("imageData"));
-                dispatcher.runSync("banfftech.updateImageDataResource", updateMediaParam);
+                GenericValue imageDataResource = delegator.findOne("ImageDataResource", UtilMisc.toMap("dataResourceId", dataResourceId), false);
+                String service = UtilValidate.isEmpty(imageDataResource) ? "banfftech.createImageDataResource" : "banfftech.updateImageDataResource";
+                dispatcher.runSync(service, updateMediaParam);
             }
-            if (context.containsKey("videoData")) {
+            if (UtilValidate.isNotEmpty(context.get("videoData"))) {
                 updateMediaParam.put("videoData", context.get("videoData"));
-                dispatcher.runSync("banfftech.updateVideoDataResource", updateMediaParam);
+                GenericValue videoDataResource = delegator.findOne("VideoDataResource", UtilMisc.toMap("dataResourceId", dataResourceId), false);
+                String service = UtilValidate.isEmpty(videoDataResource) ? "banfftech.createVideoDataResource" : "banfftech.updateVideoDataResource";
+                dispatcher.runSync(service, updateMediaParam);
             }
-            if (context.containsKey("audioData")) {
+            if (UtilValidate.isNotEmpty(context.get("audioData"))) {
                 updateMediaParam.put("audioData", context.get("audioData"));
-                dispatcher.runSync("banfftech.updateAudioDataResource", updateMediaParam);
-            }
-            if (context.containsKey("otherData")) {
-                updateMediaParam.put("otherData", context.get("otherData"));
-                dispatcher.runSync("banfftech.updateAudioDataResource", updateMediaParam);
+                GenericValue audioDataResource = delegator.findOne("AudioDataResource", UtilMisc.toMap("dataResourceId", dataResourceId), false);
+                String service = UtilValidate.isEmpty(audioDataResource) ? "banfftech.createAudioDataResource" : "banfftech.updateAudioDataResource";
+                dispatcher.runSync(service, updateMediaParam);
             }
         }
         Map<String, Object> map = ServiceUtil.returnSuccess();
