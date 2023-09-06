@@ -300,6 +300,21 @@
         <description>Delete a ProductCategory</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+    <!--ProductContent-->
+    <service name="banfftech.createProductContent" default-entity-name="ProductContent" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a ProductContent </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
+    </service>
+    <service name="banfftech.updateProductContent" default-entity-name="ProductContent" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a ProductContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
+    </service>
+    <service name="banfftech.deleteProductContent" default-entity-name="ProductContent" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a ProductContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
     <!--ProductCategoryMember-->
     <service name="banfftech.createProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="create" auth="true">
         <description>Create a ProductCategoryMember </description>
