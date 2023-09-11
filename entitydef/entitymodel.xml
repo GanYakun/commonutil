@@ -111,6 +111,7 @@ under the License.
                  package-name="com.banfftech.common"
                  never-cache="true">
         <member-entity entity-alias="PTY" entity-name="Party"/>
+        <member-entity entity-alias="PER" entity-name="Person"/>
         <member-entity entity-alias="PPPH" entity-name="PartyContactMechPurpose"/><!-- PRIMARY_PHONE -->
         <member-entity entity-alias="PPHM" entity-name="PartyContactMechPurpose"/><!-- PHONE_MOBILE -->
         <member-entity entity-alias="PPE" entity-name="PartyContactMechPurpose"/><!-- PRIMARY_EMAIL -->
@@ -120,12 +121,18 @@ under the License.
         <member-entity entity-alias="PAPL" entity-name="PostalAddress"/><!-- primary location -->
         <member-entity entity-alias="CPE" entity-name="ContactMech"/><!-- email -->
         <alias-all entity-alias="PTY" group-by="true"/>
+        <alias-all entity-alias="PER">
+            <exclude field="partyId"/>
+        </alias-all>
         <alias name="primaryPhone" field="contactNumber" entity-alias="TPPH" group-by="true"/>
         <alias name="phoneMobile" field="contactNumber" entity-alias="TPHM" group-by="true"/>
         <alias name="primaryEmail" field="infoString" entity-alias="CPE" group-by="true"/>
         <alias name="address1" field="address1" entity-alias="PAPL" group-by="true"/>
         <alias name="address2" field="address2" entity-alias="PAPL" group-by="true"/>
         <alias name="city" field="city" entity-alias="PAPL" group-by="true"/>
+        <view-link entity-alias="PTY" rel-entity-alias="PER" rel-optional="true"><!-- primary phone number -->
+            <key-map field-name="partyId"/>
+        </view-link>
         <view-link entity-alias="PTY" rel-entity-alias="PPPH" rel-optional="true"><!-- primary phone number -->
             <key-map field-name="partyId"/>
             <entity-condition>
@@ -165,9 +172,9 @@ under the License.
         <view-link entity-alias="PPL" rel-entity-alias="PAPL" rel-optional="true"><!-- primary location -->
             <key-map field-name="contactMechId"/>
         </view-link>
-        <relation type="one-nofk" rel-entity-name="Person">
-            <key-map field-name="partyId"/>
-        </relation>
+<!--        <relation type="one-nofk" rel-entity-name="Person">-->
+<!--            <key-map field-name="partyId"/>-->
+<!--        </relation>-->
         <relation type="one-nofk" rel-entity-name="PartyGroup">
             <key-map field-name="partyId"/>
         </relation>

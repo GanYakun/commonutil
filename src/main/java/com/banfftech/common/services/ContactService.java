@@ -33,6 +33,9 @@ public class ContactService {
         //create Party
         Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, "banfftech.createParty", context, userLogin, null, null);
         Map<String, Object> serviceResult = dispatcher.runSync("banfftech.createParty", validFieldsForService);
+        //create Person
+        Map<String, Object> personCreateFields = ServiceUtil.setServiceFields(dispatcher, "banfftech.createPerson", context, userLogin, null, null);
+        dispatcher.runSync("banfftech.createPerson", personCreateFields);
         if (ServiceUtil.isError(serviceResult)) {
             return serviceResult;
         }
@@ -73,6 +76,10 @@ public class ContactService {
         //update Party
         Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, "banfftech.createParty", context, userLogin, null, null);
         dispatcher.runSync("banfftech.updateParty", validFieldsForService);
+
+        //update Person
+        Map<String, Object> updatePersonFields = ServiceUtil.setServiceFields(dispatcher, "banfftech.updatePerson", context, userLogin, null, null);
+        dispatcher.runSync("banfftech.updateParty", updatePersonFields);
 
         //update primaryPhone
         if (UtilValidate.isNotEmpty(primaryPhone)) {
