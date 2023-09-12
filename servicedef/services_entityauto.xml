@@ -151,12 +151,12 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
     <!--PartyGroup-->
-<!--    <service name="banfftech.createPartyGroup" default-entity-name="PartyGroup" engine="entity-auto" invoke="create"-->
-<!--             auth="true">-->
-<!--        <description>Create a PartyGroup</description>-->
-<!--        <auto-attributes include="pk" mode="INOUT" optional="true"/>-->
-<!--        <auto-attributes include="nonpk" mode="IN" optional="true"/>-->
-<!--    </service>-->
+    <service name="banfftech.createPartyGroup" default-entity-name="PartyGroup" engine="entity-auto" invoke="create"
+             auth="true">
+        <description>Create a PartyGroup</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
     <service name="banfftech.updatePartyGroup" default-entity-name="PartyGroup" engine="entity-auto" invoke="update"
              auth="true">
         <description>Update a PartyGroup</description>
