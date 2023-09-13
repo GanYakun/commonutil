@@ -45,19 +45,19 @@
         <attribute name="relContentTypeIdName" type="String" mode="IN" optional="true"/>
         <attribute name="relContentTypeIdValue" type="String" mode="IN" optional="true"/>
     </service>
-    <service name="banfftech.createPartyGroup" engine="java" default-entity-name="PartyGroup"
-             location="com.banfftech.common.services.PartyServices" invoke="createPartyGroup" auth="false">
-        <description>Create a PartyGroup</description>
-        <auto-attributes mode="INOUT" include="pk" optional="true"/>
-        <auto-attributes mode="IN" include="nonpk" optional="true"/>
-        <attribute name="partyTypeId" type="String" mode="IN" optional="true"/>
-        <attribute name="description" type="String" mode="IN" optional="true"/>
-        <attribute name="preferredCurrencyUomId" type="String" mode="IN" optional="true"/>
-        <attribute name="externalId" type="String" mode="IN" optional="true"/>
-        <attribute name="statusId" type="String" mode="IN" optional="true"/>
-        <override name="groupName" optional="false"/>
-        <override name="comments" allow-html="safe"/>
-    </service>
+<!--    <service name="banfftech.createPartyGroup" engine="java" default-entity-name="PartyGroup"-->
+<!--             location="com.banfftech.common.services.PartyServices" invoke="createPartyGroup" auth="false">-->
+<!--        <description>Create a PartyGroup</description>-->
+<!--        <auto-attributes mode="INOUT" include="pk" optional="true"/>-->
+<!--        <auto-attributes mode="IN" include="nonpk" optional="true"/>-->
+<!--        <attribute name="partyTypeId" type="String" mode="IN" optional="true"/>-->
+<!--        <attribute name="description" type="String" mode="IN" optional="true"/>-->
+<!--        <attribute name="preferredCurrencyUomId" type="String" mode="IN" optional="true"/>-->
+<!--        <attribute name="externalId" type="String" mode="IN" optional="true"/>-->
+<!--        <attribute name="statusId" type="String" mode="IN" optional="true"/>-->
+<!--        <override name="groupName" optional="false"/>-->
+<!--        <override name="comments" allow-html="safe"/>-->
+<!--    </service>-->
 
     <service name="banfftech.createPartyAndContact" engine="java"
              location="com.banfftech.common.services.ContactService" default-entity-name="PartyAndContact"
