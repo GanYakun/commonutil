@@ -83,6 +83,38 @@ public class LoginEvent {
     }
 
     /**
+     * 使用手机号和用戶ID登录
+     */
+    public static String telAndUserIdLogin(HttpServletRequest request, HttpServletResponse response) {
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        Map<String, String> loginForm = getLoginForm(request);
+        if (UtilValidate.isEmpty(loginForm)) {
+            return "error";
+        }
+        //Input Id
+        String inputId = loginForm.get("username");
+        String password = loginForm.get("password");
+        String partyId = null;
+        try {
+            GenericValue partyAndContact = EntityQuery.use(delegator).from("PartyAndContact").where("phoneMobile", inputId).queryFirst();
+            GenericValue userLogin = EntityQuery.use(delegator).from("UserLogin").where("userLoginId", inputId).queryFirst();
+            if (UtilValidate.isNotEmpty(partyAndContact)) {
+                partyId = partyAndContact.getString("partyId");
+            }else if(UtilValidate.isNotEmpty(userLogin)){
+                partyId = userLogin.getString("partyId");
+            }else {
+                String message = UtilProperties.getMessage(resource, "loginevents.username_not_found_reenter", UtilHttp.getLocale(request));
+                request.setAttribute("_ERROR_MESSAGE_", message);
+                return "error";
+            }
+            return doUserLogin(request, partyId, password);
+        } catch (GenericEntityException e) {
+            request.setAttribute("_ERROR_MESSAGE_", e.getMessage());
+            return "error";
+        }
+    }
+
+    /**
      * 手机号和external都可以登录
      */
     public static String externalAndTelLogin(HttpServletRequest request, HttpServletResponse response) {
