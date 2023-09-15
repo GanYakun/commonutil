@@ -35,7 +35,6 @@ public class ContactService {
         Map<String, Object> serviceResult = dispatcher.runSync("banfftech.createParty", validFieldsForService);
         //create Person
         Map<String, Object> personCreateFields = ServiceUtil.setServiceFields(dispatcher, "banfftech.createPerson", context, userLogin, null, null);
-        dispatcher.runSync("banfftech.createPerson", personCreateFields);
         if (ServiceUtil.isError(serviceResult)) {
             return serviceResult;
         }
