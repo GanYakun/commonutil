@@ -121,7 +121,7 @@ under the License.
         <member-entity entity-alias="PAPL" entity-name="PostalAddress"/><!-- primary location -->
         <member-entity entity-alias="CPE" entity-name="ContactMech"/><!-- email -->
         <alias-all entity-alias="PTY" group-by="true"/>
-        <alias-all entity-alias="PER">
+        <alias-all entity-alias="PER" group-by="true">
             <exclude field="partyId"/>
         </alias-all>
         <alias name="primaryPhone" field="contactNumber" entity-alias="TPPH" group-by="true"/>
