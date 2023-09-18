@@ -49,7 +49,7 @@ public class LoginEvent {
                 request.setAttribute("_ERROR_MESSAGE_", message);
                 return "error";
             }
-            return doUserLogin(request, party.getString("partyId"), password);
+            return doLoginByPartyId(request, party.getString("partyId"), password);
         } catch (GenericEntityException e) {
             request.setAttribute("_ERROR_MESSAGE_", e.getMessage());
             return "error";
@@ -75,7 +75,7 @@ public class LoginEvent {
                 request.setAttribute("_ERROR_MESSAGE_", message);
                 return "error";
             }
-            return doUserLogin(request, partyAndContact.getString("partyId"), password);
+            return doLoginByPartyId(request, partyAndContact.getString("partyId"), password);
         } catch (GenericEntityException e) {
             request.setAttribute("_ERROR_MESSAGE_", e.getMessage());
             return "error";
@@ -94,20 +94,16 @@ public class LoginEvent {
         //Input Id
         String inputId = loginForm.get("username");
         String password = loginForm.get("password");
-        String partyId = null;
+        String userLoginId = inputId;
         try {
             GenericValue partyAndContact = EntityQuery.use(delegator).from("PartyAndContact").where("phoneMobile", inputId).queryFirst();
-            GenericValue userLogin = EntityQuery.use(delegator).from("UserLogin").where("userLoginId", inputId).queryFirst();
             if (UtilValidate.isNotEmpty(partyAndContact)) {
-                partyId = partyAndContact.getString("partyId");
-            }else if(UtilValidate.isNotEmpty(userLogin)){
-                partyId = userLogin.getString("partyId");
-            }else {
-                String message = UtilProperties.getMessage(resource, "loginevents.username_not_found_reenter", UtilHttp.getLocale(request));
-                request.setAttribute("_ERROR_MESSAGE_", message);
-                return "error";
+                GenericValue userLogin = EntityQuery.use(delegator).from("UserLogin").where("partyId", partyAndContact.getString("partyId")).queryFirst();
+                if (UtilValidate.isNotEmpty(userLogin)) {
+                    userLoginId = userLogin.getString("userLoginId");
+                }
             }
-            return doUserLogin(request, partyId, password);
+            return doLoginByUserId(request, userLoginId, password);
         } catch (GenericEntityException e) {
             request.setAttribute("_ERROR_MESSAGE_", e.getMessage());
             return "error";
@@ -134,7 +130,7 @@ public class LoginEvent {
                 request.setAttribute("_ERROR_MESSAGE_", message);
                 return "error";
             }
-            return doUserLogin(request, partyAndContact.getString("partyId"), password);
+            return doLoginByPartyId(request, partyAndContact.getString("partyId"), password);
         } catch (GenericEntityException e) {
             request.setAttribute("_ERROR_MESSAGE_", e.getMessage());
             return "error";
@@ -144,9 +140,32 @@ public class LoginEvent {
     /**
      * 登录
      */
-    private static String doUserLogin(HttpServletRequest request, String partyId, String password) throws GenericEntityException {
+    private static String doLoginByPartyId(HttpServletRequest request, String partyId, String password) throws GenericEntityException {
         Delegator delegator = (Delegator) request.getAttribute("delegator");
         GenericValue userLogin = EntityQuery.use(delegator).from("UserLogin").where("partyId", partyId).queryFirst();
+        if (UtilValidate.isEmpty(userLogin)) {
+            String message = UtilProperties.getMessage(resource, "loginevents.username_not_found_reenter", UtilHttp.getLocale(request));
+            request.setAttribute("_ERROR_MESSAGE_", message);
+            return "error";
+        }
+        boolean useEncryption = "true".equals(EntityUtilProperties.getPropertyValue("security", "password.encrypt", delegator));
+        if (LoginServices.checkPassword(userLogin.getString("currentPassword"), useEncryption, password)) {
+            LoginWorker.doBasicLogin(userLogin, request);
+            request.setAttribute("_LOGIN_PASSED_", "TRUE");
+            return "success";
+        } else {
+            String message = UtilProperties.getMessage(resource, "loginservices.password_incorrect", request.getLocale());
+            request.setAttribute("_ERROR_MESSAGE_", message);
+            return "error";
+        }
+    }
+
+    /**
+     * 登录
+     */
+    private static String doLoginByUserId(HttpServletRequest request, String userLoginId, String password) throws GenericEntityException {
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        GenericValue userLogin = EntityQuery.use(delegator).from("UserLogin").where("userLoginId", userLoginId).queryOne();
         if (UtilValidate.isEmpty(userLogin)) {
             String message = UtilProperties.getMessage(resource, "loginevents.username_not_found_reenter", UtilHttp.getLocale(request));
             request.setAttribute("_ERROR_MESSAGE_", message);
