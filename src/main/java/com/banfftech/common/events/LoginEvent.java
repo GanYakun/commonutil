@@ -14,11 +14,15 @@ import org.apache.ofbiz.entity.condition.EntityExpr;
 import org.apache.ofbiz.entity.condition.EntityOperator;
 import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityUtilProperties;
+import org.apache.ofbiz.service.GenericServiceException;
 import org.apache.ofbiz.service.LocalDispatcher;
+import org.apache.ofbiz.service.ServiceUtil;
 import org.apache.ofbiz.webapp.control.LoginWorker;
+import org.apache.ofbiz.webapp.webdav.WebDavUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Locale;
 import java.util.Map;
 
@@ -57,6 +61,32 @@ public class LoginEvent {
     }
 
     /**
+     * externalId登录预处理
+     */
+    public static String externalLoginPreProcess(HttpServletRequest request, HttpServletResponse response) throws GenericServiceException, GenericEntityException {
+        GenericValue userLogin;
+        Map<String, Object> serviceMap = WebDavUtil.getCredentialsFromRequest(request);
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        if (serviceMap == null) {
+            userLogin = (GenericValue) request.getSession().getAttribute("userLogin");
+            request.setAttribute("userLogin", userLogin);
+            return "success";
+        }
+        String userLoginId = null;
+        if (UtilValidate.isNotEmpty(serviceMap.get("login.username"))) {
+            GenericValue partyAndContact = EntityQuery.use(delegator).from("Party").where("externalId", serviceMap.get("login.username")).queryFirst();
+            if (UtilValidate.isNotEmpty(partyAndContact)){
+                GenericValue userLoginEntity = EntityQuery.use(delegator).from("UserLogin").where("partyId", partyAndContact.getString("partyId")).queryFirst();
+                if (UtilValidate.isNotEmpty(userLoginEntity)){
+                    userLoginId = userLoginEntity.getString("userLoginId");
+                }
+            }
+        }
+        serviceMap.put("login.username", userLoginId);
+        return preProcessLogin(serviceMap, request);
+    }
+
+    /**
      * 使用手机号登录
      */
     public static String telLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -80,6 +110,32 @@ public class LoginEvent {
             request.setAttribute("_ERROR_MESSAGE_", e.getMessage());
             return "error";
         }
+    }
+
+    /**
+     * 手机号登录预处理
+     */
+    public static String telLoginPreProcess(HttpServletRequest request, HttpServletResponse response) throws GenericServiceException, GenericEntityException {
+        GenericValue userLogin;
+        Map<String, Object> serviceMap = WebDavUtil.getCredentialsFromRequest(request);
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        if (serviceMap == null) {
+            userLogin = (GenericValue) request.getSession().getAttribute("userLogin");
+            request.setAttribute("userLogin", userLogin);
+            return "success";
+        }
+        String userLoginId = null;
+        if (UtilValidate.isNotEmpty(serviceMap.get("login.username"))) {
+            GenericValue partyAndContact = EntityQuery.use(delegator).from("PartyAndContact").where("phoneMobile", serviceMap.get("login.username")).queryFirst();
+            if (UtilValidate.isNotEmpty(partyAndContact)){
+                GenericValue userLoginEntity = EntityQuery.use(delegator).from("UserLogin").where("partyId", partyAndContact.getString("partyId")).queryFirst();
+                if (UtilValidate.isNotEmpty(userLoginEntity)){
+                    userLoginId = userLoginEntity.getString("userLoginId");
+                }
+            }
+        }
+        serviceMap.put("login.username", userLoginId);
+        return preProcessLogin(serviceMap, request);
     }
 
     /**
@@ -111,6 +167,33 @@ public class LoginEvent {
     }
 
     /**
+     * 手机号和用户ID登录预处理
+     */
+    public static String telAndUserLoginPreProcess(HttpServletRequest request, HttpServletResponse response) throws GenericServiceException, GenericEntityException {
+        GenericValue userLogin;
+        Map<String, Object> serviceMap = WebDavUtil.getCredentialsFromRequest(request);
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        if (serviceMap == null) {
+            userLogin = (GenericValue) request.getSession().getAttribute("userLogin");
+            request.setAttribute("userLogin", userLogin);
+            return "success";
+        }
+        String userLoginId = (String) serviceMap.get("login.username");
+        if (UtilValidate.isNotEmpty(serviceMap.get("login.username"))) {
+            GenericValue partyAndContact = EntityQuery.use(delegator).from("PartyAndContact").where("phoneMobile", serviceMap.get("login.username")).queryFirst();
+            if (UtilValidate.isNotEmpty(partyAndContact)){
+                GenericValue userLoginEntity = EntityQuery.use(delegator).from("UserLogin").where("partyId", partyAndContact.getString("partyId")).queryFirst();
+                if (UtilValidate.isNotEmpty(userLoginEntity)){
+                    userLoginId = userLoginEntity.getString("userLoginId");
+                }
+            }
+        }
+        serviceMap.put("login.username", userLoginId);
+        return preProcessLogin(serviceMap, request);
+    }
+
+
+    /**
      * 手机号和external都可以登录
      */
     public static String externalAndTelLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -135,6 +218,54 @@ public class LoginEvent {
             request.setAttribute("_ERROR_MESSAGE_", e.getMessage());
             return "error";
         }
+    }
+
+    /**
+     * 手机号和external登录预处理
+     */
+    public static String externalAndTelLoginPreProcess(HttpServletRequest request, HttpServletResponse response) throws GenericServiceException, GenericEntityException {
+        Delegator delegator = (Delegator) request.getAttribute("delegator");
+        GenericValue userLogin;
+        Map<String, Object> serviceMap = WebDavUtil.getCredentialsFromRequest(request);
+        if (serviceMap == null) {
+            userLogin = (GenericValue) request.getSession().getAttribute("userLogin");
+            request.setAttribute("userLogin", userLogin);
+            return "success";
+        }
+        if (UtilValidate.isNotEmpty(serviceMap.get("login.username"))) {
+            //Compatible with tel login and externalId login
+            EntityCondition findCondition = EntityCondition.makeCondition(UtilMisc.toList(EntityCondition.makeCondition("externalId", serviceMap.get("login.username")),
+                    EntityCondition.makeCondition("phoneMobile", serviceMap.get("login.username"))), EntityOperator.OR);
+            GenericValue partyAndContact = EntityQuery.use(delegator).from("PartyAndContact").where(findCondition).queryFirst();
+            if (UtilValidate.isEmpty(partyAndContact)) {
+                return "error";
+            }
+            userLogin = EntityQuery.use(delegator).from("UserLogin").where("partyId", partyAndContact.getString("partyId")).queryFirst();
+            if (UtilValidate.isEmpty(userLogin)) {
+                return "error";
+            }
+            serviceMap.put("login.username", userLogin.getString("userLoginId"));
+        }
+        return preProcessLogin(serviceMap, request);
+    }
+
+    private static String preProcessLogin(Map<String, Object> serviceMap, HttpServletRequest request) throws GenericServiceException {
+        if (UtilValidate.isEmpty(serviceMap.get("login.username"))) {
+            String message = UtilProperties.getMessage(resource, "loginevents.username_not_found_reenter", UtilHttp.getLocale(request));
+            request.setAttribute("_ERROR_MESSAGE_", message);
+            return "error";
+        }
+        serviceMap.put("locale", UtilHttp.getLocale(request));
+        LocalDispatcher dispatcher = (LocalDispatcher) request.getAttribute("dispatcher");
+        Map<String, Object> result = dispatcher.runSync("userLogin", serviceMap);
+        if (ServiceUtil.isError(result) || ServiceUtil.isFailure(result)) {
+            return "error";
+        }
+        GenericValue userLogin = (GenericValue) result.get("userLogin");
+        request.setAttribute("userLogin", userLogin);
+        HttpSession httpSession = request.getSession(true);
+        httpSession.setAttribute("userLogin", userLogin);
+        return "success";
     }
 
     /**
