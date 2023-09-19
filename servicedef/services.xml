@@ -73,6 +73,25 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
 
+    <service name="banfftech.createUserLoginAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="UserLoginAndContact"
+             invoke="createUserLoginAndContact">
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="userLoginId" optional="false"/>
+        <override name="currentPassword" optional="false"/>
+    </service>
+
+    <service name="banfftech.updateUserLoginAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="UserLoginAndContact"
+             invoke="updateUserLoginAndContact">
+        <auto-attributes include="pk" mode="INOUT" />
+        <auto-attributes include="nonpk" mode="IN" optional="true">
+            <!-- 修改密码做单独的服务 -->
+            <exclude field-name="currentPassword"/>
+        </auto-attributes>
+    </service>
+
     <service name="banfftech.createContentAndMediaDataResource" engine="java"
              location="com.banfftech.common.services.CommonServices" default-entity-name="ContentAndMediaDataResource"
              invoke="createContentAndMediaDataResource">

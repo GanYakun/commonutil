@@ -22,23 +22,88 @@ public class ContactService {
     public static Map<String, Object> createPartyAndContact(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException {
         GenericValue userLogin = (GenericValue) context.get("userLogin");
         LocalDispatcher dispatcher = dctx.getDispatcher();
+        //create Party
+        Map<String, Object> serviceResult = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createParty", userLogin);
+        if (ServiceUtil.isError(serviceResult)) {
+            return serviceResult;
+        }
+        //create Person
+        String partyId = (String) serviceResult.get("partyId");
+        context.put("partyId", partyId);
+        Map<String, Object> personServiceResult = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPerson", userLogin);
+        if (ServiceUtil.isError(personServiceResult)) {
+            return serviceResult;
+        }
+        //create Contact
+        createContact(dispatcher, userLogin, partyId, context);
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        resultMap.put("partyId", partyId);
+        return resultMap;
+    }
+
+    public static Map<String, Object> updatePartyAndContact(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException, GenericEntityException {
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        String partyId = (String) context.get("partyId");
+        //update Party
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty", userLogin);
+        //update Person
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updatePerson", userLogin);
+        //update Contact
+        updateContact(dispatcher, userLogin, partyId, context);
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        resultMap.put("partyId", partyId);
+        return resultMap;
+    }
+
+    public static Map<String, Object> createUserLoginAndContact(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException {
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        //create Party
+        Map<String, Object> serviceResult = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createParty", userLogin);
+        String partyId = (String) serviceResult.get("partyId");
+        context.put("partyId", partyId);
+        //create UserLogin
+        context.put("currentPasswordVerify", context.get("currentPassword"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "createUserLogin", userLogin);
+
+        createContact(dispatcher, userLogin, partyId, context);
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        resultMap.put("userLoginId", context.get("userLoginId"));
+        return resultMap;
+    }
+
+    public static Map<String, Object> updateUserLoginAndContact(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException, GenericEntityException {
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+        LocalDispatcher dispatcher = dctx.getDispatcher();
         Delegator delegator = dctx.getDelegator();
+        String userLoginId = (String) context.get("userLoginId");
+        GenericValue updateUserLogin = delegator.findOne("UserLogin", UtilMisc.toMap("userLoginId", userLoginId), false);
+        String partyId = updateUserLogin.getString("partyId");
+        if (UtilValidate.isEmpty(context.get("partyId"))) {
+            context.put("partyId", partyId);
+        }
+        //update UserLogin
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateUserLogin", userLogin);
+        //update Party
+        if (UtilValidate.isNotEmpty(partyId)) {
+            context.put("partyId", partyId);
+            CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateParty", userLogin);
+            //update contact
+            updateContact(dispatcher, userLogin, partyId, context);
+        }
+        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
+        resultMap.put("userLoginId", context.get("userLoginId"));
+        return resultMap;
+    }
+
+    private static void createContact(LocalDispatcher dispatcher, GenericValue userLogin, String partyId, Map<String, Object> context) throws GenericServiceException {
         String primaryPhone = (String) context.get("primaryPhone");
         String phoneMobile = (String) context.get("phoneMobile");
         String primaryEmail = (String) context.get("primaryEmail");
         String address1 = (String) context.get("address1");
         String address2 = (String) context.get("address2");
         String city = (String) context.get("city");
-
-        //create Party
-        Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, "banfftech.createParty", context, userLogin, null, null);
-        Map<String, Object> serviceResult = dispatcher.runSync("banfftech.createParty", validFieldsForService);
-        //create Person
-        Map<String, Object> personCreateFields = ServiceUtil.setServiceFields(dispatcher, "banfftech.createPerson", context, userLogin, null, null);
-        if (ServiceUtil.isError(serviceResult)) {
-            return serviceResult;
-        }
-        String partyId = (String) serviceResult.get("partyId");
         //create primaryPhone
         if (UtilValidate.isNotEmpty(primaryPhone)) {
             createPartyPrimaryPhone(dispatcher, partyId, primaryPhone, userLogin);
@@ -55,31 +120,16 @@ public class ContactService {
         if (UtilValidate.isNotEmpty(address1) || UtilValidate.isNotEmpty(address2) || UtilValidate.isNotEmpty(city)) {
             createPartyPrimaryLocation(dispatcher, partyId, address1, address2, city, userLogin);
         }
-        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
-        resultMap.put("partyId", partyId);
-        return resultMap;
     }
 
-    public static Map<String, Object> updatePartyAndContact(DispatchContext dctx, Map<String, Object> context) throws GeneralServiceException, GenericServiceException, GenericEntityException {
-        GenericValue userLogin = (GenericValue) context.get("userLogin");
-        LocalDispatcher dispatcher = dctx.getDispatcher();
-        Delegator delegator = dctx.getDelegator();
-        String partyId = (String) context.get("partyId");
+    private static void updateContact(LocalDispatcher dispatcher, GenericValue userLogin, String partyId, Map<String, Object> context) throws GenericServiceException, GenericEntityException {
         String primaryPhone = (String) context.get("primaryPhone");
         String phoneMobile = (String) context.get("phoneMobile");
         String primaryEmail = (String) context.get("primaryEmail");
         String address1 = (String) context.get("address1");
         String address2 = (String) context.get("address2");
         String city = (String) context.get("city");
-
-        //update Party
-        Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, "banfftech.createParty", context, userLogin, null, null);
-        dispatcher.runSync("banfftech.updateParty", validFieldsForService);
-
-        //update Person
-        Map<String, Object> updatePersonFields = ServiceUtil.setServiceFields(dispatcher, "banfftech.updatePerson", context, userLogin, null, null);
-        dispatcher.runSync("banfftech.updateParty", updatePersonFields);
-
+        Delegator delegator = dispatcher.getDelegator();
         //update primaryPhone
         if (UtilValidate.isNotEmpty(primaryPhone)) {
             GenericValue partyContactMechPurpose = EntityQuery.use(delegator).from("PartyContactMechPurpose").where("partyId", partyId, "contactMechPurposeTypeId", "PRIMARY_PHONE").select("contactMechId").cache().queryFirst();
@@ -120,9 +170,6 @@ public class ContactService {
                 dispatcher.runSync("banfftech.updatePostalAddress", UtilMisc.toMap("contactMechId", contactMechId, "address1", address1, "address2", address2, "city", city, "userLogin", userLogin));
             }
         }
-        Map<String, Object> resultMap = ServiceUtil.returnSuccess();
-        resultMap.put("partyId", partyId);
-        return resultMap;
     }
 
     public static String createPartyPrimaryPhone(LocalDispatcher dispatcher, String partyId, String primaryPhone, GenericValue userLogin) throws GenericServiceException {
