@@ -190,6 +190,9 @@ under the License.
         <relation type="many" title="To" rel-entity-name="PartyRelationship">
             <key-map field-name="partyId" rel-field-name="partyIdTo"/>
         </relation>
+        <relation type="one-nofk" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
     </view-entity>
 
     <view-entity entity-name="ContentAndMediaDataResource"
