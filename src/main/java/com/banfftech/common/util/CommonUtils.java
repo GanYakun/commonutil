@@ -3,6 +3,7 @@ package com.banfftech.common.util;
 import com.dpbird.odata.OdataParts;
 import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.edm.OdataOfbizEntity;
+import org.apache.ofbiz.base.crypto.HashCrypt;
 import org.apache.ofbiz.base.util.UtilGenerics;
 import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilValidate;
@@ -12,11 +13,14 @@ import org.apache.ofbiz.entity.GenericPK;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityUtil;
+import org.apache.ofbiz.entity.util.EntityUtilProperties;
 import org.apache.ofbiz.service.*;
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.Property;
 
 import java.util.*;
+
+import static org.apache.ofbiz.common.login.LoginServices.getHashType;
 
 /**
  * @author scy
@@ -249,6 +253,21 @@ public class CommonUtils {
         }
 
         return null;
+    }
+
+    /**
+     * @param [delegator, currentPassword]
+     * @Author yyp
+     * @Description 作用:输入铭文密码,获取到对应的密文密码
+     * @Date 11:57 2023/9/20
+     **/
+    public static String getEncryptedPassword(Delegator delegator, String currentPassword)
+            throws GenericServiceException {
+
+        boolean useEncryption = "true".equals(EntityUtilProperties.getPropertyValue("security", "password.encrypt", delegator));
+        currentPassword = useEncryption ? HashCrypt.cryptUTF8(getHashType(), null, currentPassword) : currentPassword;
+
+        return currentPassword;
     }
 
 }
