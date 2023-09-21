@@ -270,4 +270,19 @@ public class CommonUtils {
         return currentPassword;
     }
 
+    /**
+     * 获取一个对象的创建人
+     */
+    public static GenericValue getCreateParty(GenericValue genericValue) throws GenericEntityException {
+        if (genericValue == null  || !genericValue.getModelEntity().isField("createdByUserLogin")
+                || UtilValidate.isEmpty(genericValue.getString("createdByUserLogin"))) {
+            return null;
+        }
+        GenericValue userLogin = EntityQuery.use(genericValue.getDelegator()).from("UserLogin").where("userLoginId", genericValue.getString("createdByUserLogin")).queryOne();
+        if (UtilValidate.isEmpty(userLogin)) {
+            return null;
+        }
+        return userLogin.getRelatedOne("Party", false);
+    }
+
 }
