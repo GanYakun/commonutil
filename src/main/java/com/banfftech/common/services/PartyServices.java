@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class PartyServices {
     private static final String MODULE = PartyServices.class.getName();
-//    private static final String RESOURCE = "PartyUiLabels";
+    //    private static final String RESOURCE = "PartyUiLabels";
     private static final String RES_ERROR = "PartyErrorUiLabels";
 
     public static Map<String, Object> createPartyGroup(DispatchContext ctx, Map<String, ? extends Object> context) {
@@ -138,8 +138,6 @@ public class PartyServices {
         if (UtilValidate.isEmpty(partyRole) && UtilValidate.isNotEmpty(roleTypeIdTo)) {
             Map<String, Object> partyRoleResultMap = dispatcher.runSync("banfftech.createPartyRole", UtilMisc.toMap("userLogin", context.get("userLogin"), "partyId", context.get("partyIdTo"), "roleTypeId", context.get("roleTypeIdTo")));
         }
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyRelationshipByEntityAuto", (GenericValue) context.get("userLogin"));
-
-        return resultMap;
+        return CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyRelationshipByEntityAuto", (GenericValue) context.get("userLogin"));
     }
 }
