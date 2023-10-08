@@ -303,6 +303,17 @@
         <description>Delete a Product</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+    <!--ProductAttribute-->
+    <service name="banfftech.createProductAttribute" engine="entity-auto" default-entity-name="ProductAttribute" auth="true" invoke="create">
+        <description>Create a ProductAttribute</description>
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateProductAttribute" engine="entity-auto" default-entity-name="ProductAttribute" auth="true" invoke="update">
+        <description>Create a ProductAttribute</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
     <!--ProductCategory-->
     <service name="banfftech.createProductCategory" default-entity-name="ProductCategory" engine="entity-auto" invoke="create" auth="true">
         <description>Create a ProductCategory </description>
@@ -333,6 +344,21 @@
         <description>Delete a ProductContent</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+    <!--FixedAsset-->
+    <service name="banfftech.createFixedAsset" default-entity-name="FixedAsset" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a FixedAsset </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateFixedAsset" default-entity-name="FixedAsset" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a FixedAsset</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteFixedAsset" default-entity-name="FixedAsset" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a FixedAsset</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
     <!--ProductCategoryMember-->
     <service name="banfftech.createProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="create" auth="true">
         <description>Create a ProductCategoryMember </description>
@@ -346,6 +372,24 @@
     </service>
     <service name="banfftech.deleteProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="delete" auth="true">
         <description>Delete a ProductCategoryMember</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+<!--G-->
+    <!--GoodIdentification-->
+    <service name="banfftech.createGoodIdentification" default-entity-name="GoodIdentification" engine="entity-auto" invoke="create"
+             auth="true">
+        <description>Create a GoodIdentification</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
+    </service>
+    <service name="banfftech.updateGoodIdentification" default-entity-name="GoodIdentification" engine="entity-auto" invoke="update"
+             auth="true">
+        <description>Update a GoodIdentification</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" allow-html="any" optional="true"/>
+    </service>
+    <service name="banfftech.deleteGoodIdentification" default-entity-name="GoodIdentification" engine="entity-auto" invoke="delete">
+        <description>Delete a GoodIdentification</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 <!--S-->
