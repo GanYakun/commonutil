@@ -378,21 +378,6 @@
         <description>Delete a FixedAssetAttribute</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
-    <!--FixedAssetAttributeDate-->
-    <service name="banfftech.createFixedAssetAttributeDate" default-entity-name="FixedAssetAttributeDate" engine="entity-auto" invoke="create" auth="true">
-        <description>Create a FixedAssetAttributeDate </description>
-        <auto-attributes include="pk" mode="INOUT" optional="true"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
-    <service name="banfftech.updateFixedAssetAttributeDate" default-entity-name="FixedAssetAttributeDate" engine="entity-auto" invoke="update" auth="true">
-        <description>Update a FixedAssetAttributeDate</description>
-        <auto-attributes include="pk" mode="IN" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
-    <service name="banfftech.deleteFixedAssetAttributeDate" default-entity-name="FixedAssetAttributeDate" engine="entity-auto" invoke="delete" auth="true">
-        <description>Delete a FixedAssetAttributeDate</description>
-        <auto-attributes include="pk" mode="IN" optional="false"/>
-    </service>FixedAssetAttributeDate
     <!--ProductCategoryMember-->
     <service name="banfftech.createProductCategoryMember" default-entity-name="ProductCategoryMember" engine="entity-auto" invoke="create" auth="true">
         <description>Create a ProductCategoryMember </description>
