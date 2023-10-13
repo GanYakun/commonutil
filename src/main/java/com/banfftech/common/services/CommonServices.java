@@ -1,6 +1,6 @@
 package com.banfftech.common.services;
 
-import com.banfftech.common.util.CommonUtils;
+import com.banfftech.common.tools.util.CommonUtils;
 import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.Util;
 import org.apache.ofbiz.base.util.*;
@@ -10,7 +10,6 @@ import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.condition.EntityCondition;
 import org.apache.ofbiz.entity.model.ModelEntity;
 import org.apache.ofbiz.entity.model.ModelField;
-import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.*;
 

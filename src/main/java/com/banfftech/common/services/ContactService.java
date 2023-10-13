@@ -1,7 +1,6 @@
 package com.banfftech.common.services;
 
-import com.banfftech.common.util.CommonUtils;
-import org.apache.ofbiz.base.util.Debug;
+import com.banfftech.common.tools.util.CommonUtils;
 import org.apache.ofbiz.base.util.UtilDateTime;
 import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilValidate;
