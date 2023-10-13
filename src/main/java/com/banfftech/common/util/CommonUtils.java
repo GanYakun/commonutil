@@ -1,4 +1,4 @@
-package com.banfftech.common.tools.util;
+package com.banfftech.common.util;
 
 import com.dpbird.odata.OdataParts;
 import com.dpbird.odata.OfbizODataException;

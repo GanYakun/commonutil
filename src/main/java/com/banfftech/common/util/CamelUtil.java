@@ -1,4 +1,4 @@
-package com.banfftech.common.tools.util;
+package com.banfftech.common.util;
 
 import org.apache.http.entity.ContentType;
 import org.apache.ofbiz.base.conversion.JSONConverters;
