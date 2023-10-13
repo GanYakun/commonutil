@@ -347,4 +347,17 @@ under the License.
         </relation>
     </entity>
 
+    <entity entity-name="RoleTypeSecurityGroup" package-name="com.banfftech.common" title="RoleType RoleTypeSecurityGroup">
+        <field name="roleTypeId" type="id"><description>角色主键</description></field>
+        <field name="groupId" type="id"><description>安全组主键</description></field>
+        <prim-key field="roleTypeId"/>
+        <prim-key field="groupId"/>
+        <relation type="one" fk-name="RT_SG_GRO" rel-entity-name="SecurityGroup">
+            <key-map field-name="groupId"/>
+        </relation>
+        <relation type="one" fk-name="RT_SG_RT" rel-entity-name="RoleType">
+            <key-map field-name="roleTypeId"/>
+        </relation>
+    </entity>
+
 </entitymodel>
