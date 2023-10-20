@@ -1,0 +1,247 @@
+<ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
+    <ComplexType Name="ApproverData">
+        <Property Name="nodeId" Type="Edm.Decimal"/>
+        <Property Name="nodeName" Type="String"/>
+        <Property Name="selectList" Type="String"/>
+    </ComplexType>
+    <!--=====================================     业务主对象EntityType definition Begin    =====================================-->
+    <!--资产领用-->
+    <EntityType Name="AssetPickUpRequest" OfbizEntity="Requirement" EntitySetName="AssetPickUpRequests" AttrEntityName="RequirementAttribute"
+                AutoProperties="true"
+                Handler="component://bfcommon/groovyScripts/businessManage/LeaveApproval.groovy"
+                EntityCondition="requirementTypeId=WORK_REQUIREMENT and partyId=${userLogin.partyId}" OfbizType="requirementTypeId=WORK_REQUIREMENT">
+        <SelectionFields PropertyPath="productId,assetPurpose,description,supplier,useCase"/>
+        <Property Name="isHiddenSubmitApproval" Type="Boolean"/>
+        <Property Name="isHiddenCancelApproval" Type="Boolean"/>
+        <Property Name="requirementId" Computed="true"/>
+        <Property Name="partyId" Required="true" FieldControl="Mandatory">
+            <Text Path="Member/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="productId" FieldControl="Mandatory" Required="true">
+            <Text Path="Product/productName" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="statusId" DefaultValue="APPROVAL_CREATED">
+            <Text Path="RequestStatus/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="assetPurpose" Type="String" IsAttribute="true" Label="${assetPurpose}"/>
+        <Property Name="supplier" Type="String" IsAttribute="true" Label="${supplier}"/>
+        <Function Name="GetApproverData" OfbizService="com.banfftech.event.ApprovalEvent.getApproverData"
+                  IsBound="true">
+            <Parameter Name="assetPickUpRequest" Type="AssetPickUpRequest" Nullable="false" IsCollection="false"/>
+            <ReturnType Type="ApproverData" IsCollection="true"/>
+        </Function>
+        <Action Name="SubmitApproval" IsBound="true" OfbizService="com.banfftech.event.ApprovalEvent.submitApproval">
+            <Parameter Name="assetPickUpRequest" Type="AssetPickUpRequest" Nullable="false" IsCollection="false"/>
+            <Parameter Name="approverData" Type="String" Nullable="true" IsCollection="false"/>
+        </Action>
+        <Action Name="CancelApproval" IsBound="true" OfbizService="com.banfftech.event.ApprovalEvent.cancelApproval">
+            <Parameter Name="assetPickUpRequest" Type="AssetPickUpRequest" Nullable="false" IsCollection="false"/>
+        </Action>
+        <FieldGroup Qualifier="BaseInfo" Label="基本信息">
+            <DataField Values="assetPurpose,Product/ProductModel/idValue,supplier,useCase,quantity,estimatedBudget"
+                       Importance="High"/>
+        </FieldGroup>
+        <FieldGroup Qualifier="ApplicantInformation" Label="申请人信息">
+            <DataField
+                    Values="partyId,Member/externalId,Member/phoneMobile,Member/primaryEmail,Member/Department/partyName"
+                    Importance="High"/>
+        </FieldGroup>
+        <LineItem>
+            <DataField Values="partyId,productId,assetPurpose,supplier,description,useCase,quantity,estimatedBudget,statusId"
+                       Importance="High"/>
+        </LineItem>
+        <HeaderInfo TypeName="AssetPickUpRequest Manage" TypeNamePlural="资产领用申请信息">
+            <Title Path="productId"/>
+            <Description Path="description"/>
+        </HeaderInfo>
+        <NavigationProperty Name="RequestStatus" Relations="StatusItem" Type="RequestStatus"
+                            IsCollection="false"/>
+        <NavigationProperty Name="Product"
+                            IsCollection="false"/>
+        <NavigationProperty Name="Member" Relations="PartyAndContact" Type="Member"
+                            IsCollection="false"/>
+        <!--关联审批记录-->
+        <NavigationProperty Name="ApprovalRecord" Relations="WorkFlowMember(memberEntityName=Requirement)/WorkEffort/Approval" Type="ApprovalRecord"
+                            IsCollection="true"/>
+
+    </EntityType>
+
+    <!--资产录入-->
+    <EntityType Name="AssetEntry" OfbizEntity="FixedAsset" EntitySetName="AssetEntries"
+                AttrEntityName="FixedAssetAttribute" AttrDateEntityName="FixedAssetAttributeDate" AutoProperties="true" Orderby="-dateAcquired"
+                EntityCondition="fixedAssetTypeId=EQUIPMENT" OfbizType="fixedAssetTypeId=EQUIPMENT">
+        <SelectionFields PropertyPath="fixedAssetName,instanceOfProductId,InstanceOfProduct/ProductModel/idValue,dateAcquired,serialNumber"/>
+        <ValueList CollectionPath="AssetEntries" WithFixedValues="false" ParameterDisplayOnly="fixedAssetName,instanceOfProductId,InstanceOfProduct/ProductModel/idValue,dateAcquired,serialNumber"/>
+        <Property Name="fixedAssetId" Computed="true"/>
+        <Property Name="fixedAssetName" FieldControl="Mandatory" Required="true"/>
+        <Property Name="dateAcquired" FieldControl="Mandatory" Required="true"/>
+        <Property Name="serialNumber" FieldControl="Mandatory" Required="true" Immutable="true"/>
+        <Property Name="instanceOfProductId" FieldControl="Mandatory" Required="true">
+            <Text Path="InstanceOfProduct/productName" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="statusId" DefaultValue="FIXEDASSET_CREATED" Immutable="true">
+            <Text Path="FixedAssetStatus/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="externalId" Type="String" IsAttribute="true" Immutable="true" Label="${externalId}"/>
+        <Property Name="assetPurpose" Type="String" IsAttribute="true" Label="${assetPurpose}"/>
+        <Property Name="procurementLocation" Type="String" IsAttribute="true" Label="${procurementLocation}"/>
+        <Property Name="mainConfiguration" Type="String" IsAttribute="true" Label="${mainConfiguration}"/>
+        <Property Name="assetSource" Type="String" IsAttribute="true" Label="${assetSource}"/>
+        <Property Name="systemAndVersion" Type="String" IsAttribute="true" Label="${systemAndVersion}"/>
+        <Property Name="warehousingDate" Type="Edm.DateTimeOffset" IsDateAttribute="true" Label="${warehousingDate}"/>
+        <Property Name="purchaseInvoiceDate" Type="Edm.DateTimeOffset" IsDateAttribute="true" Label="${purchaseInvoiceDate}"/>
+        <Property Name="description" Type="String" IsAttribute="true" Label="${description}"/>
+        <FieldGroup Qualifier="BaseInfo" Label="基本信息">
+            <DataField
+                    Values="instanceOfProductId,InstanceOfProduct/ProductModel/idValue,dateAcquired,warehousingDate"
+                    Importance="High"/>
+        </FieldGroup>
+        <FieldGroup Qualifier="DetailInfo" Label="详细信息">
+            <DataField
+                    Values="assetSource,procurementLocation,assetPurpose,mainConfiguration,systemAndVersion,purchaseInvoiceDate,description"
+                    Importance="High"/>
+        </FieldGroup>
+        <LineItem>
+            <DataField Values="serialNumber,fixedAssetName,instanceOfProductId,InstanceOfProduct/ProductModel/idValue,dateAcquired,externalId,description" Importance="High"/>
+        </LineItem>
+        <LineItem Qualifier="DisplayInProduct">
+            <DataField Values="serialNumber,fixedAssetName,instanceOfProductId,InstanceOfProduct/ProductModel/idValue,dateAcquired,warehousingDate,externalId,description" Importance="High"/>
+        </LineItem>
+        <HeaderInfo TypeName="FixedAsset Manage" TypeNamePlural="资产信息">
+            <Title Path="fixedAssetName"/>
+            <Description Path="serialNumber"/>
+        </HeaderInfo>
+        <NavigationProperty Name="InstanceOfProduct" IsCollection="false"/>
+        <NavigationProperty Name="FixedAssetStatus" Relations="StatusItem" Type="FixedAssetStatus" IsCollection="false"/>
+    </EntityType>
+
+    <!--产品管理-->
+    <EntityType Name="Product" EntitySetName="Products" AutoProperties="true" AttrEntityName="ProductAttribute"
+                Orderby="-createdDate"
+                EntityCondition="productTypeId=FINISH_GOOD" OfbizType="productTypeId=FINISH_GOOD"
+                SearchOption="productName,GoodIdentification(goodIdentificationTypeId=MANUFACTURER_ID_NO)/idValue,manufacturer"
+                Handler="component://bfcommon/groovyScripts/assetPickUpManage/Product.groovy">
+        <ValueList CollectionPath="Products" WithFixedValues="false" ParameterDisplayOnly="productId,ProductModel/idValue,manufacturer,createdDate,createdByUserLogin" Label="产品信息"/>
+        <SelectionFields PropertyPath="productName,ProductModel/idValue,manufacturer,createdDate"/>
+        <Property Name="assetNumber" Type="Edm.Int64" Label="${assetNumber}"/>
+        <Property Name="productId" Computed="true">
+            <Text Path="productName" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="productName" FieldControl="Mandatory" Required="true"/>
+        <Property Name="manufacturer" IsAttribute="true" Type="String" FieldControl="Mandatory" Required="true" Label="${manufacturer}"/>
+        <Property Name="createdByUserLogin">
+            <Text Path="Member/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <LineItem>
+            <DataField Values="productName,ProductModel/idValue,manufacturer,createdDate,createdByUserLogin,assetNumber" Importance="High"/>
+        </LineItem>
+        <FieldGroup Qualifier="BaseInfo" Label="基本信息">
+            <DataField
+                    Values="productName,ProductModel/idValue,manufacturer,createdDate,createdByUserLogin,assetNumber"
+                    Importance="High"/>
+        </FieldGroup>
+        <HeaderInfo TypeName="Product Manage" TypeNamePlural="产品">
+            <Title Path="productName"/>
+            <Description Path="description"/>
+        </HeaderInfo>
+        <NavigationProperty Name="AssetEntry" Relations="InstanceOfFixedAsset" Type="AssetEntry" IsCollection="true"/>
+        <NavigationProperty Name="ProductModel"
+                            Relations="GoodIdentification(goodIdentificationTypeId=MANUFACTURER_ID_NO)"
+                            Type="ProductModel" IsCollection="false"/>
+        <NavigationProperty Name="Member" Relations="UserLogin/PartyAndContact" Type="Member"
+                            IsCollection="false"/>
+    </EntityType>
+
+
+    <!--=====================================     业务主对象EntityType definition End    =====================================-->
+
+    <!--=====================================     子对象对象EntityType definition Begin    =====================================-->
+    <!--审批记录-->
+    <EntityType Name="ApprovalRecord" OfbizEntity="Approval" EntitySetName="ApprovalRecords" AutoProperties="true">
+        <RelAlias Name="DBEntity" Relations="TopWorkEffort/ParentWorkEffort/MainProcess/DBEntity"/>
+        <Property Name="dbEntityName" RelAlias="DBEntity" Field="dbEntityName"/>
+        <Property Name="statusId">
+            <Text Path="ApprovalStatusItem/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="mannerEnumId">
+            <Text Path="Via/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="partyId">
+            <Text Path="Member/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <LineItem Qualifier="RecordApproval">
+            <DataField
+                    Values="workEffortName,fromDate,thruDate,partyId,comments,mannerEnumId,statusId"
+                    Importance="High"/>
+        </LineItem>
+        <NavigationProperty Name="ApprovalStatusItem" Relations="ApprovalStatusItem" Type="ApprovalStatusItem"
+                            IsCollection="false"/>
+        <!--关联审批通过枚举-->
+        <NavigationProperty Name="Via" Relations="MannerEnumeration" Type="Via" IsCollection="false"/>
+        <NavigationProperty Name="Member" Relations="PartyAndContact" Type="Member"/>
+    </EntityType>
+
+    <!--申请状态-->
+    <EntityType Name="RequestStatus" OfbizEntity="StatusItem" EntitySetName="RequestStatuses"
+                EntityCondition="statusTypeId=APPROVAL" AutoProperties="true">
+        <ValueList CollectionPath="RequestStatuses" WithFixedValues="true"/>
+        <Property Name="statusId">
+            <Text Path="description" TextArrangement="TextOnly"/>
+        </Property>
+    </EntityType>
+
+    <!--资产状态-->
+    <EntityType Name="FixedAssetStatus" OfbizEntity="StatusItem" EntitySetName="FixedAssetStatuses"
+                EntityCondition="statusTypeId=FIXEDASSET_STATUS" AutoProperties="true">
+        <ValueList CollectionPath="FixedAssetStatuses" WithFixedValues="true"/>
+        <Property Name="statusId">
+            <Text Path="description" TextArrangement="TextOnly"/>
+        </Property>
+    </EntityType>
+
+    <!--成员-->
+    <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members"
+                EntityCondition="partyTypeId=PERSON and PartyRole/roleTypeId=ORD_EMPLOYEE" OfbizType="partyTypeId=PERSON"
+                AutoProperties="true">
+        <RelAlias Name="Person" Relations="Person"/>
+        <Property Name="gender" RelAlias="Person" Field="gender" FieldControl="Mandatory" Required="true">
+            <Text Path="GenderEnumeration/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="birthDate" RelAlias="Person" Field="birthDate" FieldControl="Mandatory" Required="true"/>
+        <Property Name="nickname" RelAlias="Person" Field="nickname" FieldControl="Mandatory" Required="true"/>
+        <Property Name="partyTypeId" DefaultValue="PERSON"/>
+        <Property Name="isManager" Type="Boolean"/>
+        <Property Name="isNotManager" Type="Boolean"/>
+        <Property Name="partyId" Immutable="true">
+            <Text Path="partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <NavigationProperty Name="Department" Type="Department"
+                            Relations="ToPartyRelationship(roleTypeIdTo=ORD_EMPLOYEE)/FromPartyAndPartyGroup"
+                            IsCollection="false"/>
+    </EntityType>
+
+    <!--部门-->
+    <EntityType Name="Department" OfbizEntity="PartyAndPartyGroup" EntitySetName="Departments"
+                AutoProperties="true">
+    </EntityType>
+
+    <!--产品型号-->
+    <EntityType Name="ProductModel" OfbizEntity="GoodIdentification"
+                EntityCondition="goodIdentificationTypeId=MANUFACTURER_ID_NO" OfbizType="goodIdentificationTypeId=MANUFACTURER_ID_NO"
+                EntitySetName="ProductModels"
+                AutoProperties="true">
+        <Property Name="idValue" FieldControl="Mandatory" Required="true"/>
+    </EntityType>
+
+    <EntityType Name="ApprovalStatusItem" OfbizEntity="StatusItem" EntitySetName="ApprovalStatusItem"
+                AutoProperties="true" EntityCondition="statusTypeId=WORKFLOW_STATUS"/>
+
+    <!--审批通过方式枚举-->
+    <EntityType Name="Via" OfbizEntity="Enumeration" EntitySetName="Vias" EntityCondition="enumTypeId=PASS_MANNER"
+                AutoProperties="true">
+    </EntityType>
+
+    <!--=====================================     子对象对象EntityType definition End    =====================================-->
+
+</ofbiz-edm>

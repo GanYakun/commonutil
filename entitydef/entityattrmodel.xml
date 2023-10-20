@@ -195,6 +195,21 @@ under the License.
         </relation>
     </entity>
 
-
+    <entity entity-name="FixedAssetAttributeDate"
+            package-name="org.apache.ofbiz.accounting.fixedasset"
+            title="Fixed Asset Attribute Entity">
+        <field name="fixedAssetId" type="id"></field>
+        <field name="attrName" type="id-long"></field>
+        <field name="attrValue" type="date-time"></field>
+        <field name="attrDescription" type="description"></field>
+        <prim-key field="fixedAssetId"/>
+        <prim-key field="attrName"/>
+        <relation type="one" fk-name="FIXEDAST_ATTR_DATE" rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="many" rel-entity-name="FixedAssetTypeAttr">
+            <key-map field-name="attrName"/>
+        </relation>
+    </entity>
 
 </entitymodel>

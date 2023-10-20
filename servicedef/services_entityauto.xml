@@ -589,5 +589,66 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
+    <service name="banfftech.createEmplLeave" default-entity-name="EmplLeave" engine="entity-auto" invoke="create">
+        <description>Create a EmplLeave</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateEmplLeave" default-entity-name="EmplLeave" engine="entity-auto" invoke="update">
+        <description>Update a EmplLeave</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteEmplLeave" default-entity-name="EmplLeave" engine="entity-auto" invoke="delete">
+        <description>Delete a EmplLeave</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="banfftech.createRequirement" default-entity-name="Requirement" engine="entity-auto" invoke="create">
+        <description>Create a Requirement</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateRequirement" default-entity-name="Requirement" engine="entity-auto" invoke="update">
+        <description>Update a Requirement</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteRequirement" default-entity-name="Requirement" engine="entity-auto" invoke="delete">
+        <description>Delete a Requirement</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!--FixedAssetAttributeDate-->
+    <service name="banfftech.createFixedAssetAttributeDate" default-entity-name="FixedAssetAttributeDate" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a FixedAssetAttributeDate </description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateFixedAssetAttributeDate" default-entity-name="FixedAssetAttributeDate" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a FixedAssetAttributeDate</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteFixedAssetAttributeDate" default-entity-name="FixedAssetAttributeDate" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a FixedAssetAttributeDate</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!--RequirementAttribute-->
+    <service name="banfftech.createRequirementAttribute" default-entity-name="RequirementAttribute" engine="entity-auto" invoke="create">
+        <description>Create a RequirementAttribute</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateRequirementAttribute" default-entity-name="RequirementAttribute" engine="entity-auto" invoke="update">
+        <description>Update a RequirementAttribute</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteRequirementAttribute" default-entity-name="RequirementAttribute" engine="entity-auto" invoke="delete">
+        <description>Delete a RequirementAttribute</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
 
 </services>

@@ -46,6 +46,7 @@ under the License.
     <service-resource type="model" loader="main" location="servicedef/services_login.xml"/>
     <service-resource type="model" loader="main" location="servicedef/services_app.xml"/>
     <service-resource type="model" loader="main" location="servicedef/services_attribute.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/services_java.xml"/>
     <service-resource type="eca" loader="main" location="servicedef/secas.xml"/>
     <!--
     <service-resource type="eca" loader="main" location="servicedef/secas.xml"/>

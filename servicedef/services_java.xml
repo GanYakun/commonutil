@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>GongsConfig Services</description>
+    <vendor></vendor>
+    <version>1.0</version>
+
+    <service name="noSyntaxError" engine="interface">
+        <description>
+            Dummy service to prevent empty files and syntax error - Remove when the 1st real service will be added here 
+        </description>
+    </service>
+
+    <service name="banfftech.createDepartment" engine="java"
+             default-entity-name="PartyAndPartyGroup"
+             invoke="createDepartment" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Create a Department</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createUserGroup" engine="java"
+             default-entity-name="PartyAndPartyGroup"
+             invoke="createUserGroup" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Create a UserGroup</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createPartyAndPartyGroup" engine="java"
+             default-entity-name="PartyAndPartyGroup"
+             invoke="createPartyAndPartyGroup" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Create a PartyAndPartyGroup</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.updatePartyAndPartyGroup" engine="java"
+             default-entity-name="PartyAndPartyGroup"
+             invoke="updatePartyAndPartyGroup" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Update a PartyAndPartyGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.deletePartyAndPartyGroup" engine="java"
+             default-entity-name="PartyAndPartyGroup"
+             invoke="deletePartyAndPartyGroup" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Delete a PartyAndPartyGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+    </service>
+
+    <!--创建部门成员之后，更新PartyGroup  -->
+    <service name="banfftech.updateMemberNumber" engine="java"
+             default-entity-name="PartyRelationship"
+             invoke="updateMemberNumber" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Update a PartyGroup</description>
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <attribute name="oldPartyIdFrom" type="String" mode="IN" optional="true"/>
+    </service>
+
+    <!--创建部门成员之后，创建对应的登录账号和登录权限  -->
+    <service name="banfftech.createUserLoginAndPermission" engine="java"
+             invoke="createUserLoginAndPermission" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Create a UserLogin</description>
+        <attribute name="partyId" type="String" mode="IN"/>
+        <attribute name="phoneMobile" type="String" mode="IN"/>
+    </service>
+
+    <!--创建部门成员之后，更新PartyGroup  -->
+    <service name="banfftech.updatePartyRelationshipAndCheckRole" engine="java"
+             default-entity-name="PartyRelationship"
+             invoke="updatePartyRelationshipAndCheckRole" auth="true"
+             location="com.banfftech.common.services.PartyServices">
+        <description>Update a PartyRelationship</description>
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    
+</services>
