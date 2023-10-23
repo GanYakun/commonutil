@@ -650,5 +650,19 @@
         <description>Delete a RequirementAttribute</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
+    <service name="banfftech.createRoleTypeUILabApp" default-entity-name="RoleTypeUILabApp" engine="entity-auto" invoke="create">
+        <description>Create a RoleTypeUILabApp</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateRoleTypeUILabApp" default-entity-name="RoleTypeUILabApp" engine="entity-auto" invoke="update">
+        <description>Update a RoleTypeUILabApp</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteRoleTypeUILabApp" default-entity-name="RoleTypeUILabApp" engine="entity-auto" invoke="delete">
+        <description>Delete a RoleTypeUILabApp</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
 
 </services>

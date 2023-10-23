@@ -347,6 +347,19 @@ under the License.
         </relation>
     </entity>
 
+    <entity entity-name="RoleTypeUILabApp" package-name="com.banfftech.common" title="RoleType UILabApp">
+        <field name="roleTypeUILabAppId" type="id"><description>主键</description></field>
+        <field name="roleTypeId" type="id"><description>角色主键</description></field>
+        <field name="uiLabAppId" type="id"><description>应用主键</description></field>
+        <prim-key field="roleTypeUILabAppId"/>
+        <relation type="one" fk-name="RT_UL_UL" rel-entity-name="UILabApp">
+            <key-map field-name="uiLabAppId"/>
+        </relation>
+        <relation type="one" fk-name="RT_PERM_RT" rel-entity-name="RoleType">
+            <key-map field-name="roleTypeId"/>
+        </relation>
+    </entity>
+
     <entity entity-name="RoleTypeSecurityGroup" package-name="com.banfftech.common" title="RoleType RoleTypeSecurityGroup">
         <field name="roleTypeId" type="id"><description>角色主键</description></field>
         <field name="groupId" type="id"><description>安全组主键</description></field>
