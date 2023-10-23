@@ -1,0 +1,35 @@
+<ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" >
+
+    <!-- 客户端应用 -->
+    <EntityType Name="UILabApp" EntitySetName="UILabApps" AutoProperties="true">
+        <SelectionFields PropertyPath="uiLabAppName,permissionId,description"/>
+        <LineItem>
+            <DataField Values="uiLabAppName,permissionId,description" Importance="High"/>
+        </LineItem>
+        <FieldGroup Qualifier="BasicInfo" Label="BasicInfo">
+            <DataField Values="uiLabAppName,permissionId,description" Importance="High"/>
+        </FieldGroup>
+        <NavigationProperty Name="RoleTypeUILabApp"/>
+    </EntityType>
+
+    <EntityType Name="RoleTypeUILabApp" EntitySetName="RoleTypeUILabApps" AutoProperties="true">
+        <LineItem>
+            <DataField Values="roleTypeId,uiLabAppId" Importance="High"/>
+        </LineItem>
+        <Property Name="roleTypeId">
+            <Text Path="RoleType/description" TextArrangement="TextFirst"/>
+            <ValueList WithFixedValues="true" CollectionPath="RoleTypes"/>
+        </Property>
+        <Property Name="uiLabAppId">
+            <Text Path="UILabApp/description" TextArrangement="TextFirst"/>
+            <ValueList WithFixedValues="true" CollectionPath="UILabApps"/>
+        </Property>
+        <NavigationProperty Name="RoleType"/>
+        <NavigationProperty Name="UILabApp"/>
+    </EntityType>
+
+    <EntityType Name="RoleType" EntitySetName="RoleTypes" AutoProperties="true">
+
+    </EntityType>
+
+</ofbiz-edm>
