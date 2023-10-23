@@ -5,6 +5,7 @@ import org.apache.ofbiz.base.conversion.JSONConverters;
 import org.apache.ofbiz.base.lang.JSON;
 import org.apache.ofbiz.base.util.Debug;
 import org.apache.ofbiz.base.util.HttpClient;
+import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilXml;
 import org.xml.sax.SAXException;
 
@@ -58,6 +59,13 @@ public class CamelUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static Map<String, Object> resError(String message) {
+        return UtilMisc.toMap("code", "500", "message", message);
+    }
+    public static Map<String, Object> resSuccess(String message) {
+        return UtilMisc.toMap("code", "200", "message", message);
     }
 
 //    public static JSONObject sendHttpPost(String url, JSONObject params) throws IOException {
