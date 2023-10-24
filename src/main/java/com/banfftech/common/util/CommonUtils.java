@@ -208,11 +208,11 @@ public class CommonUtils {
     }
 
     /**
-     * 查询用户所属机构
+     * 查询用户所属机构(也就是查询新版的部门)
      */
     public static String getPartyCompany(String partyId, Delegator delegator) throws GenericEntityException {
         GenericValue relationship = EntityQuery.use(delegator).from("PartyRelationship")
-                .where("partyIdTo", partyId, "roleTypeIdFrom", "ORGANIZATION_UNIT").queryFirst();
+                .where("partyIdTo", partyId, "roleTypeIdFrom", "DEPARTMENT").queryFirst();
         if (UtilValidate.isEmpty(relationship)) {
             return null;
         }
