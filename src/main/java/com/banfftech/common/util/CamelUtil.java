@@ -7,6 +7,8 @@ import org.apache.ofbiz.base.util.Debug;
 import org.apache.ofbiz.base.util.HttpClient;
 import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilXml;
+import org.apache.ofbiz.entity.Delegator;
+import org.apache.ofbiz.entity.util.EntityUtilProperties;
 import org.xml.sax.SAXException;
 
 import java.util.Map;
@@ -61,11 +63,25 @@ public class CamelUtil {
         }
     }
 
+    public static JSON sendPost(String url, Map<String, Object> param) throws Exception {
+        JSONConverters.MapToJSON mapToJSON = new JSONConverters.MapToJSON();
+        JSON convert = mapToJSON.convert(param);
+        HttpClient ofbizHttpClient = new HttpClient(url);
+        ofbizHttpClient.setContentType("application/json;charset=UTF-8");
+        String responseString = ofbizHttpClient.post(convert.toString());
+        Debug.log(">> Camel Result :" + responseString);
+        return JSON.from(responseString);
+    }
+
     public static Map<String, Object> resError(String message) {
         return UtilMisc.toMap("code", "500", "message", message);
     }
     public static Map<String, Object> resSuccess(String message) {
         return UtilMisc.toMap("code", "200", "message", message);
+    }
+
+    public static String getCamelUrl(Delegator delegator) {
+        return EntityUtilProperties.getPropertyValue("camel", "url", delegator);
     }
 
 //    public static JSONObject sendHttpPost(String url, JSONObject params) throws IOException {
