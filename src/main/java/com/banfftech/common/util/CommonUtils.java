@@ -4,6 +4,7 @@ import com.dpbird.odata.OdataParts;
 import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.edm.OdataOfbizEntity;
 import org.apache.ofbiz.base.crypto.HashCrypt;
+import org.apache.ofbiz.base.util.UtilDateTime;
 import org.apache.ofbiz.base.util.UtilGenerics;
 import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.base.util.UtilValidate;
@@ -18,6 +19,7 @@ import org.apache.ofbiz.service.*;
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.Property;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.apache.ofbiz.common.login.LoginServices.getHashType;
@@ -274,7 +276,7 @@ public class CommonUtils {
      * 获取一个对象的创建人
      */
     public static GenericValue getCreateParty(GenericValue genericValue) throws GenericEntityException {
-        if (genericValue == null  || !genericValue.getModelEntity().isField("createdByUserLogin")
+        if (genericValue == null || !genericValue.getModelEntity().isField("createdByUserLogin")
                 || UtilValidate.isEmpty(genericValue.getString("createdByUserLogin"))) {
             return null;
         }
@@ -283,6 +285,34 @@ public class CommonUtils {
             return null;
         }
         return userLogin.getRelatedOne("Party", false);
+    }
+
+    /**
+     * @param [inventoryItemDetails]
+     * @Author yyp
+     * @Description 作用:归还InventoryItemDetails,并保证相应的业务字段并不发生改变
+     * @Date 10:17 2023/10/27
+     **/
+    public static void returnInventoryItemDetails(LocalDispatcher dispatcher, List<GenericValue> inventoryItemDetails, GenericValue userLogin)
+            throws GenericServiceException {
+
+        //遍历InventoryItemDetails,创建新的流水
+        for (GenericValue inventoryItemDetail : inventoryItemDetails) {
+            String inventoryItemDetailSeqId = inventoryItemDetail.getString("inventoryItemDetailSeqId");
+            BigDecimal availableToPromiseDiff = inventoryItemDetail.getBigDecimal("availableToPromiseDiff");
+
+            //获取当前流水的所有字段信息
+            Map<String, Object> serviceParam = new HashMap<>(inventoryItemDetail);
+            //删除当前流水参数中的一个主键inventoryItemDetailSeqId
+            serviceParam.remove("inventoryItemDetailSeqId", inventoryItemDetailSeqId);
+            //取反当前流水的可用库存数量
+            serviceParam.put("availableToPromiseDiff", availableToPromiseDiff.negate());
+            //放入service调用需要的userLogin
+            serviceParam.put("userLogin", userLogin);
+            //更新有效时间
+            serviceParam.put("effectiveDate", UtilDateTime.nowTimestamp());
+            dispatcher.runSync("banfftech.createInventoryItemDetail", serviceParam);
+        }
     }
 
 }
