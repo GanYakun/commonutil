@@ -43,4 +43,14 @@
 			<key-map field-name="partyId" rel-field-name="partyIdTo"/>
 		</relation>
 	</extend-entity>
+	
+	<extend-entity entity-name="Requirement">
+		<field name="partyId" type="id"/>
+		<relation type="one" fk-name="REQ_USERLOGIN" rel-entity-name="UserLogin">
+			<key-map field-name="createdByUserLogin" rel-field-name="userLoginId"/>
+		</relation>
+		<relation type="one" fk-name="REQ_PARTYANDCONTACT" rel-entity-name="PartyAndContact">
+			<key-map field-name="partyId"/>
+		</relation>
+	</extend-entity>
 </entitymodel>
