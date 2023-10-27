@@ -66,11 +66,13 @@ public class CamelUtil {
     public static JSON sendPost(String url, Map<String, Object> param) throws Exception {
         JSONConverters.MapToJSON mapToJSON = new JSONConverters.MapToJSON();
         JSON convert = mapToJSON.convert(param);
+        Debug.log("============ Post param:" + convert.toString());
         HttpClient ofbizHttpClient = new HttpClient(url);
         ofbizHttpClient.setContentType("application/json;charset=UTF-8");
         String responseString = ofbizHttpClient.post(convert.toString());
-        Debug.log(">> Camel Result :" + responseString);
-        return JSON.from(responseString);
+        JSON camelResult = JSON.from(responseString);
+        Debug.log("============ Camel result:" + camelResult);
+        return camelResult;
     }
 
     public static Map<String, Object> resError(String message) {
