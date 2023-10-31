@@ -112,7 +112,7 @@
         <Property Name="parentTypeId">
             <Text Path="ParentRoleType/description" TextArrangement="TextOnly"/>
         </Property>
-        <Property Name="roleTypeId" Computed="true">
+        <Property Name="roleTypeId" Computed="true" FieldControl="Mandatory">
             <Text Path="description" TextArrangement="TextOnly"/>
             <ValueList CollectionPath="Roles" WithFixedValues="true">
                 <ParameterInOut ValueListProperty="roleTypeId" LocalDataProperty="roleTypeId"/>

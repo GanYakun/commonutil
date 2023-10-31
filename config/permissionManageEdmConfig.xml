@@ -28,7 +28,7 @@
         <NavigationProperty Name="UILabApp"/>
     </EntityType>
 
-    <EntityType Name="RoleType" EntitySetName="RoleTypes" AutoProperties="true">
+    <EntityType Name="RoleType" EntitySetName="RoleTypes" AutoProperties="true" EntityCondition="parentTypeId=MAIN_ROLE">
 
     </EntityType>
 
