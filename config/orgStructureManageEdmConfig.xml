@@ -5,6 +5,7 @@
     <!--部门-->
     <EntityType Name="Department" OfbizEntity="PartyAndPartyGroup" EntitySetName="Departments"
                 EntityCondition="partyTypeId=PARTY_GROUP and PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
+                OfbizType="partyTypeId=PARTY_GROUP"
                 AutoProperties="true">
         <Property Name="numEmployees" DefaultValue="0" Scale="0"/>
         <RelAlias Name="Manager" Relations="FromPartyRelationship(roleTypeIdTo=MANAGER)"/>
@@ -106,15 +107,20 @@
     <EntityType Name="Role" OfbizEntity="RoleType" EntitySetName="Roles" EntityCondition="parentTypeId=MAIN_ROLE" OfbizType="parentTypeId=MAIN_ROLE"
                 AutoProperties="true"
                 Handler="component://bfcommon/groovyScripts/orgStructureManage/Role.groovy">
-        <SelectionFields PropertyPath="description"/>
+        <SelectionFields PropertyPath="roleTypeId"/>
         <Property Name="userNumbers" Type="Edm.Int64" Label="${userNumbers}"/>
         <Property Name="parentTypeId">
             <Text Path="ParentRoleType/description" TextArrangement="TextOnly"/>
         </Property>
-        <Property Name="roleTypeId" Computed="true"/>
+        <Property Name="roleTypeId" Computed="true">
+            <Text Path="description" TextArrangement="TextOnly"/>
+            <ValueList CollectionPath="Roles" WithFixedValues="true">
+                <ParameterInOut ValueListProperty="roleTypeId" LocalDataProperty="roleTypeId"/>
+            </ValueList>
+        </Property>
         <Property Name="description" Required="true" FieldControl="Mandatory"/>
         <LineItem>
-            <DataField Values="description,parentTypeId,userNumbers" Importance="High"/>
+            <DataField Values="roleTypeId,parentTypeId,userNumbers" Importance="High"/>
         </LineItem>
         <HeaderInfo TypeName="Role Manage" TypeNamePlural="角色信息">
             <Title Path="roleTypeId"/>
