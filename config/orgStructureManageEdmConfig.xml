@@ -104,14 +104,11 @@
     </EntityType>
 
     <!--角色管理-->
-    <EntityType Name="Role" OfbizEntity="RoleType" EntitySetName="Roles" EntityCondition="parentTypeId=MAIN_ROLE" OfbizType="parentTypeId=MAIN_ROLE"
+    <EntityType Name="Role" OfbizEntity="RoleType" EntitySetName="Roles" EntityCondition="parentTypeId=SYSTEM_ROLE" OfbizType="parentTypeId=SYSTEM_ROLE"
                 AutoProperties="true"
                 Handler="component://bfcommon/groovyScripts/orgStructureManage/Role.groovy">
         <SelectionFields PropertyPath="roleTypeId"/>
         <Property Name="userNumbers" Type="Edm.Int64" Label="${userNumbers}"/>
-        <Property Name="parentTypeId">
-            <Text Path="ParentRoleType/description" TextArrangement="TextOnly"/>
-        </Property>
         <Property Name="roleTypeId" Computed="true" >
             <Text Path="description" TextArrangement="TextOnly"/>
             <ValueList CollectionPath="Roles" WithFixedValues="true">
@@ -120,7 +117,7 @@
         </Property>
         <Property Name="description" Required="true" FieldControl="Mandatory"/>
         <LineItem>
-            <DataField Values="roleTypeId,parentTypeId,userNumbers" Importance="High"/>
+            <DataField Values="roleTypeId,isSystemRole,userNumbers" Importance="High"/>
         </LineItem>
         <HeaderInfo TypeName="Role Manage" TypeNamePlural="角色信息">
             <Title Path="roleTypeId"/>
