@@ -2,19 +2,27 @@ package com.banfftech.common.handler;
 
 import com.banfftech.common.util.PartyServiceUtils;
 import com.dpbird.odata.OfbizODataException;
+import com.dpbird.odata.Util;
 import com.dpbird.odata.edm.OdataOfbizEntity;
 import com.dpbird.odata.handler.DefaultEntityHandler;
 import com.dpbird.odata.handler.HandlerResults;
 import org.apache.ofbiz.base.util.UtilValidate;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericValue;
+import org.apache.ofbiz.entity.condition.EntityCondition;
+import org.apache.ofbiz.entity.condition.EntityExpr;
+import org.apache.ofbiz.entity.condition.EntityOperator;
+import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.olingo.commons.api.edm.EdmBindingTarget;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
+import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.apache.olingo.server.api.uri.queryoption.QueryOption;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @ClassName: OverrideEnumerationFindList
@@ -41,7 +49,36 @@ public class OverrideMemberFindList extends DefaultEntityHandler {
 
                 List<GenericValue> allMembers = new ArrayList<>();
                 PartyServiceUtils.getDepartmentALlMembers(delegator, departmentId, allMembers);
-                return new HandlerResults(allMembers.size(), allMembers);
+                //处理filter
+                int count;
+                FilterOption filterOption = (FilterOption) queryOptions.get("filterOption");
+                if (UtilValidate.isNotEmpty(filterOption)) {
+                    String filterString = ((FilterOption) queryOptions.get("filterOption")).getExpression().toString();
+                    Pattern pattern = Pattern.compile("'.*?'");
+                    Matcher matcher = pattern.matcher(filterString);
+                    String filterValue = null;
+                    while (matcher.find()) {
+                        filterValue = matcher.group().replaceAll("'", "");
+                    }
+                    if (UtilValidate.isNotEmpty(filterValue)) {
+                        EntityCondition queryCondition = EntityCondition.makeCondition("partyName", EntityOperator.LIKE, "%" + filterValue + "%");
+                        allMembers = EntityUtil.filterByCondition(allMembers, queryCondition);
+                    }
+                }
+                count = allMembers.size();
+                //处理分页
+                int top = Util.getTopOption(queryOptions);
+                int skip = Util.getSkipOption(queryOptions);
+                if ((skip + top) > allMembers.size()) {
+                    if (allMembers.size() <= skip) {
+                        allMembers = new ArrayList<>();
+                    } else {
+                        allMembers = new ArrayList<>(allMembers.subList(skip, allMembers.size()));
+                    }
+                } else {
+                    allMembers = new ArrayList<>(allMembers.subList(skip, skip + top));
+                }
+                return new HandlerResults(count, allMembers);
             }
         }
         //否则(如果是一段式或者NavigationName!=AllMember)直接调用Super
