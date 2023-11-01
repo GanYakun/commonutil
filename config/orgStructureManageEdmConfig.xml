@@ -109,6 +109,7 @@
                 Handler="component://bfcommon/groovyScripts/orgStructureManage/Role.groovy">
         <SelectionFields PropertyPath="roleTypeId"/>
         <Property Name="userNumbers" Type="Edm.Int64" Label="${userNumbers}"/>
+        <Property Name="isSystemRole" Type="Boolean"/>
         <Property Name="roleTypeId" Computed="true" >
             <Text Path="description" TextArrangement="TextOnly"/>
             <ValueList CollectionPath="Roles" WithFixedValues="true">
