@@ -10,6 +10,7 @@ import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityTypeUtil;
+import org.apache.ofbiz.entity.util.EntityUtilProperties;
 import org.apache.ofbiz.service.*;
 
 import java.sql.Timestamp;
@@ -275,10 +276,12 @@ public class PartyServices {
             if (UtilValidate.isNotEmpty(verifyUserLogin)) {
                 throw new OfbizServiceException("当前组织内已存在相同的手机号码,请更换后重试");
             }
-
+            //创建人员初始化密码 存在配置中
+            String defaultPassword = EntityUtilProperties.getPropertyValue("gconfig", "defaultPassword",
+                    "gongsconfig", delegator);
             context.put("userLoginId", userLoginId);
             context.put("enabled", "Y");
-            context.put("currentPassword", CommonUtils.getEncryptedPassword(delegator, "gongsconfig"));
+            context.put("currentPassword", CommonUtils.getEncryptedPassword(delegator, defaultPassword));
             context.put("groupId", "VISIT");
             context.put("fromDate", UtilDateTime.nowTimestamp());
 
