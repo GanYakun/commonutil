@@ -374,7 +374,7 @@ under the License.
         <relation type="one" fk-name="RT_UL_UL" rel-entity-name="UILabApp">
             <key-map field-name="uiLabAppId"/>
         </relation>
-        <relation type="one" fk-name="RT_PERM_RT" rel-entity-name="RoleType">
+        <relation type="one" fk-name="RT_UL_APP" rel-entity-name="RoleType">
             <key-map field-name="roleTypeId"/>
         </relation>
     </entity>
