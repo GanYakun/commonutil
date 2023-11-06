@@ -24,7 +24,7 @@ public class Tools {
 
     private static Map<String, Map<String, Object>> xmlMap = new HashMap<>();
     private final static String appPath = "plugins/bfui5/o3/apps/";
-    private final static String xmlPath = "plugins/dinstitute/config/dinstituteUiLabels.xml";
+    private final static String xmlPath = "plugins/officeauto/config/OfficeAutoUiLabels.xml";
     private final static Map<String,String> propertyMap = new LinkedHashMap<>();
     static {
         propertyMap.put("en","i18n.properties");
