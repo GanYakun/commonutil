@@ -10,7 +10,7 @@
     <EntityType Name="AssetPickUpRequest" OfbizEntity="Requirement" EntitySetName="AssetPickUpRequests" AttrEntityName="RequirementAttribute"
                 AutoProperties="true"
                 Handler="component://bfcommon/groovyScripts/businessManage/LeaveApproval.groovy"
-                EntityCondition="requirementTypeId=WORK_REQUIREMENT and partyId=${userLogin.partyId}" OfbizType="requirementTypeId=WORK_REQUIREMENT">
+                EntityCondition="partyId=${userLogin.partyId}" OfbizType="requirementTypeId=WORK_REQUIREMENT">
         <SelectionFields PropertyPath="productId,assetPurpose,description,supplier,useCase"/>
         <Property Name="isHiddenSubmitApproval" Type="Boolean"/>
         <Property Name="isHiddenCancelApproval" Type="Boolean"/>
@@ -70,7 +70,7 @@
     <!--资产录入-->
     <EntityType Name="AssetEntry" OfbizEntity="FixedAsset" EntitySetName="AssetEntries"
                 AttrEntityName="FixedAssetAttribute" AttrDateEntityName="FixedAssetAttributeDate" AutoProperties="true" Orderby="-dateAcquired"
-                EntityCondition="fixedAssetTypeId=EQUIPMENT" OfbizType="fixedAssetTypeId=EQUIPMENT">
+                OfbizType="fixedAssetTypeId=EQUIPMENT">
         <SelectionFields PropertyPath="fixedAssetName,instanceOfProductId,InstanceOfProduct/ProductModel/idValue,dateAcquired,serialNumber"/>
         <ValueList CollectionPath="AssetEntries" WithFixedValues="false" ParameterDisplayOnly="fixedAssetName,instanceOfProductId,InstanceOfProduct/ProductModel/idValue,dateAcquired,serialNumber"/>
         <Property Name="fixedAssetId" Computed="true"/>
@@ -118,8 +118,7 @@
 
     <!--产品管理-->
     <EntityType Name="Product" EntitySetName="Products" AutoProperties="true" AttrEntityName="ProductAttribute"
-                Orderby="-createdDate"
-                EntityCondition="productTypeId=FINISH_GOOD" OfbizType="productTypeId=FINISH_GOOD"
+                Orderby="-createdDate" OfbizType="productTypeId=FINISH_GOOD"
                 SearchOption="productName,GoodIdentification(goodIdentificationTypeId=MANUFACTURER_ID_NO)/idValue,manufacturer"
                 Handler="component://bfcommon/groovyScripts/assetPickUpManage/Product.groovy">
         <ValueList CollectionPath="Products" WithFixedValues="false" ParameterDisplayOnly="productId,ProductModel/idValue,manufacturer,createdDate,createdByUserLogin" Label="产品信息"/>
@@ -202,7 +201,7 @@
 
     <!--成员-->
     <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members"
-                EntityCondition="partyTypeId=PERSON and PartyRole/roleTypeId=ORD_EMPLOYEE" OfbizType="partyTypeId=PERSON"
+                EntityCondition="PartyRole/roleTypeId=ORD_EMPLOYEE" OfbizType="partyTypeId=PERSON"
                 AutoProperties="true">
         <RelAlias Name="Person" Relations="Person"/>
         <Property Name="gender" RelAlias="Person" Field="gender" FieldControl="Mandatory" Required="true">
@@ -228,7 +227,7 @@
 
     <!--产品型号-->
     <EntityType Name="ProductModel" OfbizEntity="GoodIdentification"
-                EntityCondition="goodIdentificationTypeId=MANUFACTURER_ID_NO" OfbizType="goodIdentificationTypeId=MANUFACTURER_ID_NO"
+                OfbizType="goodIdentificationTypeId=MANUFACTURER_ID_NO"
                 EntitySetName="ProductModels"
                 AutoProperties="true">
         <Property Name="idValue" FieldControl="Mandatory" Required="true"/>

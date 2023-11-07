@@ -4,7 +4,7 @@
     <!--=====================================     主对象EntityType definition     =====================================-->
     <!--部门-->
     <EntityType Name="Department" OfbizEntity="PartyAndPartyGroup" EntitySetName="Departments"
-                EntityCondition="partyTypeId=PARTY_GROUP and PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
+                EntityCondition="PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
                 OfbizType="partyTypeId=PARTY_GROUP"
                 AutoProperties="true">
         <Property Name="numEmployees" DefaultValue="0" Scale="0"/>
@@ -44,7 +44,7 @@
 
     <!--成员-->
     <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members"
-                EntityCondition="partyTypeId=PERSON and PartyRole/roleTypeId=ORD_EMPLOYEE" OfbizType="partyTypeId=PERSON"
+                EntityCondition="PartyRole/roleTypeId=ORD_EMPLOYEE" OfbizType="partyTypeId=PERSON"
                 AutoProperties="true"
                 Handler="component://bfcommon/groovyScripts/orgStructureManage/Member.groovy">
         <SelectionFields PropertyPath="birthDate,gender"/>
@@ -104,7 +104,7 @@
     </EntityType>
 
     <!--角色管理-->
-    <EntityType Name="Role" OfbizEntity="RoleType" EntitySetName="Roles" EntityCondition="parentTypeId=SYSTEM_ROLE" OfbizType="parentTypeId=SYSTEM_ROLE"
+    <EntityType Name="Role" OfbizEntity="RoleType" EntitySetName="Roles" OfbizType="parentTypeId=SYSTEM_ROLE"
                 AutoProperties="true"
                 Handler="component://bfcommon/groovyScripts/orgStructureManage/Role.groovy">
         <SelectionFields PropertyPath="roleTypeId"/>

@@ -136,7 +136,7 @@
 
     <!--=====================================     其他对象EntityType definition End    =====================================-->
     <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members" OfbizType="partyTypeId=PERSON"
-                EntityCondition="partyTypeId=PERSON and PartyRole/roleTypeId=ORD_EMPLOYEE"
+                EntityCondition="PartyRole/roleTypeId=ORD_EMPLOYEE"
                 AutoProperties="true">
         <RelAlias Name="Person" Relations="Person"/>
         <Property Name="gender" RelAlias="Person" Field="gender" FieldControl="Mandatory" Required="true">

@@ -97,7 +97,7 @@
 
     <!--根审批节点WorkEffort-->
     <EntityType Name="RootNodeWorkEffort" OfbizEntity="WorkEffort" EntitySetName="RootNodeWorkEfforts"
-                AutoProperties="true" EntityCondition="workEffortTypeId=ROOT_NODE" OfbizType="workEffortTypeId=ROOT_NODE">
+                AutoProperties="true" OfbizType="workEffortTypeId=ROOT_NODE">
         <Property Name="createdByUserLogin" Immutable="true">
             <Text Path="Creator/partyName" TextArrangement="TextOnly"/>
         </Property>
@@ -126,7 +126,7 @@
     </EntityType>
 
     <!--成员-->
-    <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members" EntityCondition="partyTypeId=PERSON"
+    <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members"
                 AutoProperties="true" OfbizType="partyTypeId=PERSON"
                 Handler="component://bfcommon/groovyScripts/orgStructureManage/Member.groovy">
         <RelAlias Name="Person" Relations="Person"/>
@@ -182,7 +182,7 @@
 
     <!--部门-->
     <EntityType Name="Department" OfbizEntity="PartyAndPartyGroup"
-                EntityCondition="partyTypeId=PARTY_GROUP and PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
+                EntityCondition="PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
                 EntitySetName="Departments" OfbizType="partyTypeId=PARTY_GROUP"
                 AutoProperties="true">
     </EntityType>
