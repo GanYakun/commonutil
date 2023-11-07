@@ -1,0 +1,201 @@
+<ofbiz-edm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://dev.odatalab.com/dtds/edmconfig.xsd" ImportGlobal="false">
+    <!--=====================================     主对象EntityType definition     =====================================-->
+    <!--审批(当前用户审批)-->
+    <EntityType Name="Approval" EntitySetName="Approvals" AutoProperties="true" Orderby="-createdDate"
+                EntityCondition="partyId=${userLogin.partyId}">
+        <SelectionFields
+                PropertyPath="createdDate,comments,workEffortName,MainProcess/description"/>
+        <RelAlias Name="DBEntity" Relations="TopWorkEffort/ParentWorkEffort/MainProcess/DBEntity"/>
+        <Property Name="dbEntityName" RelAlias="DBEntity" Field="dbEntityName"/>
+        <Property Name="statusId">
+            <Text Path="ApprovalStatusItem/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="mannerEnumId">
+            <Text Path="Via/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="partyId">
+            <Text Path="PartyAndContact/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <LineItem Qualifier="ApprovalList">
+            <DataField
+                    Values="workEffortName,MainProcess/version,MainProcess/description,fromDate,thruDate,RootNodeWorkEffort/createdByUserLogin,comments,mannerEnumId,statusId"
+                    Importance="High"/>
+        </LineItem>
+        <LineItem Qualifier="RecordApproval">
+            <DataField
+                    Values="workEffortName,fromDate,thruDate,partyId,comments,mannerEnumId"
+                    Importance="High"/>
+        </LineItem>
+        <FieldGroup Qualifier="BaseInfo" Label="基本信息">
+            <DataField Values="createdDate,comments,workEffortName,DBEntity/description,MainProcess/version,MainProcess/description"
+                       Importance="High"/>
+        </FieldGroup>
+        <FieldGroup Qualifier="Member" Label="待审批成员信息">
+            <DataField
+                    Values="Member/partyName,Member/gender,Member/birthDate,Member/nickname,Member/phoneMobile,Member/primaryEmail,Member/externalId"
+                    Importance="High"/>
+        </FieldGroup>
+        <!--审批通过Action-->
+        <Action Name="Approved" IsBound="true"
+                OfbizService="com.banfftech.event.ApprovalEvent.approve">
+            <Parameter Name="approval" Type="Approval" Nullable="false" IsCollection="false"/>
+            <Parameter Name="statusId" Type="Edm.String" Nullable="false" IsCollection="false"/>
+            <Parameter Name="comments" Type="Edm.String" Nullable="false" IsCollection="false"
+                       Label="${approvalComments}"/>
+        </Action>
+        <!--审批不通过Action-->
+        <Action Name="ApproveRefuse" IsBound="true"
+                OfbizService="com.banfftech.event.ApprovalEvent.approve">
+            <Parameter Name="approval" Type="Approval" Nullable="false" IsCollection="false"/>
+            <Parameter Name="statusId" Type="Edm.String" Nullable="false" IsCollection="false"/>
+            <Parameter Name="comments" Type="Edm.String" Nullable="false" IsCollection="false"
+                       Label="${approvalComments}"/>
+        </Action>
+        <NavigationProperty Name="RootNodeWorkEffort" Type="RootNodeWorkEffort" Relations="TopWorkEffort"
+                            IsCollection="false"/>
+        <NavigationProperty Name="MainProcess" Relations="TopWorkEffort/ParentWorkEffort/MainProcess" Type="MainProcess"
+                            IsCollection="false"/>
+        <NavigationProperty Name="DBEntity" Relations="TopWorkEffort/ParentWorkEffort/MainProcess/DBEntity"
+                            Type="DBEntity" IsCollection="false"/>
+        <NavigationProperty Name="Member" Relations="TopWorkEffort/WorkFlowMember/PartyAndContact" Type="Member"
+                            IsCollection="false"/>
+        <NavigationProperty Name="ApprovalStatusItem" Relations="ApprovalStatusItem" Type="ApprovalStatusItem"
+                            IsCollection="false"/>
+        <!--关联审批通过枚举-->
+        <NavigationProperty Name="Via" Relations="MannerEnumeration" Type="Via" IsCollection="false"/>
+        <!--当前审批节点的审批历史-->
+        <NavigationProperty Name="ApprovalRecord" Relations="TopWorkEffort/Approval" Type="ApprovalRecord"
+                            IsCollection="true"/>
+        <NavigationProperty Name="PartyAndContact"/>
+    </EntityType>
+
+    <!--审批记录-->
+    <EntityType Name="ApprovalRecord" OfbizEntity="Approval" EntitySetName="ApprovalRecords" AutoProperties="true">
+        <RelAlias Name="DBEntity" Relations="TopWorkEffort/ParentWorkEffort/MainProcess/DBEntity"/>
+        <Property Name="dbEntityName" RelAlias="DBEntity" Field="dbEntityName"/>
+        <Property Name="statusId">
+            <Text Path="ApprovalStatusItem/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="mannerEnumId">
+            <Text Path="Via/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="partyId">
+            <Text Path="Member/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <LineItem Qualifier="RecordApproval">
+            <DataField
+                    Values="workEffortName,fromDate,thruDate,partyId,comments,mannerEnumId,statusId"
+                    Importance="High"/>
+        </LineItem>
+        <NavigationProperty Name="ApprovalStatusItem" Relations="ApprovalStatusItem" Type="ApprovalStatusItem"
+                            IsCollection="false"/>
+        <!--关联审批通过枚举-->
+        <NavigationProperty Name="Via" Relations="MannerEnumeration" Type="Via" IsCollection="false"/>
+        <NavigationProperty Name="Member" Relations="PartyAndContact" Type="Member"/>
+    </EntityType>
+
+    <!--根审批节点WorkEffort-->
+    <EntityType Name="RootNodeWorkEffort" OfbizEntity="WorkEffort" EntitySetName="RootNodeWorkEfforts"
+                AutoProperties="true" EntityCondition="workEffortTypeId=ROOT_NODE" OfbizType="workEffortTypeId=ROOT_NODE">
+        <Property Name="createdByUserLogin" Immutable="true">
+            <Text Path="Creator/partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <FieldGroup Qualifier="ApproverInformation" Label="审批人信息">
+            <DataField Values="createdByUserLogin,Creator/phoneMobile,Creator/primaryEmail,Creator/externalId,Creator/Department/partyName"
+                       Importance="High"/>
+        </FieldGroup>
+        <NavigationProperty Name="Creator" Relations="UserLogin/PartyAndContact" Type="Member"
+                            IsCollection="false"/>
+    </EntityType>
+
+    <!--通用WorkEffort-->
+    <EntityType Name="WorkEffort" EntitySetName="WorkEfforts" AutoProperties="true">
+    </EntityType>
+
+    <!-- 主流程对象 -->
+    <EntityType Name="MainProcess" EntitySetName="MainProcess" AutoProperties="true">
+        <NavigationProperty Name="WorkEffort"/>
+        <NavigationProperty Name="DBEntity"/>
+        <NavigationProperty Name="StatusItem"/>
+    </EntityType>
+
+
+    <!-- 业务对象 -->
+    <EntityType Name="DBEntity" AutoProperties="true" EntitySetName="DBEntities">
+    </EntityType>
+
+    <!--成员-->
+    <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members" EntityCondition="partyTypeId=PERSON"
+                AutoProperties="true" OfbizType="partyTypeId=PERSON"
+                Handler="component://bfcommon/groovyScripts/orgStructureManage/Member.groovy">
+        <RelAlias Name="Person" Relations="Person"/>
+        <Property Name="gender" RelAlias="Person" Field="gender" FieldControl="Mandatory" Required="true">
+            <Text Path="GenderEnumeration/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="birthDate" RelAlias="Person" Field="birthDate" FieldControl="Mandatory" Required="true"/>
+        <Property Name="nickName" RelAlias="Person" Field="nickname" FieldControl="Mandatory" Required="true"/>
+        <Property Name="partyTypeId" DefaultValue="PERSON"/>
+        <Property Name="isManager" Type="Boolean"/>
+        <Property Name="isNotManager" Type="Boolean"/>
+        <Property Name="partyId" Immutable="true">
+            <Text Path="partyName" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="statusId" Immutable="true">
+            <Text Path="MemberStatusItem/description" TextArrangement="TextOnly"/>
+        </Property>
+        <Property Name="partyName" FieldControl="Mandatory" Required="true"/>
+        <Property Name="phoneMobile" FieldControl="Mandatory" Required="true"/>
+        <Property Name="primaryEmail" FieldControl="Mandatory" Required="true"/>
+        <Property Name="externalId" FieldControl="Mandatory" Required="true" Immutable="true"/>
+        <NavigationProperty Name="Department" Type="Department"
+                            Relations="ToPartyRelationship(roleTypeIdTo=ORD_EMPLOYEE)/FromPartyAndPartyGroup"
+                            IsCollection="false"/>
+        <NavigationProperty Name="MemberStatusItem" Type="MemberStatusItem" Relations="StatusItem"/>
+        <NavigationProperty Name="GenderEnumeration" Type="Gender"
+                            Relations="Person/GenderEnumeration"/>
+    </EntityType>
+
+    <!--性别-->
+    <EntityType Name="Gender" OfbizEntity="Enumeration" EntitySetName="Genders"
+                EntityCondition="enumTypeId=GENDER_ENUM_TYPE"
+                AutoProperties="true">
+        <Property Name="enumId">
+            <Text Path="description" TextArrangement="TextOnly"/>
+        </Property>
+        <ValueList WithFixedValues="true" CollectionPath="Genders"/>
+    </EntityType>
+
+    <!--审批通过方式枚举-->
+    <EntityType Name="Via" OfbizEntity="Enumeration" EntitySetName="Vias" EntityCondition="enumTypeId=PASS_MANNER"
+                AutoProperties="true">
+    </EntityType>
+
+    <!--成员状态-->
+    <EntityType Name="MemberStatusItem" OfbizEntity="StatusItem" EntitySetName="MemberStatusItem"
+                EntityCondition="statusTypeId=MEMBER_STATUS"
+                AutoProperties="true">
+        <Property Name="statusId">
+            <Text Path="description" TextArrangement="TextOnly"/>
+        </Property>
+    </EntityType>
+
+    <!--部门-->
+    <EntityType Name="Department" OfbizEntity="PartyAndPartyGroup"
+                EntityCondition="partyTypeId=PARTY_GROUP and PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
+                EntitySetName="Departments" OfbizType="partyTypeId=PARTY_GROUP"
+                AutoProperties="true">
+    </EntityType>
+
+    <!--通过PartyAndContact-->
+    <EntityType Name="PartyAndContact" EntitySetName="PartyAndContacts"
+                AutoProperties="true">
+    </EntityType>
+
+
+    <EntityType Name="StatusItem" EntitySetName="StatusItems" AutoProperties="true"/>
+    <EntityType Name="ApprovalStatusItem" OfbizEntity="StatusItem" EntitySetName="ApprovalStatusItem"
+                AutoProperties="true" EntityCondition="statusTypeId=WORKFLOW_STATUS"/>
+    <!--=====================================     子对象EntityType definition     =====================================-->
+    <!--=====================================    Action Definition End   =====================================-->
+</ofbiz-edm>
