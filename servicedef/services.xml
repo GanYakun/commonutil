@@ -73,6 +73,34 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
 
+    <service name="banfftech.createPersonAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="PersonAndContact"
+             invoke="createPersonAndContact">
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.updatePersonAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="PersonAndContact"
+             invoke="updatePersonAndContact">
+        <auto-attributes include="pk" mode="INOUT" />
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.createPartyGroupAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="PartyGroupAndContact"
+             invoke="createPartyGroupAndContact">
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.updatePartyGroupAndContact" engine="java"
+             location="com.banfftech.common.services.ContactService" default-entity-name="PartyGroupAndContact"
+             invoke="updatePartyGroupAndContact">
+        <auto-attributes include="pk" mode="INOUT" />
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
     <service name="banfftech.createUserLoginAndContact" engine="java"
              location="com.banfftech.common.services.ContactService" default-entity-name="UserLoginAndContact"
              invoke="createUserLoginAndContact">
