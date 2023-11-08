@@ -20,4 +20,21 @@ under the License.
 
 <entity-engine-xml>
 
+    <EnumerationType description="国际化语言枚举值" enumTypeId="LANGUAGE_ENUM" hasTable="N"/>
+    <Enumeration enumId="zh" enumTypeId="LANGUAGE_ENUM" description="中文简体" enumCode="ZH" sequenceId="01"/>
+    <Enumeration enumId="zh-TW" enumTypeId="LANGUAGE_ENUM" description="中文繁体" enumCode="ZH_TW" sequenceId="02"/>
+    <Enumeration enumId="en" enumTypeId="LANGUAGE_ENUM" description="英文" enumCode="EN" sequenceId="03"/>
+
+    <!-- 业务对象 字段类型 -->
+    <DBFieldType description="布尔值" dbFieldTypeId="BOOL"/>
+    <DBFieldType description="日期" dbFieldTypeId="DATE"/>
+    <DBFieldType description="日期时间" dbFieldTypeId="DATE_TIME"/>
+    <DBFieldType description="枚举" dbFieldTypeId="ENUM"/>
+    <DBFieldType description="数字" dbFieldTypeId="NUMBER"/>
+    <DBFieldType description="人员" dbFieldTypeId="PARTY"/>
+    <DBFieldType description="产品" dbFieldTypeId="PRODUCT"/>
+    <DBFieldType description="状态" dbFieldTypeId="STATUS"/>
+    <DBFieldType description="字符串" dbFieldTypeId="STRING"/>
+    <DBFieldType description="类型" dbFieldTypeId="TYPE"/>
+
 </entity-engine-xml>
