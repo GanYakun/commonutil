@@ -29,7 +29,9 @@
     </EntityType>
 
     <EntityType Name="RoleType" EntitySetName="RoleTypes" AutoProperties="true" OfbizType="parentTypeId=SYSTEM_ROLE">
-
+        <Property Name="roleTypeId">
+            <Text Path="description" TextArrangement="TextFirst"/>
+        </Property>
     </EntityType>
 
 </ofbiz-edm>
