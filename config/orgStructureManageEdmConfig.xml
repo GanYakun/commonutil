@@ -45,6 +45,7 @@
     <!--成员-->
     <EntityType Name="Member" OfbizEntity="PartyAndContact" EntitySetName="Members"
                 EntityCondition="PartyRole/roleTypeId=ORD_EMPLOYEE" OfbizType="partyTypeId=PERSON"
+                SearchOption="partyName"
                 AutoProperties="true"
                 Handler="component://bfcommon/groovyScripts/orgStructureManage/Member.groovy">
         <SelectionFields PropertyPath="birthDate,gender"/>
@@ -69,8 +70,6 @@
             <DataField
                     Values="partyName,gender,UserLogin/enabled,birthDate,nickname,phoneMobile,primaryEmail,externalId"
                     Importance="High"/>
-            <DataFieldForAction Label="变更部门" Action="ChangeDepartment" InvocationGrouping="Isolated"
-                                Criticality="Positive" Inline="false" Importance="High"/>
         </LineItem>
         <NavigationProperty Name="Department" Type="Department"
                             Relations="ToPartyRelationship(roleTypeIdTo=ORD_EMPLOYEE)/FromPartyAndPartyGroup"
