@@ -139,7 +139,8 @@
     </EntityType>
 
 
-    <EntityType Name="RolePartyDisplay" OfbizEntity="PartyRole" EntitySetName="RolePartyDisplays" AutoProperties="true">
+    <EntityType Name="RolePartyDisplay" OfbizEntity="PartyRole" EntitySetName="RolePartyDisplays" AutoProperties="true"
+        SearchOption="PartyAndContact/partyName,PartyAndContact/Person/GenderEnumeration/description,PartyAndContact/phoneMobile,PartyAndContact/primaryEmail,PartyAndContact/externalId,PartyAndContact/ToPartyRelationship(roleTypeIdTo=ORD_EMPLOYEE)/FromPartyAndPartyGroup/partyName">
         <Property Name="partyId" FieldControl="Mandatory" Required="true">
             <Text Path="Member/partyName" TextArrangement="TextOnly"/>
         </Property>
