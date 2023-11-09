@@ -75,6 +75,17 @@ public class CamelUtil {
         return camelResult;
     }
 
+    public static JSON sendGet(String url, Map<String, Object> param) throws Exception {
+        Debug.log("============ Get param:" + param.toString());
+        HttpClient ofbizHttpClient = new HttpClient(url);
+        ofbizHttpClient.setParameters(param);
+        ofbizHttpClient.setContentType("application/json;charset=UTF-8");
+        String responseString = ofbizHttpClient.get();
+        JSON camelResult = JSON.from(responseString);
+        Debug.log("============ Camel result:" + camelResult);
+        return camelResult;
+    }
+
     public static Map<String, Object> resError(String message) {
         return UtilMisc.toMap("code", "500", "message", message);
     }
