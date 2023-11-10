@@ -21,6 +21,7 @@ import org.apache.olingo.commons.api.data.Property;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.ofbiz.common.login.LoginServices.getHashType;
 
@@ -290,7 +291,7 @@ public class CommonUtils {
     /**
      * @param [inventoryItemDetails]
      * @Author yyp
-     * @Description 作用:归还InventoryItemDetails(保证相应的业务字段并不发生改变,取反可用库存)
+     * @Description 作用:归还InventoryItemDetails(保证相应的字段和值并不发生改变,仅仅取反可用库存)
      * @Date 10:17 2023/10/27
      **/
     public static void returnInventoryItemDetails(LocalDispatcher dispatcher, List<GenericValue> inventoryItemDetails, GenericValue userLogin)
@@ -312,6 +313,74 @@ public class CommonUtils {
             //更新有效时间
             serviceParam.put("effectiveDate", UtilDateTime.nowTimestamp());
             dispatcher.runSync("banfftech.createInventoryItemDetail", serviceParam);
+        }
+    }
+
+    /**
+     * @param [inventoryItemDetail]
+     * @Author yyp
+     * @Description 作用:归还InventoryItemDetail(保证相应的业务字段并不发生改变,仅仅取反给定的数量)
+     * @Date 10:17 2023/10/27
+     **/
+    public static void returnInventoryItemDetail(LocalDispatcher dispatcher, GenericValue inventoryItemDetail, BigDecimal quantity, GenericValue userLogin)
+            throws GenericServiceException {
+
+            String inventoryItemDetailSeqId = inventoryItemDetail.getString("inventoryItemDetailSeqId");
+            //获取当前流水的所有字段信息
+            Map<String, Object> serviceParam = new HashMap<>(inventoryItemDetail);
+            //删除当前流水参数中的一个主键inventoryItemDetailSeqId
+            serviceParam.remove("inventoryItemDetailSeqId", inventoryItemDetailSeqId);
+            //取反当前流水的可用库存数量
+            serviceParam.put("availableToPromiseDiff", quantity.negate());
+            //放入service调用需要的userLogin
+            serviceParam.put("userLogin", userLogin);
+            //更新有效时间
+            serviceParam.put("effectiveDate", UtilDateTime.nowTimestamp());
+            dispatcher.runSync("banfftech.createInventoryItemDetail", serviceParam);
+    }
+
+    /**
+     * @Author yyp
+     * @Description 作用:归还InventoryItemDetails(保证相应的业务字段并不发生改变,取反可用库存)
+     * @Date 10:17 2023/10/27
+     **/
+    public static void returnInventoryItemDetail(LocalDispatcher dispatcher, GenericValue inventoryItemDetail, GenericValue userLogin)
+            throws GenericServiceException {
+            String inventoryItemDetailSeqId = inventoryItemDetail.getString("inventoryItemDetailSeqId");
+            BigDecimal availableToPromiseDiff = inventoryItemDetail.getBigDecimal("availableToPromiseDiff");
+
+            //获取当前流水的所有字段信息
+            Map<String, Object> serviceParam = new HashMap<>(inventoryItemDetail);
+            //删除当前流水参数中的一个主键inventoryItemDetailSeqId
+            serviceParam.remove("inventoryItemDetailSeqId", inventoryItemDetailSeqId);
+            //取反当前流水的可用库存数量
+            serviceParam.put("availableToPromiseDiff", availableToPromiseDiff.negate());
+            //放入service调用需要的userLogin
+            serviceParam.put("userLogin", userLogin);
+            //更新有效时间
+            serviceParam.put("effectiveDate", UtilDateTime.nowTimestamp());
+            dispatcher.runSync("banfftech.createInventoryItemDetail", serviceParam);
+    }
+
+    /**
+     * @Author yyp
+     * @Description 作用:归还InventoryItemDetails(按库存项分组,取反库存项对应的所有流水可用库存之和)
+     * @Date 10:17 2023/10/27
+     **/
+    public static void returnInvItemDetailsGroupByInv(LocalDispatcher dispatcher, List<GenericValue> inventoryItemDetails, GenericValue userLogin)
+            throws GenericServiceException {
+        //按照库存项分组库存流水
+        Map<String, List<GenericValue>> reqItemDetailList = inventoryItemDetails.stream().
+                collect(Collectors.groupingBy(detail -> detail.getString("inventoryItemId")));
+        //遍历分组后库存流水
+        for (Map.Entry<String, List<GenericValue>> entry : reqItemDetailList.entrySet()) {
+            List<GenericValue> reqItemDetails = entry.getValue();
+            List<BigDecimal> promiseDiffs = EntityUtil.getFieldListFromEntityList(reqItemDetails, "availableToPromiseDiff", false);
+            //计算当前库存流水之和
+            BigDecimal total = promiseDiffs.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+            if (total.compareTo(BigDecimal.ZERO) < 0) {
+                returnInventoryItemDetail(dispatcher, reqItemDetails.get(0), total.negate(), userLogin);
+            }
         }
     }
 
