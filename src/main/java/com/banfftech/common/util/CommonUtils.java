@@ -290,7 +290,7 @@ public class CommonUtils {
     /**
      * @param [inventoryItemDetails]
      * @Author yyp
-     * @Description 作用:归还InventoryItemDetails,并保证相应的业务字段并不发生改变
+     * @Description 作用:归还InventoryItemDetails(保证相应的业务字段并不发生改变,取反可用库存)
      * @Date 10:17 2023/10/27
      **/
     public static void returnInventoryItemDetails(LocalDispatcher dispatcher, List<GenericValue> inventoryItemDetails, GenericValue userLogin)
