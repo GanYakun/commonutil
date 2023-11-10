@@ -289,35 +289,19 @@ public class CommonUtils {
     }
 
     /**
-     * @param [inventoryItemDetails]
      * @Author yyp
      * @Description 作用:归还InventoryItemDetails(保证相应的字段和值并不发生改变,仅仅取反可用库存)
      * @Date 10:17 2023/10/27
      **/
     public static void returnInventoryItemDetails(LocalDispatcher dispatcher, List<GenericValue> inventoryItemDetails, GenericValue userLogin)
             throws GenericServiceException {
-
         //遍历InventoryItemDetails,创建新的流水
         for (GenericValue inventoryItemDetail : inventoryItemDetails) {
-            String inventoryItemDetailSeqId = inventoryItemDetail.getString("inventoryItemDetailSeqId");
-            BigDecimal availableToPromiseDiff = inventoryItemDetail.getBigDecimal("availableToPromiseDiff");
-
-            //获取当前流水的所有字段信息
-            Map<String, Object> serviceParam = new HashMap<>(inventoryItemDetail);
-            //删除当前流水参数中的一个主键inventoryItemDetailSeqId
-            serviceParam.remove("inventoryItemDetailSeqId", inventoryItemDetailSeqId);
-            //取反当前流水的可用库存数量
-            serviceParam.put("availableToPromiseDiff", availableToPromiseDiff.negate());
-            //放入service调用需要的userLogin
-            serviceParam.put("userLogin", userLogin);
-            //更新有效时间
-            serviceParam.put("effectiveDate", UtilDateTime.nowTimestamp());
-            dispatcher.runSync("banfftech.createInventoryItemDetail", serviceParam);
+            returnInventoryItemDetail(dispatcher,inventoryItemDetail,userLogin);
         }
     }
 
     /**
-     * @param [inventoryItemDetail]
      * @Author yyp
      * @Description 作用:归还InventoryItemDetail(保证相应的业务字段并不发生改变,仅仅取反给定的数量)
      * @Date 10:17 2023/10/27
