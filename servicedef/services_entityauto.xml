@@ -579,16 +579,6 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-    <service name="banfftech.createNoteData" default-entity-name="NoteData" engine="entity-auto" invoke="create" auth="true">
-        <description>Create a NoteData</description>
-        <auto-attributes include="pk" mode="INOUT" optional="true"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
-    <service name="banfftech.updateNoteData" default-entity-name="NoteData" engine="entity-auto" invoke="update" auth="true">
-        <description>Update a NoteData</description>
-        <auto-attributes include="pk" mode="IN" optional="false"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-    </service>
     <service name="banfftech.createEmplLeave" default-entity-name="EmplLeave" engine="entity-auto" invoke="create">
         <description>Create a EmplLeave</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
