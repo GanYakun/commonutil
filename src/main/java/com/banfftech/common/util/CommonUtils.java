@@ -139,6 +139,14 @@ public class CommonUtils {
         return delegator.findOne(attrEntityName, fieldCondition, false);
     }
 
+    public static GenericValue getObjectAttributeGv(GenericValue genericValue, String attrEntityName, String attrName) throws GenericEntityException {
+        Delegator delegator = genericValue.getDelegator();
+        GenericPK genericPK = genericValue.getPrimaryKey();
+        Map<String, Object> fieldCondition = new HashMap<>(genericPK);
+        fieldCondition.put("attrName", attrName);
+        return delegator.findOne(attrEntityName, fieldCondition, false);
+    }
+
     public static String getObjectAttribute(GenericValue genericValue, String attrName) {
         GenericValue attrGv;
         try {
@@ -166,6 +174,21 @@ public class CommonUtils {
         if (attrGv == null) {
             Delegator delegator = genericValue.getDelegator();
             String attrEntityName = genericValue.getEntityName() + "Attribute";
+            Map<String, Object> fieldMap = new HashMap<>(genericValue.getPrimaryKey());
+            fieldMap.put("attrName", attrName);
+            fieldMap.put("attrValue", attrValue);
+            attrGv = delegator.makeValue(attrEntityName, fieldMap);
+            attrGv.create();
+        } else {
+            attrGv.set("attrValue", attrValue);
+            attrGv.store();
+        }
+    }
+
+    public static void setObjectAttribute(GenericValue genericValue, String attrEntityName, String attrName, Object attrValue) throws GenericEntityException {
+        GenericValue attrGv = getObjectAttributeGv(genericValue, attrEntityName, attrName);
+        if (attrGv == null) {
+            Delegator delegator = genericValue.getDelegator();
             Map<String, Object> fieldMap = new HashMap<>(genericValue.getPrimaryKey());
             fieldMap.put("attrName", attrName);
             fieldMap.put("attrValue", attrValue);
