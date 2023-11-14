@@ -125,6 +125,7 @@ public class CommonUtils {
 
         Map<String, Object> validFieldsForService = ServiceUtil.setServiceFields(dispatcher, serviceName,
                 context, userLogin, null, null);
+        validFieldsForService.putIfAbsent("userLogin",userLogin);
         return dispatcher.runSync(serviceName, UtilMisc.toMap(validFieldsForService));
     }
 
