@@ -52,7 +52,7 @@
             <Parameter Name="leaveApproval" Type="LeaveApproval" Nullable="false" IsCollection="false"/>
             <ReturnType Type="ActiveData" Nullable="true"/>
         </Action>
-        <FieldGroup Qualifier="BaseInfo" Label="基本信息">
+        <FieldGroup Qualifier="BaseInfoTest" Label="基本信息">
             <DataField Values="emplLeaveReasonTypeId,fromDate,thruDate,description"
                        Importance="High"/>
         </FieldGroup>
@@ -75,7 +75,7 @@
         <NavigationProperty Name="LeaveMember" Relations="Party/PartyAndContact" Type="Member"
                             IsCollection="false"/>
         <!--关联审批记录-->
-        <NavigationProperty Name="ApprovalRecord" Relations="WorkFlowMember(memberEntityName=EmplLeave)/WorkEffort/Approval" Type="Approval"
+        <NavigationProperty Name="ApprovalRecord" Relations="WorkFlowMember(memberEntityName=EmplLeave)/WorkEffort/Approval" Type="ApprovalRecord"
                             IsCollection="true"/>
     </EntityType>
 
@@ -84,7 +84,7 @@
     
     <!--=====================================     业务子对象EntityType definition End    =====================================-->
     <!--审批-->
-    <EntityType Name="Approval" EntitySetName="Approvals" AutoProperties="true">
+    <EntityType Name="ApprovalRecord" OfbizEntity="Approval" EntitySetName="ApprovalRecords" AutoProperties="true">
         <RelAlias Name="DBEntity" Relations="TopWorkEffort/ParentWorkEffort/MainProcess/DBEntity"/>
         <Property Name="dbEntityName" RelAlias="DBEntity" Field="dbEntityName"/>
         <Property Name="statusId">

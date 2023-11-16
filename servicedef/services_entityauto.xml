@@ -655,4 +655,10 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 
+    <service name="banfftech.createWorkEffortContent" default-entity-name="WorkEffortContent" engine="entity-auto" invoke="create">
+        <description>Create a WorkEffortContent</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
 </services>

@@ -28,8 +28,9 @@
                     Importance="High"/>
         </LineItem>
         <FieldGroup Qualifier="BaseInfo" Label="基本信息">
-            <DataField Values="createdDate,comments,workEffortName,DBEntity/description,MainProcess/version,MainProcess/description"
-                       Importance="High"/>
+            <DataField
+                    Values="createdDate,comments,workEffortName,DBEntity/description,MainProcess/version,MainProcess/description"
+                    Importance="High"/>
         </FieldGroup>
         <FieldGroup Qualifier="Member" Label="待审批成员信息">
             <DataField
@@ -85,11 +86,15 @@
         </Property>
         <LineItem Qualifier="RecordApproval">
             <DataField
-                    Values="workEffortName,fromDate,thruDate,partyId,comments,mannerEnumId,statusId"
+                    Values="workEffortName,fromDate,thruDate,partyId,comments,SignatureImage/imageData,mannerEnumId,statusId"
                     Importance="High"/>
         </LineItem>
         <NavigationProperty Name="ApprovalStatusItem" Relations="ApprovalStatusItem" Type="ApprovalStatusItem"
                             IsCollection="false"/>
+        <NavigationProperty Name="SignatureImage" IsCollection="false"
+                            Relations="WorkEffortContent(workEffortContentTypeId=SIGNATURE_IMAGE)/ContentAndMediaDataResource"
+                            Type="ContentAndMediaDataResource"/>
+
         <!--关联审批通过枚举-->
         <NavigationProperty Name="Via" Relations="MannerEnumeration" Type="Via" IsCollection="false"/>
         <NavigationProperty Name="Member" Relations="PartyAndContact" Type="Member"/>
@@ -102,8 +107,9 @@
             <Text Path="Creator/partyName" TextArrangement="TextOnly"/>
         </Property>
         <FieldGroup Qualifier="ApproverInformation" Label="审批人信息">
-            <DataField Values="createdByUserLogin,Creator/phoneMobile,Creator/primaryEmail,Creator/externalId,Creator/Department/partyName"
-                       Importance="High"/>
+            <DataField
+                    Values="createdByUserLogin,Creator/phoneMobile,Creator/primaryEmail,Creator/externalId,Creator/Department/partyName"
+                    Importance="High"/>
         </FieldGroup>
         <NavigationProperty Name="Creator" Relations="UserLogin/PartyAndContact" Type="Member"
                             IsCollection="false"/>
@@ -192,10 +198,13 @@
                 AutoProperties="true">
     </EntityType>
 
-
     <EntityType Name="StatusItem" EntitySetName="StatusItems" AutoProperties="true"/>
     <EntityType Name="ApprovalStatusItem" OfbizEntity="StatusItem" EntitySetName="ApprovalStatusItem"
                 AutoProperties="true" EntityCondition="statusTypeId=WORKFLOW_STATUS"/>
+
+    <EntityType Name="ContentAndMediaDataResource" AutoProperties="true" HasStream="true" OfbizType="contentTypeId=SIGNATURE_IMAGE">
+        <Property Name="imageData" IsImage="true" Label="${signatureImage}"/>
+    </EntityType>
     <!--=====================================     子对象EntityType definition     =====================================-->
     <!--=====================================    Action Definition End   =====================================-->
 </ofbiz-edm>
