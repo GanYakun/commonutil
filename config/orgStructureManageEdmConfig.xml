@@ -62,10 +62,10 @@
         <Property Name="partyId" Immutable="true">
             <Text Path="partyName" TextArrangement="TextOnly"/>
         </Property>
-        <Property Name="partyName" FieldControl="Mandatory" Required="true"/>
-        <Property Name="phoneMobile" FieldControl="Mandatory" Required="true"/>
-        <Property Name="primaryEmail" FieldControl="Mandatory" Required="true"/>
-        <Property Name="externalId" FieldControl="Mandatory" Required="true" Immutable="true"/>
+        <Property Name="partyName" FieldControl="Mandatory"/>
+        <Property Name="phoneMobile" FieldControl="Mandatory"/>
+        <Property Name="primaryEmail" FieldControl="Mandatory"/>
+        <Property Name="externalId" FieldControl="Mandatory" Immutable="true"/>
         <LineItem Qualifier="Member">
             <DataField
                     Values="partyName,gender,UserLogin/enabled,birthDate,nickname,phoneMobile,primaryEmail,externalId"

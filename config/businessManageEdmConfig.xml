@@ -52,7 +52,7 @@
             <Parameter Name="leaveApproval" Type="LeaveApproval" Nullable="false" IsCollection="false"/>
             <ReturnType Type="ActiveData" Nullable="true"/>
         </Action>
-        <FieldGroup Qualifier="BaseInfoTest" Label="基本信息">
+        <FieldGroup Qualifier="BaseInfo" Label="基本信息">
             <DataField Values="emplLeaveReasonTypeId,fromDate,thruDate,description"
                        Importance="High"/>
         </FieldGroup>

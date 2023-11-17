@@ -44,6 +44,8 @@
             <Parameter Name="statusId" Type="Edm.String" Nullable="false" IsCollection="false"/>
             <Parameter Name="comments" Type="Edm.String" Nullable="false" IsCollection="false"
                        Label="${approvalComments}"/>
+            <Parameter Name="signatureImage" Type="Stream" Nullable="false" IsCollection="false"
+                       Label="${signatureImage}"/>
         </Action>
         <!--审批不通过Action-->
         <Action Name="ApproveRefuse" IsBound="true"
@@ -52,6 +54,8 @@
             <Parameter Name="statusId" Type="Edm.String" Nullable="false" IsCollection="false"/>
             <Parameter Name="comments" Type="Edm.String" Nullable="false" IsCollection="false"
                        Label="${approvalComments}"/>
+            <Parameter Name="signatureImage" Type="Stream" Nullable="false" IsCollection="false"
+                       Label="${signatureImage}"/>
         </Action>
         <NavigationProperty Name="RootNodeWorkEffort" Type="RootNodeWorkEffort" Relations="TopWorkEffort"
                             IsCollection="false"/>
