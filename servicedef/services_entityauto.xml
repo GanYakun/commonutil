@@ -655,10 +655,62 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 
+    <service name="banfftech.createVideoDataResource" default-entity-name="VideoDataResource" engine="entity-auto" invoke="create">
+        <description>Create a VideoDataResource</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateVideoDataResource" default-entity-name="VideoDataResource" engine="entity-auto" invoke="update">
+        <description>Update a VideoDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteVideoDataResource" default-entity-name="VideoDataResource" engine="entity-auto" invoke="delete">
+        <description>Delete a VideoDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <service name="banfftech.createAudioDataResource" default-entity-name="AudioDataResource" engine="entity-auto" invoke="create">
+        <description>Create a AudioDataResource</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateAudioDataResource" default-entity-name="AudioDataResource" engine="entity-auto" invoke="update">
+        <description>Update a AudioDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteAudioDataResource" default-entity-name="AudioDataResource" engine="entity-auto" invoke="delete">
+        <description>Delete a AudioDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <service name="banfftech.createOtherDataResource" default-entity-name="OtherDataResource" engine="entity-auto" invoke="create">
+        <description>Create a OtherDataResource</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateOtherDataResource" default-entity-name="OtherDataResource" engine="entity-auto" invoke="update">
+        <description>Update a OtherDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteOtherDataResource" default-entity-name="OtherDataResource" engine="entity-auto" invoke="delete">
+        <description>Delete a OtherDataResource</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
     <service name="banfftech.createWorkEffortContent" default-entity-name="WorkEffortContent" engine="entity-auto" invoke="create">
         <description>Create a WorkEffortContent</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateWorkEffortContent" default-entity-name="WorkEffortContent" engine="entity-auto" invoke="update">
+        <description>Update a WorkEffortContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteWorkEffortContent" default-entity-name="WorkEffortContent" engine="entity-auto" invoke="delete">
+        <description>Delete a WorkEffortContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 
 </services>

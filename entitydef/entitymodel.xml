@@ -495,7 +495,7 @@ under the License.
         <alias name="imageData" entity-alias="IDR" field="imageData"/>
         <alias name="videoData" entity-alias="VDR" field="videoData"/>
         <alias name="audioData" entity-alias="ADR" field="audioData"/>
-        <alias name="otherData" entity-alias="ODR" field="otherData"/>
+        <alias name="otherData" entity-alias="ODR" field="dataResourceContent"/>
         <view-link entity-alias="CO" rel-entity-alias="DR" >
             <key-map field-name="dataResourceId"/>
         </view-link>

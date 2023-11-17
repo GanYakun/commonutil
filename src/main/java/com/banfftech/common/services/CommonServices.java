@@ -176,7 +176,7 @@ public class CommonServices {
         Map<String, Object> result = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createDataResource", systemUser);
         String dataResourceId = (String) result.get("dataResourceId");
 
-        //create ImageDataResource
+        //create SubDataResource
         Map<String, Object> createMediaParam = UtilMisc.toMap("dataResourceId", dataResourceId, "userLogin", systemUser);
         if (context.containsKey("imageData")) {
             createMediaParam.put("imageData", context.get("imageData"));
@@ -189,6 +189,10 @@ public class CommonServices {
         if (context.containsKey("audioData")) {
             createMediaParam.put("audioData", context.get("audioData"));
             dispatcher.runSync("banfftech.createAudioDataResource", createMediaParam);
+        }
+        if (context.containsKey("otherData")) {
+            createMediaParam.put("dataResourceContent", context.get("otherData"));
+            dispatcher.runSync("banfftech.createOtherDataResource", createMediaParam);
         }
         String contentId = (String) context.get("contentId");
         if (UtilValidate.isEmpty(contentId)) {
@@ -231,6 +235,12 @@ public class CommonServices {
                 updateMediaParam.put("audioData", context.get("audioData"));
                 GenericValue audioDataResource = delegator.findOne("AudioDataResource", UtilMisc.toMap("dataResourceId", dataResourceId), false);
                 String service = UtilValidate.isEmpty(audioDataResource) ? "banfftech.createAudioDataResource" : "banfftech.updateAudioDataResource";
+                dispatcher.runSync(service, updateMediaParam);
+            }
+            if (UtilValidate.isNotEmpty(context.get("otherData"))) {
+                updateMediaParam.put("dataResourceContent", context.get("otherData"));
+                GenericValue audioDataResource = delegator.findOne("OtherDataResource", UtilMisc.toMap("dataResourceId", dataResourceId), false);
+                String service = UtilValidate.isEmpty(audioDataResource) ? "banfftech.createOtherDataResource" : "banfftech.updateOtherDataResource";
                 dispatcher.runSync(service, updateMediaParam);
             }
         }
