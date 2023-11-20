@@ -713,4 +713,19 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 
+    <service name="banfftech.createPartyContent" default-entity-name="PartyContent" engine="entity-auto" invoke="create">
+        <description>Create a PartyContent</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyContent" default-entity-name="PartyContent" engine="entity-auto" invoke="update">
+        <description>Update a PartyContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deletePartyContent" default-entity-name="PartyContent" engine="entity-auto" invoke="delete">
+        <description>Delete a PartyContent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
 </services>
