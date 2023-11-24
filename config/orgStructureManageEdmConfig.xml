@@ -7,7 +7,7 @@
                 EntityCondition="PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
                 OfbizType="partyTypeId=PARTY_GROUP"
                 AutoProperties="true">
-        <Property Name="numEmployees" DefaultValue="0" Scale="0"/>
+        <Property Name="numEmployees" DefaultValue="0" Scale="0" Label="${numEmployees}"/>
         <RelAlias Name="Manager" Relations="FromPartyRelationship(roleTypeIdTo=MANAGER)"/>
         <Property Name="departmentManager" RelAlias="Manager" Field="partyIdTo">
             <Text Path="DepartmentManager/partyName" TextArrangement="TextOnly"/>
