@@ -7,6 +7,7 @@
                 EntityCondition="PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
                 OfbizType="partyTypeId=PARTY_GROUP"
                 AutoProperties="true">
+        <SelectionFields PropertyPath="partyName"/>
         <Property Name="numEmployees" DefaultValue="0" Scale="0" Label="${numEmployees}"/>
         <RelAlias Name="Manager" Relations="FromPartyRelationship(roleTypeIdTo=MANAGER)"/>
         <Property Name="departmentManager" RelAlias="Manager" Field="partyIdTo" Label="${departmentManager}">
@@ -17,10 +18,10 @@
             <DataField Values="partyName" Importance="High"/>
         </FieldGroup>
         <LineItem>
-            <DataField Values="partyId,partyName,numEmployees,departmentManager" Importance="High"/>
+            <DataField Values="partyName,numEmployees,departmentManager,ParentDepartment/partyName" Importance="High"/>
         </LineItem>
         <LineItem Qualifier="SubDepartment">
-            <DataField Values="partyId,partyName,numEmployees,departmentManager" Importance="High"/>
+            <DataField Values="partyName,numEmployees,departmentManager,ParentDepartment/partyName" Importance="High" />
         </LineItem>
         <HeaderInfo TypeName="CompanyInfo Manage" TypeNamePlural="公司信息">
             <Title Path="partyName"/>
@@ -35,11 +36,22 @@
         <NavigationProperty Name="ParentDepartmentRelation" Type="PartyRelationship"
                             Relations="ToPartyRelationship(roleTypeIdTo=DEPARTMENT)"
                             IsCollection="false"/>
+        <NavigationProperty Name="ParentDepartment" Type="ParentDepartment"
+                            Relations="ToPartyRelationship(roleTypeIdTo=DEPARTMENT)/FromPartyAndPartyGroup"
+                            IsCollection="false"/>
         <NavigationProperty Name="DirectMember" Type="Member"
                             Relations="FromPartyRelationship(roleTypeIdTo=ORD_EMPLOYEE)/ToPartyAndContact"
                             IsCollection="true"/>
         <!--        打算使用语义化Navigation实现-->
         <NavigationProperty Name="AllMember" Type="Member" IsCollection="true"/>
+    </EntityType>
+
+    <!--部门-->
+    <EntityType Name="ParentDepartment" OfbizEntity="PartyAndPartyGroup" EntitySetName="ParentDepartments"
+                EntityCondition="PartyRole/roleTypeId in (DEPARTMENT,INTERNAL_ORGANIZATIO)"
+                OfbizType="partyTypeId=PARTY_GROUP"
+                AutoProperties="true">
+        <Property Name="partyName" Label="${ParentDepartmentName}"/>
     </EntityType>
 
     <!--成员-->
@@ -204,6 +216,7 @@
     </EntityType>
 
     <EntityType Name="UserLogin" EntitySetName="UserLogins" AutoProperties="true">
+        <Property Name="enabled" Type="Boolean"/>
         <NavigationProperty Name="Party"/>
     </EntityType>
 
