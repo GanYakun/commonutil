@@ -9,7 +9,7 @@
                 AutoProperties="true">
         <Property Name="numEmployees" DefaultValue="0" Scale="0" Label="${numEmployees}"/>
         <RelAlias Name="Manager" Relations="FromPartyRelationship(roleTypeIdTo=MANAGER)"/>
-        <Property Name="departmentManager" RelAlias="Manager" Field="partyIdTo">
+        <Property Name="departmentManager" RelAlias="Manager" Field="partyIdTo" Label="${departmentManager}">
             <Text Path="DepartmentManager/partyName" TextArrangement="TextOnly"/>
         </Property>
         <Property Name="partyTypeId" DefaultValue="PARTY_GROUP"/>
@@ -17,7 +17,7 @@
             <DataField Values="partyName" Importance="High"/>
         </FieldGroup>
         <LineItem>
-            <DataField Values="partyId,partyName,numEmployees" Importance="High"/>
+            <DataField Values="partyId,partyName,numEmployees,departmentManager" Importance="High"/>
         </LineItem>
         <LineItem Qualifier="SubDepartment">
             <DataField Values="partyId,partyName,numEmployees,departmentManager" Importance="High"/>
@@ -152,9 +152,14 @@
         <NavigationProperty Name="Member" Type="Member" Relations="PartyAndContact"/>
     </EntityType>
 
-    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" AutoProperties="true">
+    <EntityType Name="PartyRelationship" EntitySetName="PartyRelationships" AutoProperties="true"
+                Handler="component://bfcommon/groovyScripts/orgStructureManage/PartyRelationShip.groovy">
+        <Property Name="memberDepNameOrDepName" Type="String" Label="${MemberDepNameOrDepName}"/>
+        <Property Name="partyIdTo" Label="${MemberAndDepart}">
+            <Text Path="ToParty/partyName" TextArrangement="TextOnly"/>
+        </Property>
         <LineItem>
-            <DataField Values="partyIdTo,MemberDepartment/partyName" Importance="High"/>
+            <DataField Values="partyIdTo,memberDepNameOrDepName" Importance="High"/>
         </LineItem>
         <NavigationProperty Name="FromParty" Type="Party" Relations="FromParty"/>
         <NavigationProperty Name="ToParty" Type="Party" Relations="ToParty"/>
@@ -164,19 +169,20 @@
 
     <!--用户组-->
     <EntityType Name="UserGroup" OfbizEntity="PartyAndPartyGroup" EntitySetName="UserGroups"
-                EntityCondition="partyTypeId=PARTY_GROUP and PartyRole/roleTypeId=OTHER_ORGANIZATION_U"
+                EntityCondition="partyTypeId=PARTY_GROUP"
+                OfbizType="PartyRole/roleTypeId=OTHER_ORGANIZATION_U"
                 AutoProperties="true">
-        <SelectionFields PropertyPath="partyName"/>
+        <SelectionFields PropertyPath="groupName,description"/>
         <Property Name="partyName" FieldControl="Mandatory" Required="true"/>
         <Property Name="partyTypeId" DefaultValue="PARTY_GROUP"/>
-        <LineItem Qualifier="Department">
-            <DataField Values="partyName,numEmployees" Importance="High"/>
+        <LineItem>
+            <DataField Values="groupName,description" Importance="High"/>
         </LineItem>
         <FieldGroup Label="基本信息" Qualifier="BaseInfo">
-            <DataField Values="partyName,numEmployees" Importance="High"/>
+            <DataField Values="groupName,description" Importance="High"/>
         </FieldGroup>
-        <HeaderInfo TypeName="Department Manage" TypeNamePlural="部门信息">
-            <Title Path="partyName"/>
+        <HeaderInfo TypeName="UserGroup Manage" TypeNamePlural="用户组">
+            <Title Path="groupName"/>
             <Description Path="description"/>
         </HeaderInfo>
         <NavigationProperty Name="UserGroupMemberRelation" Type="PartyRelationship" Relations="FromPartyRelationship"
