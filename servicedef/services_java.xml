@@ -103,5 +103,22 @@ under the License.
         <auto-attributes include="pk" mode="IN" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
+
+    <service name="banfftech.createRelationshipAndToParty" engine="java" default-entity-name="RelationshipAndToParty"
+             location="com.banfftech.common.services.PartyServices" invoke="createRelationshipAndToParty" auth="true">
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.updateRelationshipAndToParty" engine="java" default-entity-name="RelationshipAndToParty"
+             location="com.banfftech.common.services.PartyServices" invoke="updateRelationshipAndToParty" auth="true">
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="banfftech.deleteRelationshipAndToParty" engine="java" default-entity-name="RelationshipAndToParty"
+             location="com.banfftech.common.services.PartyServices" invoke="deleteRelationshipAndToParty" auth="true">
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
     
 </services>

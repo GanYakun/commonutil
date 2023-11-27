@@ -728,4 +728,19 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 
+    <service name="banfftech.createPartyNameHistory" default-entity-name="PartyNameHistory" engine="entity-auto" invoke="create">
+        <description>Create a PartyNameHistory</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyNameHistory" default-entity-name="PartyNameHistory" engine="entity-auto" invoke="update">
+        <description>Update a PartyNameHistory</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deletePartyNameHistory" default-entity-name="PartyNameHistory" engine="entity-auto" invoke="delete">
+        <description>Delete a PartyNameHistory</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
 </services>
