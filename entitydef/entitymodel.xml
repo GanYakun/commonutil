@@ -410,6 +410,9 @@ under the License.
         <relation type="many" rel-entity-name="PartyNameHistory">
             <key-map field-name="partyId" />
         </relation>
+        <relation type="many" rel-entity-name="PartyRoleType">
+            <key-map field-name="partyId" />
+        </relation>
     </view-entity>
 
     <!-- UserLogin and Party and TelecomNumber and PostalAddress -->
@@ -620,6 +623,21 @@ under the License.
         <view-link entity-alias="PRS" rel-entity-alias="PT">
             <key-map field-name="partyIdTo" rel-field-name="partyId"/>
         </view-link>
+    </view-entity>
+
+    <view-entity entity-name="PartyRoleType"
+                 package-name="com.banfftech.common"
+                 never-cache="true">
+        <member-entity entity-alias="PR" entity-name="PartyRole"/>
+        <member-entity entity-alias="RT" entity-name="RoleType"/>
+        <alias-all entity-alias="PR" group-by="true"/>
+        <alias-all entity-alias="RT" group-by="true"/>
+        <view-link entity-alias="PR" rel-entity-alias="RT" rel-optional="true">
+            <key-map field-name="roleTypeId"/>
+        </view-link>
+        <relation type="one-nofk" rel-entity-name="RoleType">
+            <key-map field-name="roleTypeId"/>
+        </relation>
     </view-entity>
 
 </entitymodel>
