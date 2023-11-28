@@ -743,4 +743,19 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 
+    <!--PartyGeo-->
+    <service name="banfftech.createPartyGeo" default-entity-name="PartyGeo" engine="entity-auto" invoke="create">
+        <description>Create a PartyGeo</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyGeo" default-entity-name="PartyGeo" engine="entity-auto" invoke="update">
+        <description>Create a PartyGeo</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deletePartyGeo" default-entity-name="PartyGeo" engine="entity-auto" invoke="delete">
+        <description>Create a PartyGeo</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
 </services>

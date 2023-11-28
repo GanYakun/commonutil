@@ -84,6 +84,32 @@ under the License.
         <prim-key field="messageTypeId"/>
     </entity>
 
+    <entity entity-name="PartyGeo" package-name="com.banfftech.common" title="PartyGeo">
+        <field name="partyGeoId" type="id"><description>主键</description></field>
+        <field name="partyGeoTypeId" type="id"><description>地点类型</description></field>
+        <field name="partyId" type="id"><description>会员ID</description></field>
+        <field name="geoId" type="id"><description>地区ID</description></field>
+        <prim-key field="partyGeoId"/>
+        <relation type="many" fk-name="PART_GEO_PARTY" rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="many" fk-name="PART_GEO_GEO" rel-entity-name="Geo">
+            <key-map field-name="geoId"/>
+        </relation>
+        <relation type="one" fk-name="PART_GEO_TYPE" rel-entity-name="PartyGeoType">
+            <key-map field-name="partyGeoTypeId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PartyGeoType" package-name="com.banfftech.common" title="Party Geo Type">
+        <field name="partyGeoTypeId" type="id"><description>主键</description></field>
+        <field name="description" type="value"><description>描述</description></field>
+        <prim-key field="partyGeoTypeId"/>
+        <relation type="many" rel-entity-name="PartyGeo">
+            <key-map field-name="partyGeoTypeId"/>
+        </relation>
+    </entity>
+
     <!-- DataResouceElectornicOther is for Person and PartyGroup which has Party as Base Type -->
     <view-entity entity-name="DataResouceElectornicOther" package-name="com.dpbird.odata">
         <member-entity entity-alias="D" entity-name="DataResource"/>
