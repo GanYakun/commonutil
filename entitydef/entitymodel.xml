@@ -410,6 +410,9 @@ under the License.
         <relation type="many" rel-entity-name="PartyNameHistory">
             <key-map field-name="partyId" />
         </relation>
+        <relation type="many" rel-entity-name="PartyClassification">
+            <key-map field-name="partyId" />
+        </relation>
     </view-entity>
 
     <!-- UserLogin and Party and TelecomNumber and PostalAddress -->
