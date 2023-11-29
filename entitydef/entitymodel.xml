@@ -90,10 +90,10 @@ under the License.
         <field name="partyId" type="id"><description>会员ID</description></field>
         <field name="geoId" type="id"><description>地区ID</description></field>
         <prim-key field="partyGeoId"/>
-        <relation type="many" fk-name="PART_GEO_PARTY" rel-entity-name="Party">
+        <relation type="one" fk-name="PART_GEO_PARTY" rel-entity-name="Party">
             <key-map field-name="partyId"/>
         </relation>
-        <relation type="many" fk-name="PART_GEO_GEO" rel-entity-name="Geo">
+        <relation type="one" fk-name="PART_GEO_GEO" rel-entity-name="Geo">
             <key-map field-name="geoId"/>
         </relation>
         <relation type="one" fk-name="PART_GEO_TYPE" rel-entity-name="PartyGeoType">
