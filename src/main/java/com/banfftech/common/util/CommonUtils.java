@@ -268,13 +268,13 @@ public class CommonUtils {
      * @Date 11:40 2023/8/4
      **/
 
-    public static OdataOfbizEntity getOdataPartByEntityType(Map<String, Object> oDataContext, String entityName)
+    public static OdataOfbizEntity getOdataPartByEntityType(Map<String, Object> oDataContext, String entityTypeName)
             throws GenericServiceException {
 
         List<OdataParts> odataParts = UtilGenerics.checkList(oDataContext.get("odataParts"));
         for (OdataParts odataPart : odataParts) {
             String odataPartEntityTypeName = odataPart.getEdmEntityType().getName();
-            if (entityName.equals(odataPartEntityTypeName)) {
+            if (entityTypeName.equals(odataPartEntityTypeName)) {
                 return (OdataOfbizEntity) odataPart.getEntityData();
             }
         }
