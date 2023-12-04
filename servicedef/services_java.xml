@@ -120,5 +120,16 @@ under the License.
              location="com.banfftech.common.services.PartyServices" invoke="deleteRelationshipAndToParty" auth="true">
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
-    
+
+    <service name="banfftech.createPartyContactMechPurposeAndAddress" engine="java" default-entity-name="PartyContactMechPurposeAndAddress"
+             location="com.banfftech.common.services.PartyServices" invoke="createPartyContactMechPurposeAndAddress" auth="true">
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updatePartyContactMechPurposeAndAddress" engine="java" default-entity-name="PartyContactMechPurposeAndAddress"
+             location="com.banfftech.common.services.PartyServices" invoke="updatePartyContactMechPurposeAndAddress" auth="true">
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
 </services>

@@ -345,4 +345,15 @@ public class PartyServices {
         return ServiceUtil.returnSuccess();
     }
 
+    public static Map<String, Object> createPartyContactMechPurposeAndAddress(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPostalAddressAndContactMech", (GenericValue) context.get("userLogin"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyContactMechPurpose", (GenericValue) context.get("userLogin"));
+        return ServiceUtil.returnSuccess();
+    }
+    public static Map<String, Object> updatePartyContactMechPurposeAndAddress(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updatePartyContactMechPurpose", (GenericValue) context.get("userLogin"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updatePostalAddress", (GenericValue) context.get("userLogin"));
+        return ServiceUtil.returnSuccess();
+    }
+
 }
