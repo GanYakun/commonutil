@@ -451,6 +451,9 @@ under the License.
         <relation type="one-nofk" title="Employees" rel-entity-name="Enumeration">
             <key-map field-name="employeesSection" rel-field-name="enumId"/>
         </relation>
+        <relation type="many" rel-entity-name="PartyContactMechPurposeAndAddress">
+            <key-map field-name="partyId"/>
+        </relation>
     </view-entity>
 
     <!-- UserLogin and Party and TelecomNumber and PostalAddress -->
