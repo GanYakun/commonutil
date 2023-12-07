@@ -392,4 +392,18 @@ public class CommonUtils {
         }
     }
 
+    /**
+     * 使用userLoginId查询partyName
+     */
+    public static String getPartyNameByLoginId(Delegator delegator, String loginId) throws GenericEntityException {
+        if (UtilValidate.isEmpty(loginId)) {
+            return null;
+        }
+        GenericValue userLogin = EntityQuery.use(delegator).from("UserLogin").where("userLoginId", loginId).queryOne();
+        if (UtilValidate.isEmpty(userLogin) || UtilValidate.isEmpty(userLogin.getString("partyId"))) {
+            return null;
+        }
+        return userLogin.getRelatedOne("Party", false).getString("partyName");
+    }
+
 }
