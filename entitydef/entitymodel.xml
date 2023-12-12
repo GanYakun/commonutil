@@ -454,6 +454,9 @@ under the License.
         <relation type="many" rel-entity-name="PartyContactMechPurposeAndAddress">
             <key-map field-name="partyId"/>
         </relation>
+        <relation type="many" rel-entity-name="PartyMediaResource">
+            <key-map field-name="partyId"/>
+        </relation>
     </view-entity>
 
     <!-- UserLogin and Party and TelecomNumber and PostalAddress -->
