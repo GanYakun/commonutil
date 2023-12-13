@@ -102,6 +102,9 @@ under the License.
         <view-link entity-alias="DR" rel-entity-alias="ODR" rel-optional="true">
             <key-map field-name="dataResourceId"/>
         </view-link>
+        <view-link entity-alias="PTCT" rel-entity-alias="PCT" rel-optional="true">
+            <key-map field-name="partyContentTypeId"/>
+        </view-link>
     </view-entity>
 
 </entitymodel>
