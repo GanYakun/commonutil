@@ -2,6 +2,7 @@ package com.banfftech.common.services;
 
 import com.banfftech.common.util.CommonUtils;
 import com.banfftech.common.util.PartyServiceUtils;
+import com.banfftech.worker.SupplierWorker;
 import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.services.OfbizServiceException;
 import org.apache.ofbiz.base.util.*;
@@ -330,6 +331,8 @@ public class PartyServices {
     }
 
     public static Map<String, Object> createRelationshipAndToParty(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
+        String partyName = SupplierWorker.joinPartyName((String) context.get("firstName"), (String) context.get("middleName"), (String) context.get("lastName"));
+        context.put("partyName", partyName);
         Map<String, Object> result = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPersonAndContact", (GenericValue) context.get("userLogin"));
         context.put("partyIdTo", result.get("partyId"));
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyRelationship", (GenericValue) context.get("userLogin"));

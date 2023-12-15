@@ -57,4 +57,11 @@
 	<extend-entity entity-name="PartyGroup">
 		<field name="employeesSection" type="long-varchar"/>
 	</extend-entity>
+
+	<extend-entity entity-name="Person">
+		<field name="personImageUrl" type="url"/>
+		<relation type="many" rel-entity-name="PartyRole">
+			<key-map field-name="partyId"/>
+		</relation>
+	</extend-entity>
 </entitymodel>
