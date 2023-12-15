@@ -656,6 +656,19 @@ under the License.
         </relation>
     </entity>
 
+    <entity entity-name="PartyGroupType"
+            package-name="com.banfftech.common"
+            title="Party Group Type Entity">
+        <field name="partyGroupTypeId" type="id"/>
+        <field name="parentTypeId" type="id"/>
+        <field name="hasTable" type="indicator"/>
+        <field name="description" type="description"/>
+        <prim-key field="partyGroupTypeId"/>
+        <relation type="one" fk-name="PARTY_GROTYPE_PAR" title="Parent" rel-entity-name="PartyGroupType">
+            <key-map field-name="parentTypeId" rel-field-name="partyGroupTypeId"/>
+        </relation>
+    </entity>
+
     <view-entity entity-name="RelationshipAndToParty"
                  package-name="com.banfftech.common"
                  never-cache="true">
