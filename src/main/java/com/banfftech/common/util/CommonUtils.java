@@ -406,4 +406,25 @@ public class CommonUtils {
         return userLogin.getRelatedOne("Party", false).getString("partyName");
     }
 
+    /**
+     * 根据firstName、middleName、lastName得到partyName
+     */
+    public static String joinPartyName(String firstName, String middleName, String lastName){
+        String partyName = "";
+        List<String> stringList = new ArrayList<>();
+        stringList.add(firstName);
+        stringList.add(middleName);
+        stringList.add(lastName);
+        for (int i = 0; i < stringList.size(); i++) {
+            String getName = stringList.get(i);
+            if (UtilValidate.isEmpty(getName)) continue;
+            if (UtilValidate.isNotEmpty(partyName)) {
+                partyName += " " + getName;
+            } else {
+                partyName = getName;
+            }
+        }
+        return partyName;
+    }
+
 }
