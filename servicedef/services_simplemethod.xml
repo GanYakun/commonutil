@@ -47,4 +47,11 @@ under the License.
             </type-validate>
         </attribute>
     </service>
+
+    <service name="sendEmailDated" engine="simple" use-transaction="false"
+             location="component://bfcommon/minilang/communication/CommunicationEventServices.xml" invoke="sendEmailDated" auth="true">
+        <description>Checks for email communication events with the status COM_IN_PROGRESS and a startdate which is expired, then send the email</description>
+    </service>
+
+
 </services>

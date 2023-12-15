@@ -55,7 +55,7 @@
     <service name="banfftech.createCommunicationEvent" default-entity-name="CommunicationEvent" engine="entity-auto" invoke="create">
         <description>Create a CommunicationEvent</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true" allow-html="any"/>
     </service>
     <service name="banfftech.updateCommunicationEvent" default-entity-name="CommunicationEvent" engine="entity-auto" invoke="update">
         <description>Update a CommunicationEvent</description>
@@ -64,6 +64,20 @@
     </service>
     <service name="banfftech.deleteCommunicationEvent" default-entity-name="CommunicationEvent" engine="entity-auto" invoke="delete">
         <description>Delete a CommunicationEvent</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <service name="banfftech.createCommEventContentAssoc" default-entity-name="CommEventContentAssoc" engine="entity-auto" invoke="create">
+        <description>Create a CommEventContentAssoc</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.updateCommEventContentAssoc" default-entity-name="CommEventContentAssoc" engine="entity-auto" invoke="update">
+        <description>Update a CommEventContentAssoc</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="banfftech.deleteCommEventContentAssoc" default-entity-name="CommEventContentAssoc" engine="entity-auto" invoke="delete">
+        <description>Delete a CommEventContentAssoc</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
     <!--CommunicationEventWorkEff-->
