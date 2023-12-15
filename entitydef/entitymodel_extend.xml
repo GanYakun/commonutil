@@ -56,6 +56,10 @@
 
 	<extend-entity entity-name="PartyGroup">
 		<field name="employeesSection" type="long-varchar"/>
+		<field name="partyGroupTypeId" type="id"/>
+		<relation type="one" fk-name="PT_GRP_TYPE" rel-entity-name="PartyGroupType">
+			<key-map field-name="partyGroupTypeId"/>
+		</relation>
 	</extend-entity>
 
 	<extend-entity entity-name="Person">
