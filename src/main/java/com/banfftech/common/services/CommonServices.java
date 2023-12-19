@@ -3,6 +3,8 @@ package com.banfftech.common.services;
 import com.banfftech.common.util.CommonUtils;
 import com.dpbird.odata.OfbizODataException;
 import com.dpbird.odata.Util;
+import org.apache.commons.io.FileUtils;
+import org.apache.ofbiz.base.location.FlexibleLocation;
 import org.apache.ofbiz.base.util.*;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
@@ -10,16 +12,20 @@ import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.entity.condition.EntityCondition;
 import org.apache.ofbiz.entity.model.ModelEntity;
 import org.apache.ofbiz.entity.model.ModelField;
+import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.entity.util.EntityUtil;
 import org.apache.ofbiz.service.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class CommonServices {
+
+    private static final String module = CommonServices.class.getName();
+
     public static Map<String, Object> createPostalAddressAndContactMech(DispatchContext dctx, Map<String, Object> context)
             throws GenericServiceException {
         try {
@@ -249,5 +255,51 @@ public class CommonServices {
         return map;
     }
 
+    public static Map<String, Object> copyEdmConfig(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, GenericServiceException, IOException {
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        String plugin = (String) context.get("plugin");
+        //更新这个plugin所有的Edm
+        if (UtilValidate.isNotEmpty(plugin)) {
+            String tempPath = "component://" + plugin + "/config";
+            String fileUrl = FlexibleLocation.resolveLocation(tempPath).getFile();
+            File folder = new File(fileUrl);
+            if (UtilValidate.isEmpty(folder)|| !folder.isDirectory() || folder.listFiles() == null ) {
+                return ServiceUtil.returnError("Invalid folder");
+            }
+            File[] files = folder.listFiles();
+            if (files == null) {
+                Debug.logWarning("Empty folder: " + tempPath, module);
+                return ServiceUtil.returnSuccess();
+            }
+            //遍历folder下所有的文件
+            for (File file : files) {
+                storeEdmService(dispatcher, file);
+            }
+        }
+        return ServiceUtil.returnSuccess();
+    }
 
+    private static void storeEdmService(LocalDispatcher dispatcher, File file) throws IOException, GenericEntityException {
+        Delegator delegator = dispatcher.getDelegator();
+        String name = file.getName();
+        if (name.endsWith("EdmConfig.xml")) {
+            String serviceName = name.replace("EdmConfig.xml", "");
+            GenericValue edmService = EntityQuery.use(delegator).from("EdmService").where("serviceName", serviceName).queryFirst();
+            if (UtilValidate.isEmpty(edmService)) {
+                String edmServiceId = delegator.getNextSeqId("EdmService");
+                edmService = delegator.create("EdmService", UtilMisc.toMap("edmServiceId", edmServiceId, "serviceName", serviceName));
+            }
+            GenericValue serviceContent = EntityQuery.use(delegator).from("EdmServiceContent").where(edmService.getPrimaryKey()).queryFirst();
+            if (UtilValidate.isEmpty(serviceContent)) {
+                Map<String, Object> contentMap = new HashMap<>(edmService.getPrimaryKey());
+                contentMap.put("edmServiceContentId", delegator.getNextSeqId("EdmServiceContent"));
+                contentMap.put("format", "xml");
+                contentMap.put("edmContent", FileUtils.readFileToString(file, "utf-8"));
+                delegator.create("EdmServiceContent", contentMap);
+            } else {
+                serviceContent.set("edmContent", FileUtils.readFileToString(file, "utf-8"));
+                serviceContent.store();
+            }
+        }
+    }
 }

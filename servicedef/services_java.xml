@@ -147,4 +147,10 @@ under the License.
         <attribute name="partyIdFrom" type="String" mode="IN" optional="true"/>
     </service>
 
+    <service name="copyEdmConfig" engine="java"
+             location="com.banfftech.common.services.CommonServices" invoke="copyEdmConfig" auth="true">
+        <description>将EdmConfig写入到数据库</description>
+        <attribute name="plugin" type="String" mode="IN"/>
+    </service>
+
 </services>
