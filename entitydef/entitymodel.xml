@@ -683,6 +683,10 @@ under the License.
         <member-entity entity-alias="TPHM" entity-name="TelecomNumber"/><!-- mobile phone number -->
         <member-entity entity-alias="PAPL" entity-name="PostalAddress"/><!-- primary location -->
         <member-entity entity-alias="CPE" entity-name="ContactMech"/><!-- email -->
+        <member-entity entity-alias="PTCT" entity-name="PartyContent"/>
+        <member-entity entity-alias="CO" entity-name="Content"/>
+        <member-entity entity-alias="DR" entity-name="DataResource"/>
+        <member-entity entity-alias="ODR" entity-name="OtherDataResource"/>
         <alias-all entity-alias="PRS" group-by="true"/>
         <alias-all entity-alias="PT" group-by="true"/>
         <alias-all entity-alias="PS" group-by="true">
@@ -695,6 +699,10 @@ under the License.
         <alias name="address1" field="address1" entity-alias="PAPL" group-by="true"/>
         <alias name="address2" field="address2" entity-alias="PAPL" group-by="true"/>
         <alias name="city" field="city" entity-alias="PAPL" group-by="true"/>
+        <alias name="dataResourceId" field="dataResourceId" entity-alias="DR" group-by="true" prim-key="false"/>
+        <alias name="dataResourceName" field="dataResourceName" entity-alias="DR" group-by="true"/>
+        <alias name="mimeTypeId" field="mimeTypeId" entity-alias="DR" group-by="true"/>
+        <alias name="dataResourceContent" field="dataResourceContent" entity-alias="ODR" group-by="true"/>
         <view-link entity-alias="PRS" rel-entity-alias="PT">
             <key-map field-name="partyIdTo" rel-field-name="partyId"/>
         </view-link>
@@ -739,6 +747,18 @@ under the License.
         </view-link>
         <view-link entity-alias="PPL" rel-entity-alias="PAPL" rel-optional="true"><!-- primary location -->
             <key-map field-name="contactMechId"/>
+        </view-link>
+        <view-link entity-alias="PT" rel-entity-alias="PTCT" rel-optional="true">
+            <key-map field-name="partyId"/>
+        </view-link>
+        <view-link entity-alias="PTCT" rel-entity-alias="CO" rel-optional="true">
+            <key-map field-name="contentId"/>
+        </view-link>
+        <view-link entity-alias="CO" rel-entity-alias="DR" rel-optional="true">
+            <key-map field-name="dataResourceId"/>
+        </view-link>
+        <view-link entity-alias="DR" rel-entity-alias="ODR" rel-optional="true">
+            <key-map field-name="dataResourceId"/>
         </view-link>
     </view-entity>
 

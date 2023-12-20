@@ -330,16 +330,29 @@ public class PartyServices {
     }
 
     public static Map<String, Object> createRelationshipAndToParty(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
         String partyName = CommonUtils.joinPartyName((String) context.get("firstName"), (String) context.get("middleName"), (String) context.get("lastName"));
         context.put("partyName", partyName);
-        Map<String, Object> result = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPersonAndContact", (GenericValue) context.get("userLogin"));
+        Map<String, Object> result = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPersonAndContact", userLogin);
+        context.put("partyId", result.get("partyId"));
         context.put("partyIdTo", result.get("partyId"));
-        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyRelationship", (GenericValue) context.get("userLogin"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyRelationship", userLogin);
+        //create media
+        result = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createDataResource", userLogin);
+        String dataResourceId = (String) result.get("dataResourceId");
+        context.put("dataResourceId", dataResourceId);
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createOtherDataResource", userLogin);
+        result = CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createContent", userLogin);
+        context.put("contentId", result.get("contentId"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.createPartyContent", userLogin);
         return ServiceUtil.returnSuccess();
     }
     public static Map<String, Object> updateRelationshipAndToParty(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updatePersonAndContact", (GenericValue) context.get("userLogin"));
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updatePartyRelationship", (GenericValue) context.get("userLogin"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateDataResource", (GenericValue) context.get("userLogin"));
+        CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateOtherDataResource", (GenericValue) context.get("userLogin"));
         return ServiceUtil.returnSuccess();
     }
     public static Map<String, Object> deleteRelationshipAndToParty(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
