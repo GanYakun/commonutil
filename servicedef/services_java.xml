@@ -106,7 +106,7 @@ under the License.
 
     <service name="banfftech.createRelationshipAndToParty" engine="java" default-entity-name="RelationshipAndToParty"
              location="com.banfftech.common.services.PartyServices" invoke="createRelationshipAndToParty" auth="true">
-        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
 
