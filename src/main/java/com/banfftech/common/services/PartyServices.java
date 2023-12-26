@@ -349,6 +349,9 @@ public class PartyServices {
         return createResult;
     }
     public static Map<String, Object> updateRelationshipAndToParty(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException, GeneralServiceException, OfbizODataException, GenericServiceException {
+        GenericValue relationship = dctx.getDelegator().findOne("RelationshipAndToParty", UtilMisc.toMap("partyRelationshipId", context.get("partyRelationshipId")), false);
+        context.put("partyId", relationship.getString("partyIdTo"));
+        context.put("dataResourceId", relationship.getString("dataResourceId"));
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updatePersonAndContact", (GenericValue) context.get("userLogin"));
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updatePartyRelationship", (GenericValue) context.get("userLogin"));
         CommonUtils.setServiceFieldsAndRun(dctx, context, "banfftech.updateDataResource", (GenericValue) context.get("userLogin"));
